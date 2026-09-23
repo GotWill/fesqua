@@ -229,7 +229,8 @@ const nav: NavItem[] = [
 					<span class="kicker">Quando</span>
 					<div class="info-date">
 						<strong>12–15</strong><span class="info-month"
-							>Set 2028</span>
+							>Set 2028</span
+						>
 					</div>
 					<div class="info-duration">
 						<span class="dash" aria-hidden="true"></span>4 dias
@@ -560,7 +561,7 @@ const nav: NavItem[] = [
 		/* Fundo quase opaco por padrão — esconde o conteúdo atrás mesmo
 		   onde backdrop-filter não é suportado (alguns Chrome Android).
 		   Onde é suportado, o @supports abaixo troca pro efeito vidro. */
-		   background: rgba(24, 2, 3, 0.92);
+		   background: linear-gradient(160deg, #2a0406 0%, #180203 60%, #120102 100%);
 		will-change: transform;
 		border-left: 1px solid rgba(255, 255, 255, 0.14);
 		box-shadow: -40px 0 80px rgba(31, 3, 4, 0.35);
@@ -570,13 +571,7 @@ const nav: NavItem[] = [
 		color: var(--color-white);
 	}
 
-	@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-	.sidebar {
-		background: rgba(24, 2, 3, 0.92); /* mantém opaco mesmo aqui */
-		backdrop-filter: blur(24px) saturate(140%);
-		-webkit-backdrop-filter: blur(24px) saturate(140%);
-	}
-}
+
 
 	.sidebar.is-open {
 		transform: translateX(0);
