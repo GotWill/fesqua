@@ -1,0 +1,658 @@
+---
+interface SubLink {
+	label: string;
+	href: string;
+}
+
+interface NavItem {
+	label: string;
+	href: string;
+	sub?: SubLink[];
+	pendingSub?: boolean;
+	cta?: boolean;
+}
+
+// Mesma estrutura de links do menu do Header — mantidas em sincronia
+// manualmente (sem import direto porque lá é NavChild/dropdown, aqui é
+// SubLink/sub, mas os hrefs e rótulos são os mesmos).
+const navColumnA: NavItem[] = [
+	{
+		label: 'Fesqua',
+		href: '/fesqua',
+		sub: [
+			{ label: 'Sobre o Evento', href: '/fesqua/sobre-o-evento' },
+			{ label: 'Sobre o Grupo Contramarco', href: '/fesqua/sobre-o-grupo-contramarco' },
+		],
+	},
+	{
+		label: 'Expositor',
+		href: '/expositor',
+		sub: [
+			{ label: 'Planta da Feira', href: '/expositor/planta-da-feira' },
+			{ label: 'Lista de Expositores', href: '/expositor/lista-de-expositores' },
+			{ label: 'Quero Expor', href: '/expositor/quero-expor' },
+			{ label: 'Manual do Expositor', href: '/expositor/manual-do-expositor' },
+			{ label: 'Primeira Participação', href: '/expositor/primeira-participacao' },
+			{ label: 'Viagem e Hospedagem', href: '/expositor/viagem-e-hospedagem' },
+			{ label: 'Dúvidas Frequentes – Expositores', href: '/expositor/duvidas-frequentes' },
+		],
+	},
+	{
+		label: 'Visitante',
+		href: '/visitante',
+		sub: [
+			{ label: 'Planta da Feira', href: '/visitante/planta-da-feira' },
+			{ label: 'Quero Visitar', href: '/visitante/quero-visitar' },
+			{ label: 'Viagem e Hospedagem', href: '/visitante/viagem-e-hospedagem' },
+			{ label: 'Dúvidas Frequentes – Visitantes', href: '/visitante/duvidas-frequentes' },
+		],
+	},
+	{
+		label: 'Programação',
+		href: '/programacao',
+		sub: [
+			{ label: 'ENEPE', href: '/programacao/enepe' },
+			{ label: 'Encontro AFEAL', href: '/programacao/encontro-afeal' },
+			{ label: 'Summit Arq', href: '/programacao/summit-arq' },
+			{ label: 'VIDROSOM', href: '/programacao/vidrosom' },
+			{ label: 'Esquadrias de PVC em Foco', href: '/programacao/esquadrias-de-pvc-em-foco' },
+		],
+	},
+	{ label: 'Embaixadores', href: '/embaixadores' },
+];
+
+const navColumnB: NavItem[] = [
+	{
+		label: 'Eventos Simultâneos',
+		href: '/eventos-simultaneos',
+		sub: [
+			{ label: 'Feipat', href: '/eventos-simultaneos/feipat' },
+			{ label: 'Fesqua Vetro', href: '/eventos-simultaneos/fesqua-vetro' },
+		],
+	},
+	{
+		label: 'Imprensa',
+		href: '/imprensa',
+		sub: [
+			{ label: 'Canal Fesqua', href: '/imprensa/canal-fesqua' },
+			{ label: 'Press Releases', href: '/imprensa/press-releases' },
+			{ label: 'Saiu na Mídia', href: '/imprensa/saiu-na-midia' },
+		],
+	},
+	{ label: 'Contato', href: '/contato' },
+	{ label: 'Quero Visitar', href: '/quero-visitar', cta: true },
+	{ label: 'Quero Expor', href: '/quero-expor', cta: true },
+];
+
+const contactInfo = {
+	address1: 'Rua Afonso Celso, 552 - Conj 46 - São Paulo/SP',
+	address2Label: 'Pavilhão:',
+	address2: 'Rod. dos Imigrantes, km 1,5 – Vila Água Funda, São Paulo - SP, 04329-900',
+	phone: '(11) 4280-8860',
+	phoneHref: 'tel:+551142808860',
+	email: 'fesqua@fesqua.com.br',
+};
+
+const socialLinks = [
+	{ label: 'Instagram', href: 'https://www.instagram.com/fesqua/' },
+	{
+		label: 'LinkedIn',
+		href: 'http://linkedin.com/in/fesqua-feira-internacional-da-ind%C3%BAstria-de-esquadrias-2aa94725a',
+	},
+	{ label: 'Facebook', href: 'https://www.facebook.com/fesqua' },
+];
+---
+
+<footer class="site-footer">
+	<div class="wave" aria-hidden="true">
+		<svg viewBox="0 0 1440 110" preserveAspectRatio="none">
+			<path d="M0,0 L1440,0 L1440,26 C1200,70 1020,4 720,32 C420,60 240,8 0,46 Z" fill="currentColor" />
+		</svg>
+	</div>
+
+	<div class="footer-inner">
+		<div class="footer-top">
+			<div class="f-brand">
+				<img class="brand-logo" src="/images/logo.webp" alt="Fesqua" />
+				<p>
+					Feira Internacional de Esquadrias e Vidros para Construção Civil. São Paulo Expo, todos os
+					anos.
+				</p>
+				<div class="social-row">
+					{
+						socialLinks.map((s) => (
+							<a href={s.href} target="_blank" rel="noopener" aria-label={s.label}>
+								{s.label === 'Instagram' && (
+									<svg viewBox="0 0 448 512" fill="currentColor" aria-hidden="true">
+										<path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
+									</svg>
+								)}
+								{s.label === 'LinkedIn' && (
+									<svg viewBox="0 0 448 512" fill="currentColor" aria-hidden="true">
+										<path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z" />
+									</svg>
+								)}
+								{s.label === 'Facebook' && (
+									<svg viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+										<path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z" />
+									</svg>
+								)}
+							</a>
+						))
+					}
+				</div>
+			</div>
+
+			<nav class="f-nav" aria-label="Mapa do site">
+				
+				<ul>
+					{
+						navColumnA.map((item, i) => (
+							<li class:list={{ 'has-sub': item.sub }}>
+								{item.sub ? (
+									<button
+										class="nav-row sub-toggle"
+										type="button"
+										aria-expanded="false"
+										aria-controls={`f-drop-a-${i}`}
+									>
+										<span>{item.label}</span>
+										<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+											<path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+										</svg>
+									</button>
+								) : (
+									<div class="nav-row">
+										<a href={item.href}>{item.label}</a>
+									</div>
+								)}
+								{item.pendingSub && <span class="placeholder-tag">submenu pendente</span>}
+								{item.sub && (
+									<ul class="sub" id={`f-drop-a-${i}`}>
+										{item.sub.map((s) => (
+											<li>
+												<a href={s.href}>{s.label}</a>
+											</li>
+										))}
+									</ul>
+								)}
+							</li>
+						))
+					}
+				</ul>
+			</nav>
+
+			<nav class="f-nav" aria-label="Mapa do site, continuação">
+				<span class="f-nav-label spacer">&nbsp;</span>
+				<ul>
+					{
+						navColumnB.map((item, i) => (
+							<li class:list={{ 'has-sub': item.sub }}>
+								{item.sub ? (
+									<button
+										class="nav-row sub-toggle"
+										type="button"
+										aria-expanded="false"
+										aria-controls={`f-drop-b-${i}`}
+									>
+										<span>{item.label}</span>
+										<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+											<path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+										</svg>
+									</button>
+								) : (
+									<div class="nav-row">
+										<a href={item.href} class:list={{ cta: item.cta }}>
+											{item.label}
+										</a>
+									</div>
+								)}
+								{item.pendingSub && <span class="placeholder-tag">submenu pendente</span>}
+								{item.sub && (
+									<ul class="sub" id={`f-drop-b-${i}`}>
+										{item.sub.map((s) => (
+											<li>
+												<a href={s.href}>{s.label}</a>
+											</li>
+										))}
+									</ul>
+								)}
+							</li>
+						))
+					}
+				</ul>
+			</nav>
+
+			<div class="f-contact">
+				<span class="f-nav-label">Fale Conosco</span>
+				<ul class="contact-list">
+					<li>
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+							<path
+								d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12Z"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+							<circle cx="12" cy="9" r="2.5" />
+						</svg>
+						<span>{contactInfo.address1}</span>
+					</li>
+					<li>
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+							<path
+								d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12Z"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+							<circle cx="12" cy="9" r="2.5" />
+						</svg>
+						<span>
+							<span class="strong">{contactInfo.address2Label}</span> {contactInfo.address2}
+						</span>
+					</li>
+					<li>
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+							<path
+								d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3.6c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8Z"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+						<a href={contactInfo.phoneHref} class="strong">
+							{contactInfo.phone}
+						</a>
+					</li>
+					<li>
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+							<rect x="3" y="5" width="18" height="14" rx="2" />
+							<path d="m3 7 9 6 9-6" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+						<a href={`mailto:${contactInfo.email}`}>{contactInfo.email}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="footer-bottom">
+			<span class="copy">© 2026 Grupo Contramarco. Todos os direitos reservados.</span>
+			<div class="legal">
+				<a href="#">Termos de Uso</a>
+				<a href="#">Política de Privacidade</a>
+			</div>
+			<button class="to-top" aria-label="Voltar ao topo" id="toTop">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+					<path d="M12 19V5M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round" />
+				</svg>
+			</button>
+		</div>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		position: relative;
+		overflow: hidden;
+		background: var(--color-surface-alt);
+		padding: clamp(2.5rem, 6vw, 3.5rem) clamp(1.5rem, 5vw, 4rem) 0;
+	}
+
+	/* Mesma receita da textura de pontos da dobra de parceiros, com a
+	   cor invertida: vermelho bem sutil sobre fundo claro. */
+	.site-footer::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background-image: radial-gradient(rgba(154, 12, 12, 0.055) 1px, transparent 1.4px);
+		background-size: 24px 24px;
+		-webkit-mask-image: radial-gradient(ellipse 70% 60% at 15% 15%, #000 30%, transparent 80%);
+		mask-image: radial-gradient(ellipse 70% 60% at 15% 15%, #000 30%, transparent 80%);
+	}
+
+	/* Direção inversa da onda da dobra de parceiros: ali o branco
+	   nascia por cima do vermelho; aqui é o vermelho da seção ANTERIOR
+	   que pinta por cima do topo do rodapé claro. A cor vem do
+	   `color` do .wave (não do path) — só uma variável muda se a cor
+	   da seção anterior mudar. */
+	.wave {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 110px;
+		line-height: 0;
+		z-index: 2;
+		color: var(--color-primary-deep);
+	}
+
+	.wave svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	.footer-inner {
+		position: relative;
+		z-index: 1;
+		max-width: 1280px;
+		margin: 0 auto;
+		padding-top: clamp(4rem, 8vw, 5.5rem);
+	}
+
+	.footer-top {
+		display: grid;
+		grid-template-columns: 1.3fr 1fr 1fr 1.1fr;
+		gap: 3rem;
+	}
+
+	/* ---------- marca ---------- */
+	.brand-logo {
+		height: 3.5rem;
+		width: auto;
+	}
+
+	.f-brand p {
+		margin-top: 1rem;
+		max-width: 34ch;
+		font-family: var(--font-body);
+		font-size: 0.9375rem;
+		line-height: 1.6;
+		color: var(--color-ink);
+	}
+
+	.social-row {
+		display: flex;
+		gap: 0.625rem;
+		margin-top: 1.5rem;
+	}
+
+	.social-row a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		border-radius: 9999px;
+		border: 1px solid var(--color-line);
+		color: var(--color-primary);
+		transition:
+			background-color 0.25s var(--ease-out),
+			border-color 0.25s var(--ease-out),
+			color 0.25s var(--ease-out);
+	}
+
+	.social-row a:hover {
+		background: var(--color-primary);
+		border-color: var(--color-primary);
+		color: var(--color-white);
+	}
+
+	.social-row svg {
+		width: 16px;
+		height: 16px;
+	}
+
+	/* ---------- mapa do site ---------- */
+	.f-nav-label {
+		display: block;
+		margin-bottom: 1.25rem;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.6875rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	.f-nav ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.f-nav a {
+		font-family: var(--font-body);
+		font-size: 0.9375rem;
+		color: var(--color-text);
+		text-decoration: none;
+		transition: color 0.2s var(--ease-out);
+	}
+
+	.f-nav a:hover {
+		color: var(--color-primary);
+	}
+
+	.f-nav a.cta {
+		color: var(--color-primary);
+	}
+
+	.placeholder-tag {
+		display: block;
+		margin-top: 0.2rem;
+		font-family: var(--font-display);
+		font-size: 0.6875rem;
+		color: var(--color-ink);
+		opacity: 0.7;
+	}
+
+	.nav-row {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	/* O título de uma categoria com submenu não é mais link — o
+	   rótulo e a seta viram um único botão de toggle, então o reset
+	   abaixo só entra quando .nav-row É o próprio botão. */
+	button.nav-row {
+		width: 100%;
+		border: 0;
+		background: none;
+		padding: 0;
+		cursor: pointer;
+		text-align: left;
+		font: inherit;
+	}
+
+	.nav-row span {
+		font-family: var(--font-display);
+		font-size: 0.9375rem;
+		font-weight: 600;
+		color: var(--color-text);
+	}
+
+	/* ---------- submenu recolhível — mesmo padrão do dropdown do
+	   header (botão com seta + max-height animado), em vez de listar
+	   tudo aberto o tempo todo, que deixava a coluna A esticadíssima
+	   (Expositor sozinho já tem 7 itens). ---------- */
+	.sub-toggle svg {
+		flex: none;
+		width: 16px;
+		height: 16px;
+		color: var(--color-ink);
+		transition:
+			transform 0.35s var(--ease-in-out),
+			color 0.25s var(--ease-out);
+	}
+
+	.sub-toggle:hover svg {
+		color: var(--color-primary);
+	}
+
+	li.has-sub.is-open .sub-toggle svg {
+		transform: rotate(180deg);
+	}
+
+	.sub {
+		max-height: 0;
+		overflow: hidden;
+		padding-left: 0;
+		margin: 0;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		transition: max-height 0.4s var(--ease-in-out);
+	}
+
+	li.has-sub.is-open .sub {
+		margin-top: 0.5rem;
+	}
+
+	.sub a {
+		display: block;
+		font-size: 0.875rem;
+		color: var(--color-ink);
+	}
+
+	/* ---------- contato ---------- */
+	.contact-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
+	}
+
+	.contact-list li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.625rem;
+	}
+
+	.contact-list svg {
+		flex: none;
+		width: 18px;
+		height: 18px;
+		margin-top: 0.15rem;
+		color: var(--color-primary);
+	}
+
+	.contact-list span,
+	.contact-list a {
+		font-family: var(--font-body);
+		font-size: 0.875rem;
+		line-height: 1.5;
+		color: var(--color-ink);
+		text-decoration: none;
+	}
+
+	.contact-list a:hover {
+		color: var(--color-primary);
+	}
+
+	.contact-list .strong {
+		color: var(--color-text);
+	}
+
+	/* ---------- rodapé legal ---------- */
+	.footer-bottom {
+		margin-top: clamp(3rem, 6vw, 4rem);
+		padding: 1.5rem 0;
+		border-top: 1px solid var(--color-line);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+	}
+
+	.copy {
+		font-family: var(--font-body);
+		font-size: 0.8125rem;
+		color: var(--color-ink);
+	}
+
+	.legal {
+		display: flex;
+		gap: 1.5rem;
+	}
+
+	.legal a {
+		font-family: var(--font-body);
+		font-size: 0.8125rem;
+		color: var(--color-ink);
+		text-decoration: none;
+	}
+
+	.legal a:hover {
+		color: var(--color-primary);
+	}
+
+	.to-top {
+		flex: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		border-radius: 9999px;
+		border: 1px solid var(--color-line);
+		background: var(--color-white);
+		color: var(--color-primary);
+		cursor: pointer;
+		transition:
+			background-color 0.25s var(--ease-out),
+			color 0.25s var(--ease-out);
+	}
+
+	.to-top:hover {
+		background: var(--color-primary);
+		color: var(--color-white);
+	}
+
+	.to-top svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	@media (max-width: 1024px) {
+		.footer-top {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		.f-brand,
+		.f-contact {
+			grid-column: 1 / -1;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.footer-top {
+			grid-template-columns: 1fr;
+		}
+
+		.f-nav-label.spacer {
+			display: none;
+		}
+
+		.footer-bottom {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 1rem;
+		}
+	}
+</style>
+
+<script>
+	document.getElementById('toTop')?.addEventListener('click', () => {
+		window.scrollTo({
+			top: 0,
+			behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+		});
+	});
+
+	document.querySelectorAll<HTMLElement>('.site-footer li.has-sub').forEach((item) => {
+		const toggle = item.querySelector<HTMLButtonElement>('.sub-toggle');
+		const sub = item.querySelector<HTMLElement>('.sub');
+
+		toggle?.addEventListener('click', () => {
+			const isOpen = item.classList.toggle('is-open');
+			toggle.setAttribute('aria-expanded', String(isOpen));
+			if (sub) sub.style.maxHeight = isOpen ? `${sub.scrollHeight}px` : '';
+		});
+	});
+</script>

@@ -1,0 +1,332 @@
+/* Tokens e reset base — extraídos de ds.html. Nenhum componente novo deve
+   usar um valor de cor literal: sempre a variável semântica. */
+:root {
+	--color-white: #ffffff;
+
+	--color-red-50: #fff4f2;
+	--color-red-100: #ffe6e1;
+	--color-red-200: #ffcec5;
+	--color-red-300: #feab9d;
+	--color-red-400: #f48170;
+	--color-red-500: #e75445;
+	--color-red-600: #d02d25;
+	--color-red-700: #b61919;
+	--color-red-800: #9c0c0c;
+	--color-red-900: #79050c;
+	--color-red-950: #490306;
+
+	--color-rose-50: #fbf6f5;
+	--color-rose-100: #f6ebe9;
+	--color-rose-200: #ebd9d6;
+	--color-rose-300: #dac0bb;
+	--color-rose-400: #c3a49e;
+	--color-rose-500: #ac8983;
+	--color-rose-600: #94706b;
+	--color-rose-700: #7e5d59;
+	--color-rose-800: #694c49;
+	--color-rose-900: #533b38;
+	--color-rose-950: #32211f;
+
+	--color-ink-50: #faf7f6;
+	--color-ink-100: #ece7e6;
+	--color-ink-200: #d2cbca;
+	--color-ink-300: #b4aba9;
+	--color-ink-400: #988f8e;
+	--color-ink-500: #7e7675;
+	--color-ink-600: #665f5e;
+	--color-ink-700: #544e4d;
+	--color-ink-800: #454040;
+	--color-ink-900: #393534;
+	--color-ink-950: #1f1c1b;
+
+	--color-primary: var(--color-red-800);
+	--color-primary-deep: var(--color-red-950);
+	--color-primary-bright: var(--color-red-600);
+	--color-blush: var(--color-red-200);
+	--color-text: var(--color-ink-900);
+	--color-ink: var(--color-ink-700);
+	--color-mist: var(--color-rose-200);
+	--color-surface: var(--color-white);
+	--color-surface-alt: var(--color-rose-50);
+	--color-line: var(--color-rose-200);
+	--color-accent: var(--color-primary-bright);
+
+	--color-success: #257c3a;
+	--color-warning: #a56d00;
+	--color-danger: var(--color-red-600);
+
+	--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+	--ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+	/* Fontes oficiais da marca: Montserrat para títulos/UI, Arial MT
+	   Pro para corpo de texto. --font-mono-fallback é só para blocos
+	   de código literal (ex.: <pre><code> no ds.html) — nunca para
+	   texto de marca, não é uma terceira família do sistema. */
+	--font-display: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	--font-body: 'Arial MT Pro', Arial, Helvetica, sans-serif;
+	--font-mono-fallback: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+/* Arial MT Pro só existe no peso 400 (Regular) — sem arquivo Bold nem
+   Italic. Nenhum outro @font-face para essa família até termos esses
+   arquivos: um font-weight:700 ou font-style:italic aplicado a ela
+   cairia em negrito/itálico sintético do navegador. */
+@font-face {
+	font-family: 'Arial MT Pro';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/arial-mt-pro/ArialMTPro-Regular.woff2') format('woff2');
+}
+
+.on-primary {
+	--color-accent: var(--color-blush);
+	--color-line: rgba(255, 255, 255, 0.16);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	scroll-behavior: smooth;
+	/* Alguns componentes usam o truque de sangrar 100vw para ficar de
+	   ponta a ponta; em navegadores com barra de rolagem "clássica"
+	   (reserva espaço), 100vw fica um pouco mais largo que a área
+	   visível e isso cria uma barra de rolagem horizontal indesejada. */
+	overflow-x: hidden;
+}
+
+body {
+	margin: 0;
+	/* Compensa o header fixo (5.5rem / 4.5rem no mobile) para que ele
+	   nunca cubra o topo do conteúdo — a primeira dobra (100vh) cancela
+	   isso com margin-top negativa, então o header continua flutuando
+	   apenas sobre ela. */
+	padding-top: 5.5rem;
+	font-family: var(--font-body);
+	color: var(--color-text);
+	background: var(--color-surface);
+	line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-display);
+	font-weight: 700;
+	margin: 0;
+	color: var(--color-primary);
+}
+
+p {
+	margin: 0;
+}
+
+a {
+	color: inherit;
+}
+
+code,
+kbd,
+pre {
+	font-family: var(--font-mono-fallback);
+}
+
+img {
+	max-width: 100%;
+	display: block;
+}
+
+button {
+	font: inherit;
+	color: inherit;
+}
+
+@media (max-width: 480px) {
+	body {
+		padding-top: 4.5rem;
+	}
+}
+
+/* Cobre toda transition/animation do site — não só de um componente
+   específico — para quem pediu menos movimento no sistema. */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+/* ---------- botões (componente 07 do ds.html) — pílula com o "slime",
+   um blob líquido que nasce atrás do texto e se funde via filtro SVG
+   #goo (definido uma vez em Layout.astro). Nenhuma variante usa cor
+   literal: tudo herda dos tokens acima. */
+.btn {
+	position: relative;
+	overflow: hidden;
+	z-index: 0;
+	display: inline-flex;
+	cursor: pointer;
+	border-radius: 9999px;
+	border: 1px solid transparent;
+	padding-top: 0.625rem;
+	padding-bottom: 0.625rem;
+	line-height: 1.25;
+	text-decoration: none;
+	background: var(--bg-color);
+	color: var(--text-color);
+	border-color: var(--border-color);
+	--bg-color: transparent;
+	--text-color: transparent;
+	--border-color: var(--bg-color);
+	--hover-bg-color: var(--bg-color);
+	--hover-text-color: var(--text-color);
+	--hover-border-color: var(--hover-bg-color);
+	--pressed-bg-color: var(--hover-bg-color);
+	--pressed-text-color: var(--hover-text-color);
+	--pressed-border-color: var(--pressed-bg-color);
+	transition-property: transform, color, background-color, border-color;
+	transition-duration: 0.1s, 0.6s, 50ms, 0.6s;
+}
+
+.btn:not([disabled]):hover {
+	color: var(--hover-text-color);
+	border-color: var(--hover-border-color);
+}
+
+.btn:not([disabled]):active {
+	color: var(--pressed-text-color);
+	border-color: var(--pressed-border-color);
+	transform: scale(0.95);
+}
+
+.btn:not([disabled]):active .slime span {
+	background-color: var(--pressed-bg-color);
+}
+
+.btn[disabled] {
+	cursor: not-allowed;
+	opacity: 0.8;
+}
+
+.btn-content {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+}
+
+.btn-lg {
+	padding: 0.875rem 2rem;
+}
+
+.btn-md {
+	padding: 0.75rem 1.5rem;
+}
+
+.btn-sm {
+	padding: 0.5rem 1rem;
+	font-size: 0.875rem;
+	line-height: 1.5;
+}
+
+.btn-icon {
+	width: 1.25em;
+	height: 1.25em;
+}
+
+.slime,
+.slime span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+}
+
+.slime {
+	z-index: 0;
+	filter: url(#goo);
+}
+
+.slime span {
+	top: -30%;
+	height: 160%;
+	width: 56%;
+	border-radius: 50%;
+	transform: translateY(120%);
+	background-color: var(--hover-bg-color);
+	transition-property: background-color, transform;
+	transition-duration: 0.6s, 0.6s;
+}
+
+.slime span:nth-child(1) {
+	left: -28%;
+}
+
+.slime span:nth-child(2) {
+	left: 22%;
+	transition-delay: 0s, 80ms;
+}
+
+.slime span:nth-child(3) {
+	left: 72%;
+}
+
+.btn:not([disabled]):hover .slime span {
+	transform: translateY(0) scale(1.2);
+}
+
+/* — sobre superfície clara — */
+.Solid_Red {
+	--bg-color: var(--color-primary);
+	--text-color: var(--color-white);
+	--hover-bg-color: var(--color-red-700);
+	--pressed-bg-color: var(--color-red-900);
+}
+
+.Solid_Deep {
+	--bg-color: var(--color-primary-deep);
+	--text-color: var(--color-white);
+	--hover-bg-color: var(--color-red-800);
+	--pressed-bg-color: var(--color-red-900);
+}
+
+.Outline_Red {
+	--text-color: var(--color-primary);
+	--border-color: var(--color-primary);
+	--hover-bg-color: var(--color-primary);
+	--hover-text-color: var(--color-white);
+	--pressed-bg-color: var(--color-red-900);
+}
+
+/* — sobre superfície vermelha — */
+.Outline_Blush {
+	--text-color: var(--color-white);
+	--border-color: var(--color-blush);
+	--hover-bg-color: var(--color-blush);
+	--hover-text-color: var(--color-primary);
+	--pressed-bg-color: var(--color-red-300);
+}
+
+.Outline_White {
+	--text-color: var(--color-white);
+	--border-color: var(--color-white);
+	--hover-bg-color: var(--color-white);
+	--hover-text-color: var(--color-primary);
+	--pressed-bg-color: var(--color-rose-200);
+}

@@ -1,0 +1,600 @@
+---
+interface Sector {
+	label: string;
+	shortLabel: string;
+	icon: 'window' | 'wrench' | 'building' | 'radar' | 'gear';
+	image: string | null;
+	desc: string;
+}
+
+const sectors: Sector[] = [
+	{
+		label: 'Esquadrias e Fachadas',
+		shortLabel: 'Esquadrias',
+		icon: 'window',
+		image: '/images/setores/esquadrias.webp',
+		desc: 'Perfis de alumínio, PVC e aço para portas, janelas e fachadas — soluções que unem estética, desempenho térmico e acústico.',
+	},
+	{
+		label: 'Vidro e Soluções Vidreiras',
+		shortLabel: 'Vidro',
+		icon: 'window',
+		image: '/images/setores/vidro-solucoes.webp',
+		desc: 'Vidros temperados, laminados e de controle solar, além de máquinas e insumos para o beneficiamento vidreiro.',
+	},
+	{
+		label: 'Ferragens e Componentes',
+		shortLabel: 'Ferragens',
+		icon: 'wrench',
+		image: '/images/setores/ferragens-componentes.webp',
+		desc: 'Dobradiças, fechos, trilhos e acessórios que garantem funcionalidade, durabilidade e segurança às esquadrias.',
+	},
+	{
+		label: 'Soluções para Construção Civil',
+		shortLabel: 'Construção',
+		icon: 'building',
+		image: '/images/setores/construcao-civil.webp',
+		desc: 'Materiais, sistemas construtivos e serviços que sustentam obras residenciais, comerciais e industriais.',
+	},
+	{
+		label: 'Automação e Tecnologia',
+		shortLabel: 'Automação',
+		icon: 'radar',
+		image: '/images/setores/automacao-tecnologia.webp',
+		desc: 'Sistemas inteligentes, sensores e automação que trazem eficiência e controle para esquadrias e ambientes.',
+	},
+	{
+		label: 'Máquinas e Equipamentos',
+		shortLabel: 'Máquinas',
+		icon: 'gear',
+		image: '/images/setores/maquinas-equipamentos.webp',
+		desc: 'Maquinário de ponta para corte, usinagem e beneficiamento — a espinha dorsal da produção do setor.',
+	},
+];
+---
+
+<section class="sectors" id="setores" aria-labelledby="setores-heading">
+	<div class="sectors-head">
+		<span class="rule" aria-hidden="true"></span>
+		<span class="kicker">Setores atendidos</span>
+		<h2 id="setores-heading">Um universo de soluções em um só lugar</h2>
+	</div>
+
+	<div class="sectors-row" role="tablist" aria-label="Setores da Fesqua">
+		{
+			sectors.map((sector, i) => (
+				<div class="sector" data-index={i} role="tab" tabindex="0" aria-selected="false" style={`--i:${i + 1}`}>
+					<div class="sector-media">
+						{sector.image && <img class="sector-media-fg" src={sector.image} alt="" loading="lazy" />}
+					</div>
+					<span class="sector-veil" aria-hidden="true"></span>
+					<span class="sector-scrim" aria-hidden="true"></span>
+
+					<span class="sector-collapsed">
+						<span class="sector-icon" aria-hidden="true">
+						{sector.icon === 'window' && (
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<rect x="4" y="4" width="16" height="16" rx="1" />
+								<path d="M12 4v16M4 12h16" />
+							</svg>
+						)}
+						{sector.icon === 'wrench' && (
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<path
+									d="M14.7 6.3a4 4 0 1 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.3 2.3-3-3 2.4-2.4Z"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/>
+							</svg>
+						)}
+						{sector.icon === 'building' && (
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<path
+									d="M4 21V7l8-4 8 4v14M9 21v-6h6v6"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/>
+								<path d="M9 10h1M14 10h1M9 14h1M14 14h1" stroke-linecap="round" />
+							</svg>
+						)}
+						{sector.icon === 'radar' && (
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<circle cx="12" cy="12" r="8" />
+								<circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
+								<path d="M12 4v2M12 18v2M4 12h2M18 12h2" stroke-linecap="round" />
+							</svg>
+						)}
+						{sector.icon === 'gear' && (
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<circle cx="12" cy="12" r="3" />
+								<path
+									d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"
+									stroke-linecap="round"
+								/>
+							</svg>
+						)}
+						</span>
+						<span class="sector-label">{sector.shortLabel}</span>
+					</span>
+
+					<span class="sector-textpanel">
+						<button class="sector-back" type="button" aria-label="Voltar">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+								<path d="M19 12H5M11 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</button>
+						<span class="sector-label-lg">{sector.label}</span>
+						<p class="sector-desc">{sector.desc}</p>
+					</span>
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.sectors {
+		position: relative;
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		background: var(--color-surface);
+		padding: clamp(4rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+	}
+
+	.sectors-head {
+		flex: none;
+		width: 100%;
+		max-width: 1280px;
+		margin: 0 auto clamp(2.5rem, 5vw, 3.5rem);
+	}
+
+	.rule {
+		display: block;
+		width: 40px;
+		height: 2px;
+		margin-bottom: 1rem;
+		background: var(--color-red-600);
+	}
+
+	.kicker {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	.sectors-head h2 {
+		margin-top: 0.75rem;
+		max-width: 28ch;
+		font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+		line-height: 1.25;
+	}
+
+	.sectors-row {
+		position: relative;
+		left: 50%;
+		width: 100vw;
+		transform: translateX(-50%);
+		height: clamp(420px, 58vh, 640px);
+		display: flex;
+		align-items: stretch;
+	}
+
+	/* Corte virado para a direita: cada painel curva a borda direita
+	   inteira (cima e baixo com o mesmo raio, que se encontram
+	   exatamente na metade da altura) e sobrepõe o PRÓXIMO painel
+	   (margin-right negativa + z-index decrescente, então o mais à
+	   esquerda desenha por cima). O raio cresce com --i — efeito
+	   "escadinha", cada corte um pouco maior que o anterior. */
+	.sector {
+		/* Alcance da curva em vw — unidade absoluta (não % do próprio
+		   card, nem % do container), usada ao mesmo tempo no raio, na
+		   sobra negativa e no respiro do rótulo. Como os três usam
+		   exatamente o mesmo valor, o vizinho sempre cobre até o ponto
+		   mais recuado da curva — sem fresta — e o rótulo sempre fica
+		   fora da faixa que o vizinho anterior desenha por cima. */
+		--reach: calc(6vw + var(--i) * 2.4vw);
+		position: relative;
+		z-index: calc(10 - var(--i));
+		overflow: hidden;
+		flex: 1 1 0;
+		min-width: 0;
+		margin-right: calc(-1 * var(--reach));
+		border: 0;
+		padding: 0;
+		cursor: pointer;
+		background: var(--color-primary-deep);
+		text-align: left;
+		font: inherit;
+		color: var(--color-white);
+		border-top-right-radius: var(--reach) 50%;
+		border-bottom-right-radius: var(--reach) 50%;
+		box-shadow: 18px 0 30px rgba(31, 3, 4, 0.28);
+		transition: flex-grow 0.6s var(--ease-in-out);
+	}
+
+	.sector:last-child {
+		margin-right: 0;
+	}
+
+	/* O painel ativo sempre desenha por cima dos demais. */
+	.sector.is-active {
+		z-index: 20;
+	}
+
+	.sector:focus-visible {
+		outline: 2px solid var(--color-blush);
+		outline-offset: 3px;
+	}
+
+	/* Destaque ao passar o mouse: o card em foco "rouba" espaço dos
+	   vizinhos (flex-grow), a foto dá um leve zoom e o ícone brilha —
+	   só em dispositivos com hover de verdade, pra não travar aceso
+	   num toque em telas sensíveis. */
+	@media (hover: hover) and (pointer: fine) {
+		.sectors-row:not(.has-active) .sector:hover {
+			flex-grow: 1.6;
+		}
+
+		.sector:hover .sector-media-fg {
+			transform: scale(1.06);
+		}
+
+		.sector:hover .sector-icon {
+			transform: scale(1.08);
+			border-color: rgba(255, 255, 255, 0.9);
+			background: rgba(31, 3, 4, 0.55);
+		}
+	}
+
+	.sector.is-active {
+		flex-grow: 4.5;
+		/* Sem a sobra negativa: senão o card ativo empurraria o painel
+		   de texto pra fora da viewport quando o índice (--i) é alto. */
+		margin-right: 0;
+		/* O raio em % explode numa faixa tão larga — aqui volta a ser
+		   um card reto comum, como no exemplo expandido da referência. */
+		border-radius: 0.75rem;
+	}
+
+	/* Ao clicar, o painel ativo cobre a faixa inteira de ponta a ponta —
+	   os demais somem por completo, em vez de sobrarem como frestas. */
+	.sectors-row.has-active .sector:not(.is-active) {
+		flex-grow: 0;
+		flex-basis: 0;
+		width: 0;
+		margin-right: 0;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.sector-media {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		overflow: hidden;
+		border-radius: inherit;
+	}
+
+	.sector-media-fg {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transform: scale(1);
+		transition: transform 0.6s var(--ease-out);
+	}
+
+	/* Véu leve e uniforme sobre a foto recolhida — só o suficiente pra
+	   dar contraste ao ícone/rótulo na "cintura" do card, sem esconder
+	   a imagem. Some quando o card abre. */
+	.sector-veil {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(180deg, rgba(15, 2, 2, 0.18) 0%, rgba(15, 2, 2, 0.52) 50%, rgba(15, 2, 2, 0.22) 100%);
+		pointer-events: none;
+		transition: opacity 0.3s var(--ease-in-out);
+	}
+
+	.sector.is-active .sector-veil {
+		opacity: 0;
+	}
+
+	/* Esfumaçado extra na base, reforçando o rótulo por cima do véu. */
+	.sector-scrim {
+		position: absolute;
+		inset: auto 0 0 0;
+		height: 45%;
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0));
+		pointer-events: none;
+	}
+
+	.sector-icon {
+		position: relative;
+		z-index: 1;
+		width: 44px;
+		height: 44px;
+		flex: none;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.5);
+		background: rgba(31, 3, 4, 0.35);
+		backdrop-filter: blur(6px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition:
+			transform 0.4s var(--ease-out),
+			border-color 0.3s var(--ease-in-out),
+			background-color 0.3s var(--ease-in-out);
+	}
+
+	.sector-icon svg {
+		width: 20px;
+		height: 20px;
+	}
+
+	/* O raio agora devora quase a largura inteira nas pontas (topo e
+	   base) da curva — a única faixa que sobra cheia, sem ser comida
+	   pelo corte, é a "cintura" no meio da altura. Por isso o ícone e
+	   o rótulo migram do rodapé para lá, centralizados nos dois eixos. */
+	.sector-collapsed {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.85rem;
+		/* Mesmo --reach do raio/sobra: garante que o rótulo comece
+		   exatamente onde a sobra do vizinho anterior termina. */
+		padding: 0 1.25rem 0 calc(var(--reach) + 0.75rem);
+		text-align: center;
+		opacity: 1;
+		transition: opacity 0.3s var(--ease-in-out);
+	}
+
+	.sector.is-active .sector-collapsed {
+		opacity: 0;
+	}
+
+	.sector-label {
+		display: block;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 1.0625rem;
+		line-height: 1.3;
+		text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+		overflow-wrap: break-word;
+		hyphens: auto;
+	}
+
+	/* Painel de texto sólido sobre a lateral direita do card ativo — a
+	   foto (object-fit: cover) preenche o card inteiro por trás, então
+	   o painel só precisa cobrir a faixa onde o texto mora. */
+	.sector-textpanel {
+		position: absolute;
+		inset: 0 0 0 auto;
+		width: min(460px, 42%);
+		z-index: 2;
+		overflow: hidden;
+		padding: 3rem 0 2.5rem;
+		background: var(--color-primary-deep);
+		opacity: 0;
+		/* Invisível enquanto recolhido — sem isso a faixa fantasma
+		   (mesmo transparente) bloqueia clique/hover na foto por baixo. */
+		pointer-events: none;
+		transform: translateX(16px);
+		transition:
+			opacity 0.4s var(--ease-out) 0.15s,
+			transform 0.4s var(--ease-out) 0.15s;
+	}
+
+	.sector.is-active .sector-textpanel {
+		opacity: 1;
+		pointer-events: auto;
+		transform: translateX(0);
+		left: calc(clamp(420px, 58vh, 640px) * 16 / 9);
+		width: auto;
+	}
+
+	/* Com o card ativo, a caixa da foto usa exatamente a proporção real
+	   da imagem (16:9) — sem sobra reservada — e o painel de texto
+	   começa assim que a foto termina. Os dois dividem o mesmo fundo do
+	   card, então não sobra faixa "morta" e a transição fica uniforme. */
+	.sector.is-active .sector-media {
+		right: auto;
+		width: calc(clamp(420px, 58vh, 640px) * 16 / 9);
+	}
+
+	.sector.is-active .sector-media-fg {
+		object-fit: cover;
+	}
+
+	.sector-back {
+		margin: 0 2.5rem 1.5rem 3rem;
+		width: 40px;
+		height: 40px;
+		flex: none;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		background: transparent;
+		color: var(--color-white);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: background-color 0.3s var(--ease-in-out);
+	}
+
+	.sector-back:hover {
+		background: var(--color-red-700);
+	}
+
+	.sector-back svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	.sector-label-lg {
+		display: block;
+		margin: 0 2.5rem 0 3rem;
+		max-width: 20ch;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(1.4rem, 2.1vw, 1.75rem);
+		line-height: 1.2;
+		color: var(--color-white);
+	}
+
+	.sector-desc {
+		margin: 0.85rem 2.5rem 0 3rem;
+		max-width: 34ch;
+		font-family: var(--font-body);
+		font-size: 0.9375rem;
+		line-height: 1.6;
+		color: var(--color-rose-100);
+	}
+
+	@media (max-width: 900px) {
+		.sectors-row {
+			flex-direction: column;
+			align-items: stretch;
+			height: auto;
+		}
+
+		/* No mobile o acordeão continua vertical — os itens colapsados
+		   ficam visíveis como faixas, em vez de somem por completo. */
+		.sectors-row.has-active .sector:not(.is-active) {
+			width: auto;
+			flex-basis: auto;
+			opacity: 1;
+			pointer-events: auto;
+		}
+
+		.sector {
+			flex: none;
+			height: 92px;
+			margin-right: 0;
+			border-radius: 0.75rem;
+			transition: height 0.5s var(--ease-in-out);
+		}
+
+		.sector.is-active {
+			height: 460px;
+		}
+
+		.sector-icon {
+			width: 38px;
+			height: 38px;
+		}
+
+		.sector-collapsed {
+			inset: 0;
+			flex-direction: row;
+			justify-content: flex-start;
+			gap: 1rem;
+			padding: 0 1.5rem;
+			text-align: left;
+		}
+
+		.sector.is-active .sector-collapsed {
+			opacity: 0;
+		}
+
+		.sector-textpanel {
+			inset: auto 0 0 0;
+			width: 100%;
+			height: 0;
+			padding: 0 1.5rem;
+		}
+
+		/* No mobile a largura é fluida — não dá pra calcular a caixa da
+		   foto em px como no desktop. Em vez disso, foto e painel viram
+		   itens de um flex em coluna: a foto usa `aspect-ratio` pra se
+		   dimensionar pela proporção real (16:9) e o painel ocupa o
+		   restante, sem faixa "morta" entre os dois. */
+		.sector.is-active {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.sector.is-active .sector-media {
+			position: relative;
+			inset: auto;
+			right: auto;
+			width: 100%;
+			flex: 0 0 auto;
+			aspect-ratio: 16 / 9;
+		}
+
+		.sector.is-active .sector-textpanel {
+			position: relative;
+			inset: auto;
+			left: auto;
+			width: 100%;
+			height: auto;
+			flex: 1 1 auto;
+		}
+
+		.sector-back,
+		.sector-label-lg,
+		.sector-desc {
+			margin-left: 1.5rem;
+			margin-right: 1.5rem;
+		}
+
+		.sector-back {
+			margin-top: 1.25rem;
+			margin-bottom: 1rem;
+		}
+	}
+</style>
+
+<script>
+	const section = document.getElementById('setores');
+	if (section) {
+		const row = section.querySelector<HTMLElement>('.sectors-row');
+		const items = Array.from(section.querySelectorAll<HTMLElement>('.sector'));
+
+		const collapseAll = () => {
+			items.forEach((other) => {
+				other.classList.remove('is-active');
+				other.setAttribute('aria-selected', 'false');
+			});
+			row?.classList.remove('has-active');
+		};
+
+		const activate = (item: HTMLElement) => {
+			const alreadyActive = item.classList.contains('is-active');
+			collapseAll();
+			if (!alreadyActive) {
+				item.classList.add('is-active');
+				item.setAttribute('aria-selected', 'true');
+				row?.classList.add('has-active');
+			}
+		};
+
+		items.forEach((item) => {
+			item.addEventListener('click', () => activate(item));
+			item.addEventListener('keydown', (event) => {
+				if (event.key === 'Enter' || event.key === ' ') {
+					event.preventDefault();
+					activate(item);
+				}
+			});
+
+			const backBtn = item.querySelector<HTMLButtonElement>('.sector-back');
+			backBtn?.addEventListener('click', (event) => {
+				event.stopPropagation();
+				collapseAll();
+			});
+		});
+	}
+</script>

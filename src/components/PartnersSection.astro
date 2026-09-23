@@ -1,0 +1,604 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+
+const LOGOS_DIR = path.resolve('public/images/logos');
+const logoFiles = fs.readdirSync(LOGOS_DIR);
+
+function resolveLogo(name: string): string {
+	const match = logoFiles.find((f) => path.parse(f).name === name);
+	if (!match) {
+		throw new Error(`Logo "${name}" não encontrada em public/images/logos (arquivos disponíveis: ${logoFiles.join(', ')})`);
+	}
+	return `/images/logos/${match}`;
+}
+
+interface Partner {
+	name: string;
+	logo?: string;
+	url: string;
+	featured?: boolean;
+}
+
+interface PartnerTab {
+	id: string;
+	label: string;
+	countLabel: string;
+	partners: Partner[];
+}
+
+const tabs: PartnerTab[] = [
+	{
+		id: 'realizacao',
+		label: 'Realização & Local',
+		countLabel: 'itens',
+		partners: [
+			{ name: 'IEG Expo', logo: 'ieg-expo', url: 'https://iegbrasil.com.br/', featured: true },
+			{
+				name: 'Grupo Contramarco',
+				logo: 'contramarco-novo-logo',
+				url: 'https://www.contramarco.com/',
+				featured: true,
+			},
+			{ name: 'São Paulo Expo', logo: 'sao-paulo-expo', url: 'https://www.saopauloexpo.com.br/pt/' },
+			{ name: 'Venice Travel', logo: 'venice-travel', url: 'https://www.venicetravel.com.br/' },
+			{ name: 'Balteus', logo: 'balteus', url: 'https://www.balteus.com.br/' },
+		],
+	},
+	{
+		id: 'eventos',
+		label: 'Eventos Simultâneos',
+		countLabel: 'eventos',
+		partners: [
+			{ name: 'Fesqua Vetro', logo: 'fesqua-vetro', url: 'https://fesquavetro.com.br/' },
+			{ name: 'Sebraser', logo: 'sebraser', url: 'https://fesqua.com.br/sebraser/' },
+			{ name: 'Afeal', logo: 'afeal', url: 'https://afeal.com.br/' },
+			{ name: 'VidroSom', logo: 'vidrosom', url: 'https://www.instagram.com/vidrosom_oficial/' },
+			{ name: 'Aspec PVC', logo: 'aspec-pvc', url: 'https://aspecpvc.org.br/' },
+			{ name: 'Feipat', logo: 'feipat', url: 'https://feipat.com.br/' },
+			{ name: 'Fevent', logo: 'fevent', url: 'https://fevent.cl/' },
+		],
+	},
+	{
+		id: 'apoio',
+		label: 'Apoio Institucional',
+		countLabel: 'instituições',
+		partners: [
+			{ name: 'ABAL', logo: 'abal', url: 'http://abal.org.br/' },
+			{ name: 'ABIVIDRO', logo: 'abividro', url: 'https://abividro.org.br/' },
+			{ name: 'ABNT', logo: 'abnt', url: 'https://abnt.org.br/' },
+			{ name: 'ABRAPE', logo: 'abrape', url: 'https://abrape.com.br/' },
+			{ name: 'Achival', logo: 'achival', url: 'https://achival.cl/' },
+			{ name: 'Adivipar', logo: 'adivipar', url: 'https://adivipar.com.br/' },
+			{ name: 'Afeal', logo: 'afeal', url: 'https://afeal.com.br/' },
+			{ name: 'Portal do Alumínio', logo: 'portal-do-aluminio', url: 'http://www.portaldoaluminio.com.br/' },
+			{ name: 'Anfaje', logo: 'anfaje', url: 'https://www.anfaje.pt/' },
+			{ name: 'Amevec', logo: 'amevec', url: 'https://amevec.mx/' },
+			{ name: 'Asbea', logo: 'asbea', url: 'https://www.asbea.org.br/' },
+			{ name: 'Ascevi', logo: 'ascevi', url: 'http://www.ascevi.com.br/' },
+			{ name: 'Asefave', logo: 'asefave', url: 'https://www.asefave.org/' },
+			{ name: 'Aspec PVC', logo: 'aspec-pvc', url: 'https://aspecpvc.org.br/' },
+			{ name: 'Pro Acústica', logo: 'pro-acustica', url: 'https://www.proacustica.org.br/' },
+			{ name: 'CAU/SP', logo: 'cau-sp', url: 'https://causp.gov.br/' },
+			{ name: 'Guia do Vidro', logo: 'guia-do-vidro', url: 'https://guiadovidro.com.br/' },
+			{ name: 'Guia Fornecedores IC', logo: 'guia-fornecedores', url: 'https://guiafornecedoresic.com.br/' },
+			{ name: 'Instituto IDEA', logo: 'instituto-idea', url: 'http://institutoidea.org.br/' },
+			{ name: 'INP', logo: 'inp', url: 'http://www.inp.org.br/pt/' },
+			{ name: 'Instituto do PVC', logo: 'instituto-do-pvc', url: 'https://pvc.org.br/' },
+			{ name: 'SENAI-SP', logo: 'senai-sp', url: 'https://www.sp.senai.br/' },
+			{ name: 'Siescomet', logo: 'siescomet', url: 'http://www.siescomet.com.br/' },
+			{ name: 'Simvidro', logo: 'simvidro', url: 'https://www.simvidro.com.br/' },
+			{ name: 'Sinbevidros', logo: 'sinbevidros', url: 'https://www.sinbevidros.com.br/' },
+			{ name: 'Sindividros-RS', logo: 'sindividros-rs', url: 'https://sindividrosrs.com.br/' },
+			{ name: 'SindusCon-SP', logo: 'sinduscon-sp', url: 'https://sindusconsp.com.br/' },
+			{ name: 'Visite São Paulo', logo: 'visite-sao-paulo', url: 'https://visitesaopaulo.com/' },
+		],
+	},
+	{
+		id: 'midia',
+		label: 'Parceiros de Mídia',
+		countLabel: 'veículos',
+		partners: [
+			{ name: 'Obras Online', logo: 'obras-online', url: 'https://obrasonline.com.br/' },
+			{ name: 'Canal do Serralheiro', logo: 'canal-do-serralheiro', url: 'http://www.canaldoserralheiro.com.br' },
+			{ name: 'Fastener World', logo: 'fastener-world', url: 'https://fastener-world.com/' },
+			{
+				name: 'Fastener World — Global Sourcing',
+				logo: 'fastener-world-global',
+				url: 'https://fastener-world.com/',
+			},
+			{ name: 'Feiras & Negócios', logo: 'feiras-e-negocios', url: 'https://www.facebook.com/FeirasNegocios/' },
+			{ name: 'Gestão & Negócios', logo: 'gestao-e-negocios', url: 'https://www.facebook.com/FeirasNegocios/' },
+			{ name: 'Guia Fornecedores', logo: 'guia-fornecedores', url: 'https://guiafornecedoresic.com.br/' },
+			{ name: 'Guia das Persianas', logo: 'guia-das-persianas', url: 'https://guiadaspersianas.com.br/' },
+			{ name: 'ArcoWeb / Projeto Design', logo: 'projeto', url: 'https://www.arcoweb.com.br/projetodesign' },
+			{ name: 'Tecnologia & Vidro', logo: 'tecnologia-e-vidro', url: 'https://vidros.inf.br/' },
+			{ name: 'Ventana', logo: 'ventana', url: 'http://linktr.ee/revistaventana' },
+			{ name: 'Vidro Impresso', logo: 'vidro-impresso', url: 'https://vidroimpresso.com.br/' },
+			// { name: 'Vano Arq', logo: 'vano-arq', url: 'https://vanoarq.com/' },
+			{ name: 'Ventanas y Puertas', logo: 'ventanas-y-puertas', url: 'https://ventanasypuertas.cl/' },
+			{
+				name: 'Vidrio y Perfil',
+				logo: 'vidrio-y-perfil',
+				url: 'https://www.vidrioperfil.com/es/edicion-america-latina',
+			},
+			{ name: 'Cerramientos', logo: 'cerramientos', url: 'https://cerramientos.cl/' },
+			{ name: 'Vanotech', logo: 'vanotech', url: 'https://vanoarq.com/vanotech-2/' },
+		],
+	},
+];
+---
+
+<section class="partners on-primary">
+	<div class="wave" aria-hidden="true">
+		<svg viewBox="0 0 1440 110" preserveAspectRatio="none">
+			<path
+				d="M0,0 L1440,0 L1440,26 C1200,70 1020,4 720,32 C420,60 240,8 0,46 Z"
+				style="fill: var(--color-white)"
+			/>
+		</svg>
+	</div>
+
+	<div class="watermark" aria-hidden="true">
+		<svg viewBox="0 0 40 40" fill="none">
+			<rect x="3" y="3" width="34" height="34" rx="5" stroke="currentColor" stroke-width="2" />
+			<path d="M20 3v34M3 20h34" stroke="currentColor" stroke-width="2" />
+		</svg>
+	</div>
+
+	<div class="partners-inner">
+		<div class="partners-head">
+			<span class="kicker">Quem torna a FESQUA possível</span>
+			<h2>Organização, apoio institucional e <em>parceiros de mídia</em> por trás de cada edição.</h2>
+			<p>
+				Instituições, veículos de imprensa e agências que ajudam a construir a experiência completa da
+				feira — do credenciamento ao conteúdo técnico.
+			</p>
+		</div>
+
+		<div class="partners-body reveal">
+			<div class="tabs-bar" role="tablist" aria-label="Categorias de parceiros">
+				{
+					tabs.map((tab, i) => (
+						<button
+							id={`tab-${tab.id}`}
+							class="tab-trigger"
+							role="tab"
+							type="button"
+							aria-selected={i === 0 ? 'true' : 'false'}
+							aria-controls={`panel-${tab.id}`}
+							tabindex={i === 0 ? 0 : -1}
+						>
+							{tab.label}
+							<span class="tab-count">{tab.partners.length}</span>
+						</button>
+					))
+				}
+			</div>
+
+			{
+				tabs.map((tab, i) => (
+					<div
+						id={`panel-${tab.id}`}
+						class="tab-panel"
+						class:list={[{ 'is-active': i === 0 }]}
+						role="tabpanel"
+						aria-labelledby={`tab-${tab.id}`}
+						hidden={i !== 0}
+					>
+						<div class="ptile-grid">
+							{tab.partners.map((p) =>
+								p.logo ? (
+									<a
+										class:list={['ptile', { featured: p.featured }]}
+										href={p.url}
+										target="_blank"
+										rel="noopener"
+									>
+										<img src={resolveLogo(p.logo)} alt={p.name} loading="lazy" />
+									</a>
+								) : (
+									<a class="ptile text" href={p.url} target="_blank" rel="noopener">
+										{p.name}
+									</a>
+								),
+							)}
+						</div>
+					</div>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.partners {
+		position: relative;
+		overflow: hidden;
+		/* Não é um vermelho chapado — uma leve variação de profundidade
+		   no meio. #360408 não tem token equivalente no ds (é só um
+		   detalhe de gradiente, não uma cor semântica reutilizável). */
+		background: linear-gradient(175deg, var(--color-primary-deep) 0%, #360408 55%, var(--color-primary-deep) 100%);
+		padding: 0 clamp(1.5rem, 5vw, 4rem) clamp(4rem, 8vw, 6rem);
+	}
+
+	/* Textura de pontos sutil, mais forte no centro, sumindo nas bordas. */
+	.partners::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+		background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.4px);
+		background-size: 24px 24px;
+		-webkit-mask-image: radial-gradient(ellipse 80% 65% at 50% 30%, #000 40%, transparent 85%);
+		mask-image: radial-gradient(ellipse 80% 65% at 50% 30%, #000 40%, transparent 85%);
+	}
+
+	/* Marca d'água: textura de marca, não conteúdo — não interfere em nada. */
+	.watermark {
+		position: absolute;
+		right: -4%;
+		bottom: -6%;
+		z-index: 0;
+		width: min(52%, 640px);
+		aspect-ratio: 1 / 1;
+		color: rgba(255, 255, 255, 0.035);
+		transform: rotate(-8deg);
+		pointer-events: none;
+	}
+
+	.watermark svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	/* ---------- divisor em onda: dentro da seção escura, no topo,
+	   preenchido com a cor de fundo da seção ANTERIOR (branco) — pinta
+	   por cima do início do retângulo escuro, sem margem negativa. A
+	   "onda na base" é a mesma peça, só que no topo do SiteFooter (a
+	   próxima seção) — não duplicar aqui. ---------- */
+	.wave {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 110px;
+		line-height: 0;
+		z-index: 2;
+	}
+
+	.wave svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+
+	@media (max-width: 560px) {
+		.wave {
+			height: 56px;
+		}
+	}
+
+	.partners-inner {
+		position: relative;
+		z-index: 1;
+		max-width: 1280px;
+		margin: 0 auto;
+		padding-top: clamp(5rem, 10vw, 7rem);
+	}
+
+	.partners-head {
+		max-width: 62ch;
+		margin: 0 auto clamp(2.5rem, 5vw, 3.5rem);
+		text-align: center;
+	}
+
+	.kicker {
+		display: block;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.75rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	.partners-head h2 {
+		margin-top: 0.75rem;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 2.375rem;
+		line-height: 1.3;
+		color: var(--color-white);
+	}
+
+	.partners-head h2 em {
+		font-style: normal;
+		color: var(--color-blush);
+	}
+
+	.partners-head p {
+		margin-top: 1rem;
+		font-family: var(--font-body);
+		font-size: 1.0625rem;
+		line-height: 1.7;
+		color: var(--color-rose-300);
+	}
+
+	/* ---------- entrada em fade — mesmo padrão do site (About/Cta):
+	   dispara uma vez quando a seção entra na viewport. ---------- */
+	.reveal {
+		opacity: 0;
+		transform: translateY(22px);
+		transition:
+			opacity 0.7s var(--ease-out),
+			transform 0.7s var(--ease-out);
+	}
+
+	.reveal.in {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	/* ---------- barra de abas: pílula translúcida, mesmo vocabulário
+	   (raio 9999px, borda branca sutil, blur) já usado no .stats-badge
+	   e no anel do botão de play do About. ---------- */
+	.tabs-bar {
+		display: flex;
+		justify-content: center;
+		gap: 0.375rem;
+		width: fit-content;
+		max-width: 100%;
+		margin: 0 auto clamp(2.5rem, 5vw, 3.5rem);
+		padding: 0.375rem;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.06);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		backdrop-filter: blur(20px) saturate(140%);
+		-webkit-backdrop-filter: blur(20px) saturate(140%);
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+
+	.tabs-bar::-webkit-scrollbar {
+		display: none;
+	}
+
+	.tab-trigger {
+		flex: none;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.625rem 1.25rem;
+		border: 0;
+		border-radius: 9999px;
+		background: transparent;
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 0.875rem;
+		white-space: nowrap;
+		color: var(--color-rose-300);
+		cursor: pointer;
+		transition:
+			background-color 0.3s var(--ease-in-out),
+			color 0.3s var(--ease-in-out),
+			box-shadow 0.3s var(--ease-in-out);
+	}
+
+	.tab-trigger:hover {
+		color: var(--color-white);
+	}
+
+	.tab-trigger[aria-selected='true'] {
+		background: rgba(255, 255, 255, 0.14);
+		color: var(--color-white);
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+	}
+
+	.tab-trigger:focus-visible {
+		outline: 2px solid var(--color-blush);
+		outline-offset: 2px;
+	}
+
+	.tab-count {
+		font-family: var(--font-display);
+		font-variant-numeric: tabular-nums;
+		font-size: 0.6875rem;
+		color: var(--color-rose-400);
+	}
+
+	.tab-trigger[aria-selected='true'] .tab-count {
+		color: var(--color-rose-200);
+	}
+
+	/* ---------- painel ativo: some via [hidden], reaparece com um fade
+	   curto (reiniciado a cada troca pelo reflow forçado no script). ---------- */
+	.tab-panel.is-active {
+		animation: tab-fade-in 0.4s var(--ease-out);
+	}
+
+	@keyframes tab-fade-in {
+		from {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.ptile-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+		gap: 1.125rem;
+	}
+
+	/* Realização & Local: logos com proporções bem diferentes entre si
+	   (ícone quadrado do balteus vs. faixa larga do São Paulo Expo) —
+	   align-items: center garante que fiquem centralizadas na mesma
+	   linha horizontal do grid. */
+	#panel-realizacao .ptile-grid {
+		align-items: center;
+	}
+
+	/* ---------- tiles: sem fundo nem sombra — só a logo, com a cor
+	   original (sem filtro), centralizada no grid. A img tem uma "caixa"
+	   fixa (width + height) e object-fit: contain — assim toda logo
+	   ocupa o máximo de espaço disponível preservando a proporção (sem
+	   distorcer) e todas ficam alinhadas na mesma altura visual, em vez
+	   de cada uma manter seu tamanho intrínseco (o que fazia logos com
+	   pouca folga interna no arquivo parecerem menores/deslocadas
+	   verticalmente em relação às outras). ---------- */
+	.ptile {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 108px;
+		padding: 0 1.5rem;
+		text-decoration: none;
+		transition: transform 0.25s var(--ease-out);
+	}
+
+	.ptile:hover {
+		transform: translateY(-3px);
+	}
+
+	.ptile img {
+		width: 100%;
+		height: 64px;
+		max-width: 200px;
+		object-fit: contain;
+	}
+
+	.ptile.featured {
+		height: 128px;
+	}
+
+	.ptile.featured img {
+		height: 78px;
+		max-width: 240px;
+	}
+
+	.ptile.text {
+		font-family: var(--font-display);
+		font-size: 0.75rem;
+		font-weight: 500;
+		text-align: center;
+		color: var(--color-ink);
+		background: rgba(255, 255, 255, 0.55);
+		border: 1px dashed rgba(255, 255, 255, 0.6);
+		box-shadow: none;
+	}
+
+	.ptile.text:hover {
+		background: rgba(255, 255, 255, 0.75);
+		color: var(--color-primary);
+	}
+
+	@media (max-width: 900px) {
+		.watermark {
+			width: 80%;
+			bottom: -4%;
+		}
+
+		.ptile-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	@media (max-width: 560px) {
+		.partners-head {
+			text-align: left;
+		}
+
+		.tabs-bar {
+			justify-content: flex-start;
+			margin-left: 0;
+		}
+
+		.ptile-grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 0.75rem;
+		}
+
+		.ptile {
+			height: 72px;
+			padding: 0 1rem;
+		}
+
+		.ptile img {
+			width: 100%;
+			height: 40px;
+			max-width: 130px;
+		}
+
+		/* Realização & Local tem logos largas (Contramarco, Venice
+		   Travel...) que ficam espremidas em 2 colunas — no mobile essa
+		   aba específica vira 1 coluna só. */
+		#panel-realizacao .ptile-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
+
+<script>
+	const root = document.querySelector('.partners');
+	if (root) {
+		const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('.tab-trigger'));
+		const panels = Array.from(root.querySelectorAll<HTMLElement>('.tab-panel'));
+
+		const activate = (index: number) => {
+			tabs.forEach((tab, i) => {
+				const active = i === index;
+				tab.setAttribute('aria-selected', String(active));
+				tab.tabIndex = active ? 0 : -1;
+			});
+			panels.forEach((panel, i) => {
+				if (i === index) {
+					panel.hidden = false;
+					// força reflow pra reiniciar a animação de fade mesmo se a
+					// classe já estava presente de uma troca anterior
+					panel.classList.remove('is-active');
+					void panel.offsetWidth;
+					panel.classList.add('is-active');
+				} else {
+					panel.hidden = true;
+					panel.classList.remove('is-active');
+				}
+			});
+		};
+
+		tabs.forEach((tab, i) => {
+			tab.addEventListener('click', () => activate(i));
+
+			tab.addEventListener('keydown', (event) => {
+				let next: number | null = null;
+				if (event.key === 'ArrowRight') next = (i + 1) % tabs.length;
+				else if (event.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+				else if (event.key === 'Home') next = 0;
+				else if (event.key === 'End') next = tabs.length - 1;
+
+				if (next !== null) {
+					event.preventDefault();
+					tabs[next].focus();
+					activate(next);
+				}
+			});
+		});
+
+		const observer = new IntersectionObserver(
+			(entries, obs) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					entry.target.classList.add('in');
+					obs.unobserve(entry.target);
+				});
+			},
+			{ threshold: 0.12 },
+		);
+		const reveal = root.querySelector('.reveal');
+		if (reveal) observer.observe(reveal);
+	}
+</script>

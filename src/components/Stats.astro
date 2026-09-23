@@ -1,0 +1,524 @@
+---
+interface HeroStat {
+	value: number;
+	suffix: string;
+	label: string;
+	image: string;
+}
+
+interface Stat {
+	icon: 'globe' | 'clock' | 'expand' | 'building';
+	value: number;
+	suffix: string;
+	label: string;
+}
+
+const heroStat: HeroStat = {
+	value: 50,
+	suffix: ' mil',
+	label: 'Visitantes',
+	image: '/images/pavilhao.jpg',
+};
+
+const stats: Stat[] = [
+	{ icon: 'globe', value: 36, suffix: '', label: 'Países' },
+	{ icon: 'clock', value: 80, suffix: 'h', label: 'Programação' },
+	{ icon: 'expand', value: 45, suffix: ' mil', label: 'M² de exposição' },
+	{ icon: 'building', value: 700, suffix: '', label: 'Marcas expositoras' },
+];
+---
+
+<section class="stats" id="numeros" aria-labelledby="numeros-heading">
+	<div class="stats-mesh" aria-hidden="true">
+		<span class="blob blob-1"></span>
+		<span class="blob blob-2"></span>
+		<span class="blob blob-3"></span>
+		<span class="mesh-ring"></span>
+	</div>
+
+	<div class="stats-inner">
+		<div class="stats-head">
+			<h2 id="numeros-heading">Um marco histórico em 2026</h2>
+			<p class="stats-subtitle">Resultados que consolidam a força do setor</p>
+			<span class="stats-badge">*Números da última edição</span>
+		</div>
+
+		<div class="bento">
+			<div class="bento-hero">
+				<img class="bento-hero-img" src={heroStat.image} alt="" loading="lazy" />
+				<span class="bento-hero-overlay" aria-hidden="true"></span>
+				<span class="bento-sheen" aria-hidden="true"></span>
+
+				<div class="bento-hero-content">
+					<div class="bento-icon">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+							<path
+								d="M8 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 20c.6-2.8 2.8-4.5 6-4.5s5.4 1.7 6 4.5M12 20c.6-2.8 2.8-4.5 6-4.5.7 0 1.4.1 2 .4"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+					</div>
+					<div class="bento-number bento-number-hero">
+						<span class="bento-prefix">+</span><span class="bento-value" data-target={heroStat.value}
+							>0</span
+						><span class="bento-suffix">{heroStat.suffix}</span>
+					</div>
+					<span class="bento-rule" aria-hidden="true"></span>
+					<span class="bento-label">{heroStat.label}</span>
+				</div>
+			</div>
+
+			<div class="bento-grid">
+				{
+					stats.map((stat) => (
+						<div class="bento-card">
+							<span class="bento-sheen" aria-hidden="true" />
+							<div class="bento-icon">
+								{stat.icon === 'globe' && (
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+										<circle cx="12" cy="12" r="9" />
+										<ellipse cx="12" cy="12" rx="4" ry="9" />
+										<path d="M3 12h18" stroke-linecap="round" />
+									</svg>
+								)}
+								{stat.icon === 'clock' && (
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+										<circle cx="12" cy="12" r="9" />
+										<path d="M12 7v5l3.5 2" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								)}
+								{stat.icon === 'expand' && (
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+										<path
+											d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										/>
+									</svg>
+								)}
+								{stat.icon === 'building' && (
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+										<path d="M4 21V9l8-5 8 5v12" stroke-linecap="round" stroke-linejoin="round" />
+										<path d="M9 21v-6h6v6" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								)}
+							</div>
+
+							<div class="bento-number">
+								<span class="bento-value" data-target={stat.value}>
+									0
+								</span>
+								<span class="bento-suffix">{stat.suffix}</span>
+							</div>
+							<span class="bento-rule" aria-hidden="true" />
+							<span class="bento-label">{stat.label}</span>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.stats {
+		position: relative;
+		overflow: hidden;
+		background: linear-gradient(160deg, var(--color-primary-deep) 0%, var(--color-primary) 70%, var(--color-red-700) 100%);
+		padding: clamp(4rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+	}
+
+	/* Fundo em "mesh" — os mesmos anéis e brilhos borrados já usados no
+	   hero e no painel do vídeo, agora compondo um cenário inteiro para
+	   os cards de vidro terem o que refletir. */
+	.stats-mesh {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+	}
+
+	.blob {
+		position: absolute;
+		border-radius: 9999px;
+		filter: blur(70px);
+	}
+
+	.blob-1 {
+		width: 480px;
+		height: 480px;
+		left: -140px;
+		top: -160px;
+		background: var(--color-red-600);
+		opacity: 0.45;
+	}
+
+	.blob-2 {
+		width: 420px;
+		height: 420px;
+		right: -120px;
+		top: 10%;
+		background: var(--color-blush);
+		opacity: 0.22;
+	}
+
+	.blob-3 {
+		width: 520px;
+		height: 520px;
+		left: 30%;
+		bottom: -320px;
+		background: var(--color-red-950);
+		opacity: 0.5;
+	}
+
+	.mesh-ring {
+		position: absolute;
+		right: 6%;
+		bottom: -10%;
+		width: 260px;
+		height: 260px;
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		border-radius: 9999px;
+	}
+
+	.stats-inner {
+		position: relative;
+		z-index: 1;
+		max-width: 1280px;
+		margin: 0 auto;
+	}
+
+	.stats-head {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.stats-head h2 {
+		max-width: 32ch;
+		color: var(--color-white);
+		font-size: clamp(2rem, 3.6vw, 2.9rem);
+		line-height: 1.25;
+	}
+
+	.stats-subtitle {
+		margin-top: 0.75rem;
+		font-family: var(--font-body);
+		font-size: 1.0625rem;
+		color: var(--color-rose-200);
+	}
+
+	/* pílula de destaque — mesmo raio 9999px e borda translúcida branca
+	   já usados no .mesh-ring e no anel do botão de play do About;
+	   texto no mesmo registro (Montserrat 600, uppercase, tracking) do
+	   .stats-note original. */
+	.stats-badge {
+		margin-top: 1.5rem;
+		padding: 0.5rem 1.125rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		background: rgba(255, 255, 255, 0.08);
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.75rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--color-rose-200);
+	}
+
+	/* ---------- bento grid assimétrico: hero à esquerda (2fr) ocupando
+	   a mesma altura da grade 2x2 à direita (3fr), que se ajusta ao
+	   conteúdo do hero via align-items:stretch (comportamento padrão
+	   de grid) — nenhuma altura fixa em px. ---------- */
+	.bento {
+		margin-top: clamp(3rem, 6vw, 4.5rem);
+		display: grid;
+		grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+		gap: clamp(1.25rem, 2.25vw, 2rem);
+	}
+
+	.bento-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-template-rows: repeat(2, minmax(0, 1fr));
+		gap: clamp(1.25rem, 2.25vw, 2rem);
+	}
+
+	.bento-hero,
+	.bento-card {
+		opacity: 0;
+		transform: translateY(16px);
+		transition:
+			opacity 0.6s var(--ease-out),
+			transform 0.6s var(--ease-out);
+	}
+
+	.bento-hero.is-visible,
+	.bento-card.is-visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	/* ---------- card hero: mesma foto do evento já usada no slider da
+	   home (recorte sem o texto de campanha), com overlay em gradiente
+	   primary-deep → primary para o texto ficar legível por cima —
+	   cantos e sombra seguem exatamente o token de elevação dos cards
+	   de vidro ao lado. ---------- */
+	.bento-hero {
+		position: relative;
+		overflow: hidden;
+		min-height: 22rem;
+		border-radius: 1.25rem;
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		box-shadow: 0 20px 40px rgba(31, 3, 4, 0.35);
+		will-change: transform;
+		transition:
+			opacity 0.6s var(--ease-out),
+			transform 0.15s linear,
+			border-color 0.4s var(--ease-in-out),
+			box-shadow 0.4s var(--ease-in-out);
+	}
+
+	.bento-hero.is-hovered {
+		border-color: rgba(255, 255, 255, 0.38);
+		box-shadow: 0 35px 60px rgba(31, 3, 4, 0.5);
+	}
+
+	.bento-hero-img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.bento-hero-overlay {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			190deg,
+			rgba(31, 3, 4, 0.35) 0%,
+			var(--color-primary-deep) 78%,
+			var(--color-primary-deep) 100%
+		);
+		opacity: 0.92;
+	}
+
+	.bento-hero-content {
+		position: relative;
+		z-index: 1;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		align-items: flex-start;
+		padding: 2.5rem;
+	}
+
+	.bento-number-hero .bento-prefix,
+	.bento-number-hero .bento-value,
+	.bento-number-hero .bento-suffix {
+		font-size: clamp(3rem, 5.5vw, 4.5rem);
+	}
+
+	/* ---------- cards de vidro da grade 2x2: mesmo material da sidebar
+	   (.sidebar em Header.astro) — primary-deep translúcido + blur +
+	   saturate —, brilho diagonal (sheen) no topo, tilt 3D via JS. ---------- */
+	.bento-card {
+		position: relative;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 1.75rem 1.75rem 1.5rem;
+		border-radius: 1.25rem;
+		background: rgba(31, 3, 4, 0.7);
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		backdrop-filter: blur(24px) saturate(140%);
+		-webkit-backdrop-filter: blur(24px) saturate(140%);
+		box-shadow: 0 20px 40px rgba(31, 3, 4, 0.35);
+		will-change: transform;
+		transition:
+			opacity 0.6s var(--ease-out),
+			transform 0.15s linear,
+			border-color 0.4s var(--ease-in-out),
+			box-shadow 0.4s var(--ease-in-out);
+	}
+
+	.bento-card.is-hovered {
+		border-color: rgba(255, 255, 255, 0.38);
+		box-shadow: 0 35px 60px rgba(31, 3, 4, 0.5);
+	}
+
+	.bento-sheen {
+		position: absolute;
+		inset: -40% -40% auto -40%;
+		height: 60%;
+		background: linear-gradient(160deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 70%);
+		transform: rotate(-8deg);
+		pointer-events: none;
+	}
+
+	.bento-icon {
+		position: relative;
+		z-index: 1;
+		width: 48px;
+		height: 48px;
+		flex: none;
+		margin-bottom: 1.25rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		background: rgba(255, 255, 255, 0.12);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--color-white);
+		transition: transform 0.3s var(--ease-out);
+	}
+
+	.bento-hero-content .bento-icon {
+		width: 56px;
+		height: 56px;
+		margin-bottom: 1.5rem;
+	}
+
+	.is-hovered .bento-icon {
+		transform: scale(1.1);
+	}
+
+	.bento-icon svg {
+		width: 22px;
+		height: 22px;
+	}
+
+	.bento-hero-content .bento-icon svg {
+		width: 26px;
+		height: 26px;
+	}
+
+	.bento-number {
+		position: relative;
+		z-index: 1;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		color: var(--color-white);
+		line-height: 1;
+		text-transform: uppercase;
+	}
+
+	.bento-value,
+	.bento-suffix {
+		font-size: clamp(1.75rem, 2.8vw, 2.25rem);
+	}
+
+	.bento-rule {
+		position: relative;
+		z-index: 1;
+		display: block;
+		width: 0;
+		height: 2px;
+		margin: 0.85rem 0;
+		background: var(--color-blush);
+		transition: width 0.8s var(--ease-in-out);
+	}
+
+	.is-visible .bento-rule {
+		width: 28px;
+	}
+
+	.bento-label {
+		position: relative;
+		z-index: 1;
+		display: block;
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 0.8125rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--color-rose-200);
+	}
+
+	@media (max-width: 900px) {
+		.bento {
+			grid-template-columns: 1fr;
+		}
+
+		.bento-hero {
+			min-height: 18rem;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.bento-grid {
+			grid-template-columns: 1fr;
+			grid-template-rows: repeat(4, minmax(0, 1fr));
+		}
+	}
+</style>
+
+<script>
+	const section = document.getElementById('numeros');
+	if (section) {
+		const cards = Array.from(section.querySelectorAll<HTMLElement>('.bento-hero, .bento-card'));
+
+		const animateValue = (el: HTMLElement, target: number) => {
+			const duration = 1600;
+			const start = performance.now();
+			const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+			const step = (now: number) => {
+				const progress = Math.min((now - start) / duration, 1);
+				const value = Math.round(target * easeOutCubic(progress));
+				el.textContent = String(value);
+				if (progress < 1) requestAnimationFrame(step);
+			};
+
+			requestAnimationFrame(step);
+		};
+
+		const observer = new IntersectionObserver(
+			(entries, obs) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					cards.forEach((card, i) => {
+						setTimeout(() => {
+							card.classList.add('is-visible');
+							const valueEl = card.querySelector<HTMLElement>('.bento-value');
+							const target = Number(valueEl?.dataset.target || 0);
+							if (valueEl) animateValue(valueEl, target);
+						}, i * 120);
+					});
+					obs.disconnect();
+				});
+			},
+			{ threshold: 0.3 },
+		);
+
+		observer.observe(section);
+
+		// Tilt 3D: o card acompanha o cursor, inclinando conforme a
+		// posição do mouse dentro dele — desfaz suavemente ao sair.
+		const MAX_TILT = 10;
+
+		cards.forEach((card) => {
+			card.addEventListener('mouseenter', () => card.classList.add('is-hovered'));
+
+			card.addEventListener('mousemove', (event) => {
+				const rect = card.getBoundingClientRect();
+				const px = (event.clientX - rect.left) / rect.width - 0.5;
+				const py = (event.clientY - rect.top) / rect.height - 0.5;
+				const rotateY = px * MAX_TILT * 2;
+				const rotateX = -py * MAX_TILT * 2;
+				card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.03)`;
+			});
+
+			card.addEventListener('mouseleave', () => {
+				card.classList.remove('is-hovered');
+				card.style.transform = '';
+			});
+		});
+	}
+</script>

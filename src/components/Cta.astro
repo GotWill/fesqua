@@ -1,0 +1,194 @@
+---
+---
+
+<section class="cta on-primary" id="participe" aria-labelledby="cta-heading">
+	<span class="cta-dots" aria-hidden="true"></span>
+
+	<div class="cta-inner">
+		<div class="cta-copy">
+			<span class="kicker">Fesqua 2028 · 12–15 Set · São Paulo Expo</span>
+
+			<h2 id="cta-heading">
+				<span class="cta-lead">Amplie seus negócios na</span>
+				<span class="cta-strong">PRINCIPAL FEIRA DO SETOR</span>
+			</h2>
+
+			<a href="/quero-visitar" class="btn cta-btn btn-lg">
+				<div class="slime"><span></span><span></span><span></span></div>
+				<div class="btn-content">
+					<span>Quero Participar</span>
+				</div>
+			</a>
+		</div>
+
+		<div class="cta-illustration" aria-hidden="true">
+			<!-- Corte transversal de perfil de alumínio: câmaras internas -->
+			<svg class="cta-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.75">
+				<rect x="6" y="6" width="52" height="52" rx="6" />
+				<path d="M6 32h52M32 6v52" />
+				<rect x="13" y="13" width="15" height="15" rx="2" />
+				<rect x="36" y="13" width="15" height="15" rx="2" />
+				<rect x="13" y="36" width="15" height="15" rx="2" />
+				<rect x="36" y="36" width="15" height="15" rx="2" />
+			</svg>
+		</div>
+	</div>
+</section>
+
+<style>
+	.cta {
+		position: relative;
+		overflow: hidden;
+		background: linear-gradient(45deg, var(--color-primary-deep) 0%, var(--color-primary) 60%);
+		padding: clamp(2.5rem, 5vw, 3.5rem) clamp(1.5rem, 5vw, 4rem);
+	}
+
+	/* ---------- acento decorativo: grade de pontos com o ícone de
+	   perfil de alumínio por cima — traço fino, cor blush a 70%, sem
+	   disputar atenção com o texto. ---------- */
+	.cta-dots {
+		position: absolute;
+		top: 50%;
+		right: clamp(2rem, 8vw, 7rem);
+		width: 220px;
+		height: 180px;
+		transform: translateY(-50%);
+		background-image: radial-gradient(var(--color-red-700) 1.5px, transparent 1.5px);
+		background-size: 18px 18px;
+		-webkit-mask-image: radial-gradient(ellipse at center, black 45%, transparent 80%);
+		mask-image: radial-gradient(ellipse at center, black 45%, transparent 80%);
+		pointer-events: none;
+	}
+
+	.cta-inner {
+		position: relative;
+		z-index: 1;
+		max-width: 1280px;
+		margin: 0 auto;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: clamp(2rem, 5vw, 4rem);
+	}
+
+	.cta-copy {
+		opacity: 0;
+		transform: translateY(16px);
+		transition:
+			opacity 0.6s var(--ease-out) 0.1s,
+			transform 0.6s var(--ease-out) 0.1s;
+	}
+
+	.cta.is-visible .cta-copy {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.kicker {
+		display: block;
+		margin-bottom: 0.65rem;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	#cta-heading {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+	}
+
+	.cta-lead {
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-size: clamp(1.15rem, 2vw, 1.5rem);
+		color: var(--color-white);
+	}
+
+	.cta-strong {
+		font-family: var(--font-display);
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.01em;
+		font-size: clamp(1.5rem, 3.2vw, 2.375rem);
+		line-height: 1.15;
+		color: var(--color-accent);
+	}
+
+	/* ---------- botão: preenchido, logo abaixo do título (não ao
+	   lado) — variante local construída só com tokens do ds, igual às
+	   variantes .Solid_ e .Outline_ de global.css. ---------- */
+	.cta-btn {
+		--bg-color: var(--color-blush);
+		--text-color: var(--color-primary-deep);
+		--hover-bg-color: var(--color-white);
+		--hover-text-color: var(--color-primary-deep);
+		--pressed-bg-color: var(--color-rose-300);
+		margin-top: 1.25rem;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.9375rem;
+		letter-spacing: 0.02em;
+	}
+
+	/* ---------- ilustração ---------- */
+	.cta-illustration {
+		position: relative;
+		z-index: 1;
+		flex: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.cta-icon {
+		width: 64px;
+		height: 64px;
+		color: var(--color-blush);
+		opacity: 0.7;
+	}
+
+	@media (max-width: 900px) {
+		.cta-inner {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 1.5rem;
+		}
+
+		.cta-illustration,
+		.cta-dots {
+			display: none;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.cta {
+			padding: clamp(2.5rem, 10vw, 3rem) 1.25rem;
+		}
+
+		.cta-btn {
+			width: 100%;
+			justify-content: center;
+		}
+	}
+</style>
+
+<script>
+	const section = document.getElementById('participe');
+	if (section) {
+		const observer = new IntersectionObserver(
+			(entries, obs) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					section.classList.add('is-visible');
+					obs.disconnect();
+				});
+			},
+			{ threshold: 0.3 },
+		);
+		observer.observe(section);
+	}
+</script>

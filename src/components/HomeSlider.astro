@@ -1,0 +1,509 @@
+---
+interface HeroPanel {
+	id: 'fesqua' | 'vetro';
+	logo: string;
+	logoAlt: string;
+	headline: string;
+	image: string;
+	imageAlt: string;
+	exhibitorHref: string;
+	visitorHref: string;
+}
+
+const eventDate = '12 a 15 de Setembro | 2028';
+const eventLocation = 'São Paulo Expo — São Paulo, Brasil';
+
+const panels: HeroPanel[] = [
+	{
+		id: 'fesqua',
+		logo: '/images/logo-fesqua-white.png',
+		logoAlt: 'Fesqua',
+		headline: 'A Maior Feira de Esquadrias e Fachadas da América Latina',
+		image: '/images/home/bg-1.jpg',
+		imageAlt: 'Fachada arquitetônica em vidro e alumínio',
+		exhibitorHref: '/quero-expor',
+		visitorHref: '/quero-visitar',
+	},
+	{
+		id: 'vetro',
+		logo: '/images/logo-fesqua-vetro-white.png',
+		logoAlt: 'Fesqua Vetro',
+		headline: 'Inovação, Tecnologia e Soluções Completas para a Indústria do Vidro',
+		image: '/images/home/bg-2.jpg',
+		imageAlt: 'Estrutura de vidro arquitetônico',
+		exhibitorHref: '/quero-expor',
+		visitorHref: '/quero-visitar',
+	},
+];
+---
+
+<section class="dual-hero" id="hero" aria-label="Fesqua e Fesqua Vetro">
+	{
+		panels.map((panel, i) => (
+			<div class="panel" data-panel={panel.id}>
+				<div class="panel-media" aria-hidden="true">
+					<img
+						class="panel-media-img"
+						src={panel.image}
+						alt=""
+						loading={i === 0 ? 'eager' : 'lazy'}
+						fetchpriority={i === 0 ? 'high' : 'auto'}
+					/>
+				</div>
+				<span class="panel-overlay" aria-hidden="true" />
+
+				<div class="panel-content">
+					<div class="panel-top">
+						<img class="panel-logo" src={panel.logo} alt={panel.logoAlt} />
+					</div>
+
+					<div class="panel-bottom">
+						{i === 0 ? (
+							<h1 class="panel-headline">{panel.headline}</h1>
+						) : (
+							<h2 class="panel-headline">{panel.headline}</h2>
+						)}
+
+						<div class="cockpit">
+							<div class="cockpit-meta">
+								<span class="cockpit-date">{eventDate}</span>
+								<span class="cockpit-location">{eventLocation}</span>
+							</div>
+
+							<div class="cockpit-actions">
+								<a href={panel.exhibitorHref} class="btn Outline_White btn-md">
+									<div class="slime">
+										<span />
+										<span />
+										<span />
+									</div>
+									<div class="btn-content">
+										<span>Quero Expor</span>
+									</div>
+								</a>
+								<a href={panel.visitorHref} class="btn Outline_Blush btn-md">
+									<div class="slime">
+										<span />
+										<span />
+										<span />
+									</div>
+									<div class="btn-content">
+										<span>Quero Visitar</span>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		))
+	}
+
+	<div
+		class="split-handle"
+		role="slider"
+		tabindex="0"
+		aria-label="Ajustar comparação entre Fesqua e Fesqua Vetro"
+		aria-valuemin="20"
+		aria-valuemax="80"
+		aria-valuenow="50"
+		aria-orientation="horizontal"
+	>
+		<span class="split-line" aria-hidden="true" />
+		<span class="split-grip" aria-hidden="true">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+				<path d="M8 8l-4 4 4 4M16 8l4 4-4 4" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</span>
+	</div>
+</section>
+
+<style>
+	.dual-hero {
+		--split: 50%;
+		position: relative;
+		width: 100%;
+		height: 100vh;
+		margin-top: -5.5rem;
+		display: flex;
+		align-items: stretch;
+		background: var(--color-primary-deep);
+	}
+
+	@media (max-width: 480px) {
+		.dual-hero {
+			margin-top: -4.5rem;
+		}
+	}
+
+	/* ---------- painel: a largura é controlada por --split (0–100),
+	   atualizada em tempo real pelo drag do .split-handle. O painel
+	   Fesqua tem largura fixa (flex-basis), o Vetro preenche o resto —
+	   assim só uma variável precisa mudar para os dois se ajustarem. ---------- */
+	.panel {
+		position: relative;
+		min-width: 0;
+		overflow: hidden;
+		transition: flex-basis 0.3s var(--ease-out);
+	}
+
+	.dual-hero.is-dragging .panel {
+		transition: none;
+	}
+
+	.panel[data-panel='fesqua'] {
+		flex: 0 0 var(--split);
+	}
+
+	.panel[data-panel='vetro'] {
+		flex: 1 1 auto;
+	}
+
+	.panel-media {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+	}
+
+	.panel-media-img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* overlay em tons institucionais (primary-deep/primary), mais forte
+	   na base — onde ficam título e cockpit — mesma receita do
+	   bento-hero-overlay em Stats.astro. */
+	.panel-overlay {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		background: linear-gradient(
+			195deg,
+			rgba(31, 3, 4, 0.32) 0%,
+			rgba(31, 3, 4, 0.58) 55%,
+			var(--color-primary-deep) 100%
+		);
+	}
+
+	.panel-content {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		padding: clamp(6rem, 11vw, 8rem) clamp(1.5rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3rem);
+	}
+
+	.panel-top {
+		flex: none;
+	}
+
+	.panel-logo {
+		height: 52px;
+		width: auto;
+	}
+
+	.panel-bottom {
+		margin-top: auto;
+		flex: none;
+		display: flex;
+		flex-direction: column;
+		gap: 1.75rem;
+	}
+
+	.panel-headline {
+		max-width: 18ch;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(1.5rem, 2.7vw, 2.375rem);
+		line-height: 1.25;
+		color: var(--color-white);
+	}
+
+	/* ---------- cockpit: mesmo material glass dos cards de Stats.astro
+	   e da sidebar em Header.astro — primary-deep translúcido + blur +
+	   saturate, borda branca sutil, sombra do mesmo token. ---------- */
+	.cockpit {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.25rem;
+		padding: 1.25rem 1.5rem;
+		border-radius: 1.25rem;
+		background: rgba(31, 3, 4, 0.7);
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		backdrop-filter: blur(24px) saturate(140%);
+		-webkit-backdrop-filter: blur(24px) saturate(140%);
+		box-shadow: 0 20px 40px rgba(31, 3, 4, 0.35);
+	}
+
+	.cockpit-meta {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.cockpit-date {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		font-size: 0.875rem;
+		letter-spacing: 0.02em;
+		color: var(--color-white);
+	}
+
+	.cockpit-location {
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 0.8125rem;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: var(--color-rose-200);
+	}
+
+	.cockpit-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	.cockpit-actions .btn {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.875rem;
+	}
+
+	/* ---------- divisor arrastável: faixa de acerto larga (área de
+	   toque confortável) posicionada em --split, sempre a mesma
+	   variável que dimensiona o painel Fesqua — por isso a alça nunca
+	   perde sincronia com o limite real entre os dois painéis. ---------- */
+	.split-handle {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: var(--split);
+		width: 44px;
+		z-index: 6;
+		transform: translateX(-50%);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: ew-resize;
+		touch-action: none;
+		transition: left 0.3s var(--ease-out);
+	}
+
+	.dual-hero.is-dragging .split-handle {
+		transition: none;
+	}
+
+	.split-handle:focus-visible .split-grip {
+		outline: 2px solid var(--color-blush);
+		outline-offset: 3px;
+	}
+
+	.split-line {
+		position: absolute;
+		top: 6%;
+		bottom: 6%;
+		left: 50%;
+		width: 2px;
+		transform: translateX(-50%);
+		background: linear-gradient(
+			to bottom,
+			transparent,
+			rgba(255, 255, 255, 0.65) 15%,
+			rgba(255, 255, 255, 0.65) 85%,
+			transparent
+		);
+		box-shadow: 0 0 16px rgba(255, 255, 255, 0.35);
+		pointer-events: none;
+	}
+
+	.split-grip {
+		position: relative;
+		width: 48px;
+		height: 48px;
+		flex: none;
+		border-radius: 9999px;
+		background: rgba(31, 3, 4, 0.7);
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		backdrop-filter: blur(24px) saturate(140%);
+		-webkit-backdrop-filter: blur(24px) saturate(140%);
+		box-shadow: 0 14px 28px rgba(31, 3, 4, 0.4);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--color-white);
+		transition:
+			transform 0.25s var(--ease-out),
+			border-color 0.25s var(--ease-in-out);
+	}
+
+	.split-grip svg {
+		width: 22px;
+		height: 22px;
+	}
+
+	.split-handle:hover .split-grip,
+	.dual-hero.is-dragging .split-grip {
+		transform: scale(1.08);
+		border-color: rgba(255, 255, 255, 0.7);
+	}
+
+	@media (max-width: 1180px) {
+		.panel-headline {
+			max-width: 15ch;
+		}
+
+		.cockpit {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+
+	/* ---------- mobile/tablet: sem espaço horizontal sobrando pra valer
+	   a pena arrastar, o split vira dois blocos empilhados (como era
+	   antes) — o handle de arrastar some, sem margin negativa por baixo
+	   do header. ---------- */
+	@media (max-width: 900px) {
+		.dual-hero {
+			flex-direction: column;
+			height: auto;
+			margin-top: 0;
+		}
+
+		.panel,
+		.panel[data-panel='fesqua'],
+		.panel[data-panel='vetro'] {
+			flex: none;
+			min-height: 62vh;
+		}
+
+		.panel:first-child {
+			border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+		}
+
+		.panel-content {
+			padding-top: clamp(2.5rem, 8vw, 4rem);
+		}
+
+		.panel-headline {
+			max-width: 22ch;
+		}
+
+		.split-handle {
+			display: none;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.panel-content {
+			padding-left: clamp(1.25rem, 5vw, 2rem);
+			padding-right: clamp(1.25rem, 5vw, 2rem);
+		}
+
+		.panel {
+			min-height: 56vh;
+		}
+
+		.panel-logo {
+			height: 38px;
+		}
+
+		.panel-headline {
+			font-size: 1.25rem;
+			max-width: 20ch;
+		}
+
+		.cockpit {
+			padding: 1rem 1.125rem;
+			gap: 0.85rem;
+		}
+
+		.cockpit-actions .btn {
+			flex: 1 1 auto;
+			justify-content: center;
+		}
+	}
+</style>
+
+<script>
+	const MIN = 20;
+	const MAX = 80;
+
+	const root = document.getElementById('hero');
+	if (root instanceof HTMLElement) {
+		const handle = root.querySelector<HTMLElement>('.split-handle');
+
+		if (handle) {
+			const clamp = (value: number) => Math.min(MAX, Math.max(MIN, value));
+
+			const setSplit = (percent: number) => {
+				const value = clamp(percent);
+				root.style.setProperty('--split', `${value}%`);
+				handle.setAttribute('aria-valuenow', String(Math.round(value)));
+			};
+
+			const percentFromClientX = (clientX: number) => {
+				const rect = root.getBoundingClientRect();
+				return ((clientX - rect.left) / rect.width) * 100;
+			};
+
+			let dragging = false;
+
+			const onPointerMove = (event: PointerEvent) => {
+				if (!dragging) return;
+				setSplit(percentFromClientX(event.clientX));
+			};
+
+			const stopDragging = () => {
+				if (!dragging) return;
+				dragging = false;
+				root.classList.remove('is-dragging');
+				document.body.classList.remove('is-split-dragging');
+				window.removeEventListener('pointermove', onPointerMove);
+				window.removeEventListener('pointerup', stopDragging);
+				window.removeEventListener('pointercancel', stopDragging);
+			};
+
+			handle.addEventListener('pointerdown', (event) => {
+				dragging = true;
+				root.classList.add('is-dragging');
+				document.body.classList.add('is-split-dragging');
+				window.addEventListener('pointermove', onPointerMove);
+				window.addEventListener('pointerup', stopDragging);
+				window.addEventListener('pointercancel', stopDragging);
+				setSplit(percentFromClientX(event.clientX));
+				event.preventDefault();
+			});
+
+			handle.addEventListener('keydown', (event) => {
+				const current = Number(handle.getAttribute('aria-valuenow')) || 50;
+				const step = 5;
+				if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+					setSplit(current - step);
+					event.preventDefault();
+				} else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+					setSplit(current + step);
+					event.preventDefault();
+				} else if (event.key === 'Home') {
+					setSplit(MIN);
+					event.preventDefault();
+				} else if (event.key === 'End') {
+					setSplit(MAX);
+					event.preventDefault();
+				}
+			});
+		}
+	}
+</script>
+
+<style is:global>
+	body.is-split-dragging {
+		cursor: ew-resize;
+		user-select: none;
+	}
+</style>

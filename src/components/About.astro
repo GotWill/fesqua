@@ -1,0 +1,505 @@
+---
+interface EventFacet {
+	name: string;
+	description: string;
+}
+
+const edition = '16';
+const heading = 'O principal evento de esquadrias e vidro da América Latina!';
+const lede =
+	'A FESQUA chega à sua <strong>16ª edição</strong> consolidada como a principal feira do setor, ao lado da <strong>FESQUA VETRO</strong> — juntas, formam o ponto de encontro essencial para fabricantes, serralheiros, vidraceiros, arquitetos e engenheiros da construção civil.';
+
+const leadIn =
+	'Durante três dias, os visitantes terão acesso às principais inovações e oportunidades do setor:';
+
+const facets: EventFacet[] = [
+	{ name: 'FESQUA', description: 'Feira Internacional da Indústria de Esquadrias' },
+	{ name: 'FESQUA VETRO', description: 'Feira Internacional de Vidro e Esquadrias para Construção Civil' },
+];
+
+const highlights = [
+	'Vamos para a 16ª edição',
+	'Lançamentos e tendências em esquadrias, vidro e fachadas',
+	'Conteúdo técnico especializado com palestras e workshops',
+	'Grandes oportunidades para fechar negócios e ampliar sua rede de contatos',
+];
+
+const video = {
+	src: '/images/video.mp4',
+	duration: '2:28',
+	badge: 'FESQUA 2027',
+	caption: { edition: '16ª edição', event: 'FESQUA' },
+};
+---
+
+<section class="about" id="sobre" aria-labelledby="sobre-heading">
+	<div class="about-top">
+		<div class="about-head reveal">
+			<div class="kicker-row">
+				<svg class="kicker-mark" viewBox="0 0 22 16" fill="none" aria-hidden="true">
+					<path d="M1 1h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+					<path
+						d="M1 8h20M1 15h9"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						opacity=".45"></path>
+				</svg>
+				<span class="kicker">Sobre o evento</span>
+			</div>
+			<div class="edition" aria-hidden="true">{edition}<sup>ª</sup></div>
+			<h2 id="sobre-heading" class="about-heading">{heading}</h2>
+		</div>
+
+		<div class="about-copy reveal">
+			<p class="about-lede" set:html={lede} />
+			<p class="about-lead-in">{leadIn}</p>
+			<ul class="event-checklist">
+				{
+					facets.map((f) => (
+						<li>
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+								<circle cx="12" cy="12" r="10"></circle>
+								<path d="M8 12.5l2.75 2.75L16 9.5" stroke-linecap="round" stroke-linejoin="round"></path>
+							</svg>
+							<span>
+								<strong>{f.name}</strong> — {f.description}
+							</span>
+						</li>
+					))
+				}
+			</ul>
+			<ul class="highlight-list">
+				{
+					highlights.map((h) => (
+						<li>
+							<span class="dash" aria-hidden="true" />
+							{h}
+						</li>
+					))
+				}
+			</ul>
+		</div>
+
+		<div class="about-media reveal reveal-delay-1">
+			<div class="media-frame">
+				<video class="media-video" playsinline preload="none">
+					<source src={video.src} type="video/mp4" />
+				</video>
+				<button
+					type="button"
+					class="media-play"
+					aria-label={`Reproduzir vídeo institucional da ${video.caption.event}`}
+				>
+					<span class="ring">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7-11-7Z"></path></svg>
+					</span>
+				</button>
+				<div class="media-chrome">
+					<span>0:00 / {video.duration}</span>
+					
+				</div>
+			</div>
+			<p class="media-caption"><b>{video.caption.edition}</b> · {video.caption.event}</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.about {
+		position: relative;
+		overflow: hidden;
+		background: var(--color-surface-alt);
+		padding: clamp(4rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+	}
+
+	/* ---------- grade de 12 colunas — a peça central do layout.
+	   about-head e about-media dividem a mesma linha (row 1) para que
+	   o vídeo sobreponha o canto do numeral gigante; about-copy fica
+	   sozinho na row 2 porque é copy de verdade — sobreposição só é
+	   aceitável em cima de elemento decorativo. Ver aviso no prompt
+	   original sobre por que isso não pode virar um bloco único. ---------- */
+	.about-top {
+		position: relative;
+		z-index: 1;
+		max-width: 1320px;
+		margin-left: auto;
+		margin-right: auto;
+		display: grid;
+		grid-template-columns: repeat(12, 1fr);
+		column-gap: 1.25rem;
+		align-items: start;
+	}
+
+	.about-head {
+		position: relative;
+		grid-column: 1 / 8;
+		grid-row: 1;
+		max-width: 27rem;
+	}
+
+	.about-copy {
+		grid-column: 1 / 9;
+		grid-row: 2;
+		margin-top: 2.5rem;
+	}
+
+	.about-lede {
+		font-size: 1.0625rem;
+		line-height: 1.7;
+		color: var(--color-ink);
+	}
+
+	/* Arial MT Pro só existe no peso 400 — ênfase é só por cor, não por
+	   peso (senão o navegador sintetiza um "negrito" falso). */
+	.about-lede :global(strong) {
+		font-weight: 400;
+		color: var(--color-primary);
+	}
+
+	.about-lead-in {
+		margin-top: 1.25rem;
+		font-size: 1.0625rem;
+		color: var(--color-primary);
+	}
+
+	.event-checklist {
+		list-style: none;
+		margin: 1.25rem 0 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.65rem;
+	}
+
+	.event-checklist li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.625rem;
+	}
+
+	.event-checklist svg {
+		flex: none;
+		width: 19px;
+		height: 19px;
+		margin-top: 0.15rem;
+		color: var(--color-success);
+	}
+
+	.event-checklist span {
+		font-size: 0.9375rem;
+		line-height: 1.6;
+		color: var(--color-text);
+	}
+
+	.event-checklist strong {
+		font-weight: 400;
+		color: var(--color-primary);
+	}
+
+	.highlight-list {
+		list-style: none;
+		margin: 1.5rem 0 0;
+		padding: 1.25rem 0 0;
+		border-top: 1px solid var(--color-line);
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.6rem 1.5rem;
+	}
+
+	.highlight-list li {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.6rem;
+		font-size: 0.875rem;
+		line-height: 1.55;
+		color: var(--color-ink);
+	}
+
+	.highlight-list .dash {
+		flex: none;
+		width: 12px;
+		height: 1px;
+		margin-top: 0.6rem;
+		background: var(--color-primary);
+	}
+
+	/* grid-column proporcional de propósito: não trocar por um
+	   transform:translateX em px fixo. Um deslocamento fixo calibrado
+	   para uma largura de viewport cai em outro lugar em outra — a
+	   coluna de grid escala com o texto e mantém a folga estável de
+	   1100px a 1920px. Para mais/menos sobreposição, mude o número da
+	   coluna (5/13 → 4/13 para mais), nunca o transform. */
+	.about-media {
+		grid-column: 5 / 13;
+		grid-row: 1;
+		margin-top: 3.5rem;
+		transform: rotate(-1.4deg);
+	}
+
+	.kicker-row {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.kicker-mark {
+		width: 22px;
+		height: 16px;
+		color: var(--color-accent);
+	}
+
+	.kicker {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+	}
+
+	/* Reduzido em relação ao clamp original (6rem/9.5rem): o Montserrat
+	   Bold é mais denso que o Caudex que desenhou esse tamanho — sem o
+	   ajuste, o numeral fica pesado demais. */
+	.edition {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(5.5rem, 10vw, 8.5rem);
+		line-height: 1;
+		margin-top: 0.5rem;
+		color: var(--color-red-100);
+		-webkit-text-stroke: 1.5px var(--color-red-200);
+	}
+
+	.edition sup {
+		font-size: 0.4em;
+		top: -0.6em;
+	}
+
+	.about-heading {
+		margin-top: 0.5rem;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(1.875rem, 3.4vw, 2.75rem);
+		line-height: 1.25;
+		color: var(--color-primary);
+		max-width: 16ch;
+	}
+
+	/* ---------- card de vídeo: placeholder visual (gradiente +
+	   botão de play). Ao trocar pelo embed real, manter a mesma
+	   estrutura de .media-frame (aspect-ratio, border-radius,
+	   box-shadow) e o transform:rotate no .about-media — só trocar o
+	   conteúdo interno por um <video> ou <iframe>. ---------- */
+	.media-frame {
+		position: relative;
+		aspect-ratio: 16 / 10;
+		border-radius: 0.75rem;
+		overflow: hidden;
+		background: linear-gradient(150deg, var(--color-primary) 0%, var(--color-primary-deep) 100%);
+		box-shadow:
+			0 40px 70px -30px rgba(73, 3, 6, 0.4),
+			0 14px 30px -16px rgba(73, 3, 6, 0.3);
+	}
+
+	.media-frame::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		opacity: 0.14;
+		background-image: repeating-linear-gradient(
+			115deg,
+			transparent 0 26px,
+			rgba(255, 255, 255, 0.5) 26px 27px
+		);
+	}
+
+	.media-video {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: none;
+	}
+
+	.media-frame.is-playing .media-video {
+		display: block;
+	}
+
+	.media-frame.is-playing::before,
+	.media-frame.is-playing .media-play,
+	.media-frame.is-playing .media-chrome {
+		display: none;
+	}
+
+	.media-play {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		background: none;
+		border: 0;
+		cursor: pointer;
+	}
+
+	.media-play .ring {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 76px;
+		height: 76px;
+		border-radius: 9999px;
+		background: rgba(255, 255, 255, 0.14);
+		backdrop-filter: blur(2px);
+		color: var(--color-white);
+		transition:
+			transform 0.25s ease,
+			background 0.25s ease;
+	}
+
+	.media-play .ring svg {
+		width: 26px;
+		height: 26px;
+		margin-left: 3px;
+	}
+
+	.media-play:hover .ring {
+		transform: scale(1.08);
+		background: rgba(255, 255, 255, 0.24);
+	}
+
+	.media-chrome {
+		position: absolute;
+		inset: auto 0 0 0;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1.5rem 1rem 0.75rem;
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-variant-numeric: tabular-nums;
+		font-size: 0.6875rem;
+		color: var(--color-white);
+	}
+
+	.media-caption {
+		margin-top: 0.75rem;
+		font-size: 0.875rem;
+		color: var(--color-ink);
+	}
+
+	.media-caption b {
+		font-weight: 400;
+		color: var(--color-primary);
+	}
+
+	/* ---------- entrada em cascata: mesmo padrão dos outros
+	   componentes do site (ver PartnersSection.astro). O reduced-motion
+	   global já cobre as transitions abaixo. ---------- */
+	.reveal {
+		opacity: 0;
+		transform: translateY(20px);
+		transition:
+			opacity 0.6s ease,
+			transform 0.6s ease;
+	}
+
+	.reveal.in {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.reveal-delay-1 {
+		transition-delay: 0.1s;
+	}
+
+	/* .about-media já tem um transform próprio (rotate). A classe
+	   genérica .reveal.in mexe na mesma propriedade e, como vem depois
+	   no CSS com a mesma especificidade, sobrescreveria o rotate
+	   inteiro assim que a animação disparasse — por isso redeclaramos
+	   combinando os dois aqui. */
+	.about-media.reveal {
+		transform: rotate(-1.4deg) translateY(20px);
+	}
+
+	.about-media.reveal.in {
+		transform: rotate(-1.4deg) translateY(0);
+	}
+
+	@media (max-width: 980px) {
+		.about-top {
+			display: block;
+		}
+
+		.about-head {
+			max-width: none;
+		}
+
+		.about-copy {
+			margin-top: 1.5rem;
+		}
+
+		.about-media {
+			grid-column: auto;
+			grid-row: auto;
+			margin-top: 2.5rem;
+			transform: none;
+		}
+
+		.about-media.reveal,
+		.about-media.reveal.in {
+			transform: translateY(20px);
+		}
+
+		.about-media.reveal.in {
+			transform: translateY(0);
+		}
+
+		.highlight-list {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.edition {
+			font-size: 5.5rem;
+		}
+
+		.about-heading {
+			font-size: 1.75rem;
+		}
+	}
+</style>
+
+<script>
+	const els = document.querySelectorAll('.about .reveal');
+	const observer = new IntersectionObserver(
+		(entries, obs) => {
+			entries.forEach((entry) => {
+				if (!entry.isIntersecting) return;
+				entry.target.classList.add('in');
+				obs.unobserve(entry.target);
+			});
+		},
+		{ threshold: 0.15 },
+	);
+	els.forEach((el) => observer.observe(el));
+
+	const playButton = document.querySelector('.about .media-play');
+	const mediaFrame = document.querySelector('.about .media-frame');
+	const mediaVideo = document.querySelector('.about .media-video');
+	if (playButton && mediaFrame && mediaVideo instanceof HTMLVideoElement) {
+		playButton.addEventListener('click', () => {
+			mediaFrame.classList.add('is-playing');
+			mediaVideo.controls = true;
+			mediaVideo.play();
+		});
+	}
+</script>

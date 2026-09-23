@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<title>Fesqua</title>
+	</head>
+	<body>
+		<!-- Filtro do "slime" dos botões (.btn/.slime) — precisa existir uma
+		     única vez no documento; qualquer botão do site pode usá-lo. -->
+		<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+			<defs>
+				<filter id="goo">
+					<feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10" />
+					<feColorMatrix in="blur" mode="matrix" result="goo" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" />
+					<feBlend in="SourceGraphic" in2="goo" result="mix" />
+				</filter>
+			</defs>
+		</svg>
+		<Header />
+		<slot />
+		<SiteFooter />
+	</body>
+</html>
+
+<style>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+</style>
