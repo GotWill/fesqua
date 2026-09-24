@@ -21,6 +21,7 @@ interface Satellite {
 	x: number;
 	y: number;
 	labelPos: 'above' | 'below';
+	url?: string;
 }
 
 interface Stat {
@@ -42,12 +43,47 @@ interface Props {
 // Pra recalcular: x = 50 + r·cos(θ), y = 50 + r·sin(θ).
 const DEFAULT_SATELLITES: Satellite[] = [
 	{ logo: 'fesqua', label: 'Fesqua', x: 50.0, y: 15.0, labelPos: 'above' },
-	{ logo: 'saie-vetro', label: 'Saie Vetro', x: 77.36, y: 28.18, labelPos: 'above' },
-	{ logo: 'nelson-firmino', label: 'Nelson Firmino', x: 84.12, y: 57.79, labelPos: 'below' },
-	{ logo: 'contramarco', label: 'Contramarco', x: 65.19, y: 81.54, labelPos: 'below' },
-	{ logo: 'forum-contramarco', label: 'Fórum Contramarco', x: 34.81, y: 81.54, labelPos: 'below' },
-	{ logo: 'feipat-v2', label: 'Feipat', x: 15.88, y: 57.79, labelPos: 'below' },
-	{ logo: 'fesqua-vetro-v2', label: 'Fesqua Vetro', x: 22.64, y: 28.18, labelPos: 'above' },
+	{
+		logo: 'saie-vetro',
+		label: 'Saie Vetro',
+		x: 77.36,
+		y: 28.18,
+		labelPos: 'above',
+		url: 'https://www.saievetro.com.br/',
+	},
+	{
+		logo: 'nelson-firmino',
+		label: 'Nelson Firmino',
+		x: 84.12,
+		y: 57.79,
+		labelPos: 'below',
+		url: 'https://www.premionelsonfirmino.com.br/',
+	},
+	{
+		logo: 'contramarco',
+		label: 'Contramarco',
+		x: 65.19,
+		y: 81.54,
+		labelPos: 'below',
+		url: 'https://www.contramarco.com/',
+	},
+	{
+		logo: 'forum-contramarco',
+		label: 'Fórum Contramarco',
+		x: 34.81,
+		y: 81.54,
+		labelPos: 'below',
+		url: 'https://www.forumcontramarco.com.br/',
+	},
+	{ logo: 'feipat-v2', label: 'Feipat', x: 15.88, y: 57.79, labelPos: 'below', url: 'https://feipat.com.br/' },
+	{
+		logo: 'fesqua-vetro-v2',
+		label: 'Fesqua Vetro',
+		x: 22.64,
+		y: 28.18,
+		labelPos: 'above',
+		url: 'https://fesquavetro.com.br/',
+	},
 ];
 
 // 35 coincide de propósito com o raio dos satélites — cada
@@ -128,9 +164,15 @@ const {
 					{
 						satellites.map((s, i) => (
 							<div class="satellite" data-label={s.labelPos} style={`--x:${s.x}%;--y:${s.y}%;--i:${i}`}>
-								<div class="badge">
-									<img src={resolveLogo(s.logo)} alt={s.label} loading="lazy" />
-								</div>
+								{s.url ? (
+									<a class="badge" href={s.url} target="_blank" rel="noopener" aria-label={s.label}>
+										<img src={resolveLogo(s.logo)} alt={s.label} loading="lazy" />
+									</a>
+								) : (
+									<div class="badge">
+										<img src={resolveLogo(s.logo)} alt={s.label} loading="lazy" />
+									</div>
+								)}
 								<span class="label">{s.label}</span>
 							</div>
 						))

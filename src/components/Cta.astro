@@ -1,4 +1,5 @@
 ---
+import JanelaDraw from './JanelaDraw.astro';
 ---
 
 <section class="cta on-primary" id="participe" aria-labelledby="cta-heading">
@@ -22,15 +23,7 @@
 		</div>
 
 		<div class="cta-illustration" aria-hidden="true">
-			<!-- Corte transversal de perfil de alumínio: câmaras internas -->
-			<svg class="cta-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.75">
-				<rect x="6" y="6" width="52" height="52" rx="6" />
-				<path d="M6 32h52M32 6v52" />
-				<rect x="13" y="13" width="15" height="15" rx="2" />
-				<rect x="36" y="13" width="15" height="15" rx="2" />
-				<rect x="13" y="36" width="15" height="15" rx="2" />
-				<rect x="36" y="36" width="15" height="15" rx="2" />
-			</svg>
+			<JanelaDraw color="var(--color-blush)" size="120px" class="cta-janela" />
 		</div>
 	</div>
 </section>
@@ -142,13 +135,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-
-	.cta-icon {
-		width: 64px;
-		height: 64px;
-		color: var(--color-blush);
-		opacity: 0.7;
 	}
 
 	@media (max-width: 900px) {

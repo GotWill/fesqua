@@ -124,16 +124,10 @@ const panels: HeroPanel[] = [
 		position: relative;
 		width: 100%;
 		height: 100vh;
-		margin-top: -5.5rem;
+		margin-top: calc(-1 * var(--header-h));
 		display: flex;
 		align-items: stretch;
 		background: var(--color-primary-deep);
-	}
-
-	@media (max-width: 480px) {
-		.dual-hero {
-			margin-top: -4.5rem;
-		}
 	}
 
 	/* ---------- painel: a largura é controlada por --split (0–100),
@@ -192,7 +186,12 @@ const panels: HeroPanel[] = [
 		z-index: 2;
 		display: flex;
 		flex-direction: column;
-		padding: clamp(6rem, 11vw, 8rem) clamp(1.5rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3rem);
+		/* O topo precisa desviar do header fixo (que flutua por cima do
+		   hero — ver margin-top negativa em .dual-hero), não de um valor
+		   fixo: com o header de duas faixas (--header-h), um clamp solto
+		   ficava mais raso que o header em telas até ~1900px e o logo do
+		   painel entrava embaixo dele. */
+		padding: calc(var(--header-h) + clamp(0.75rem, 2vw, 1.5rem)) clamp(1.5rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3rem);
 	}
 
 	.panel-top {

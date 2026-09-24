@@ -114,82 +114,174 @@ const nav: NavItem[] = [
 	{ label: "Quero Visitar", href: "/quero-visitar" },
 	{ label: "Quero Expor", href: "/quero-expor" },
 ];
+
+// Atalhos da barra principal — derivados do array `nav` acima, sem
+// duplicar hrefs.
+const shortcuts = nav.filter((i) =>
+	["Expositor", "Visitante", "Programação", "Imprensa"].includes(i.label),
+);
 ---
 
 <header class="site-header on-primary" id="site-header">
-	<a href="/" class="brand">
-		<img src="/images/logo-fesqua-white.png" alt="Fesqua" />
-		<span class="brand-divider" aria-hidden="true"></span>
-		<img src="/images/logo-fesqua-vetro-white.png" alt="Fesqua Vetro" />
-	</a>
-
-	<div class="header-actions">
-		<nav class="social-nav" aria-label="Redes sociais">
-			<a
-				class="social-link"
-				href="https://www.instagram.com/fesqua/"
-				target="_blank"
-				rel="noopener"
-				aria-label="Instagram"
-			>
-				<svg
-					viewBox="0 0 448 512"
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					<path
-						d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"
-					></path>
-				</svg>
-			</a>
-			<a
-				class="social-link"
-				href="https://www.facebook.com/fesqua"
-				target="_blank"
-				rel="noopener"
-				aria-label="Facebook"
-			>
-				<svg
-					viewBox="0 0 512 512"
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					<path
-						d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"
-					></path>
-				</svg>
-			</a>
-			<a
-				class="social-link"
-				href="http://linkedin.com/in/fesqua-feira-internacional-da-ind%C3%BAstria-de-esquadrias-2aa94725a"
-				target="_blank"
-				rel="noopener"
-				aria-label="LinkedIn"
-			>
-				<svg
-					viewBox="0 0 448 512"
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					<path
-						d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"
-					></path>
-				</svg>
-			</a>
-		</nav>
-
-		<button
-			class="hamburger_menu_wrapper"
-			id="menu-toggle"
-			type="button"
-			aria-label="Abrir menu"
-			aria-expanded="false"
-			aria-controls="site-sidebar"
-		>
-			<div class="not-active">
-				<span></span><span></span><span></span>
+	<!-- barra superior -->
+	<div class="topbar">
+		<div class="tb-inner" id="tb-inner">
+			<div class="tb-item countdown" id="countdown" data-state="before">
+				<span class="cd-dot" aria-hidden="true"></span>
+				<span class="cd-label">Faltam</span>
+				<span class="cd-units" aria-hidden="true">
+					<span class="cd-unit"><span class="cd-num" data-cd="d">000</span><span class="cd-u">dias</span></span>
+					<span class="cd-unit"><span class="cd-num" data-cd="h">00</span><span class="cd-u">h</span></span>
+					<span class="cd-unit"><span class="cd-num" data-cd="m">00</span><span class="cd-u">min</span></span>
+					<span class="cd-unit"><span class="cd-num" data-cd="s">00</span><span class="cd-u">s</span></span>
+				</span>
+				<span class="cd-msg" id="cd-msg"></span>
+				<span class="sr-only" id="cd-sr"></span>
 			</div>
-		</button>
+
+			<span class="tb-sep" aria-hidden="true"></span>
+			<div class="tb-item tb-meta tb-date">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+					<rect x="3" y="5" width="18" height="16" rx="2"></rect>
+					<path d="M3 9h18M8 3v4M16 3v4" stroke-linecap="round"></path>
+				</svg>
+				12–15 Set 2028 <span class="muted dur">· 4 dias</span>
+			</div>
+
+			<span class="tb-sep" aria-hidden="true"></span>
+			<a
+				class="tb-item tb-meta tb-venue"
+				href="https://www.google.com/maps/search/?api=1&query=S%C3%A3o+Paulo+Expo"
+				target="_blank"
+				rel="noopener"
+				title="Ver no mapa"
+			>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+					<path d="M12 21s7-6.5 7-11a7 7 0 1 0-14 0c0 4.5 7 11 7 11Z" stroke-linejoin="round"></path>
+					<circle cx="12" cy="10" r="2.25"></circle>
+				</svg>
+				São Paulo Expo
+				<span class="muted addr addr-full">· Rod. dos Imigrantes, km 1,5 – Vila Água Funda, São Paulo - SP, 04329-900</span>
+				<span class="muted addr addr-mid">· Rod. dos Imigrantes, km 1,5 – São Paulo/SP</span>
+				<span class="muted addr addr-short">· Rod. dos Imigrantes, km 1,5</span>
+			</a>
+
+			<nav class="socials" aria-label="Redes sociais">
+				<a href="https://www.instagram.com/fesqua/" target="_blank" rel="noopener" aria-label="Instagram">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<rect x="3" y="3" width="18" height="18" rx="5"></rect>
+						<circle cx="12" cy="12" r="4"></circle>
+						<circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"></circle>
+					</svg>
+				</a>
+				<a href="https://www.facebook.com/fesqua" target="_blank" rel="noopener" aria-label="Facebook">
+					<svg viewBox="0 0 24 24" fill="currentColor">
+						<path d="M14 8.5V7c0-.8.5-1 1-1h2V2.5h-3c-3 0-4 2-4 4.3v1.7H7.5V12H10v9.5h4V12h2.7l.5-3.5z"></path>
+					</svg>
+				</a>
+				<a
+					href="http://linkedin.com/in/fesqua-feira-internacional-da-ind%C3%BAstria-de-esquadrias-2aa94725a"
+					target="_blank"
+					rel="noopener"
+					aria-label="LinkedIn"
+				>
+					<svg viewBox="0 0 24 24" fill="currentColor">
+						<path
+							d="M4.5 8.5h3.5V20H4.5zM6.2 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM10 8.5h3.4v1.6c.5-.9 1.7-1.9 3.5-1.9 3.7 0 4.3 2.4 4.3 5.5V20h-3.5v-5.6c0-1.4 0-3.1-1.9-3.1s-2.2 1.5-2.2 3V20H10z"
+						></path>
+					</svg>
+				</a>
+			</nav>
+		</div>
+	</div>
+
+	<!-- barra principal -->
+	<div class="mainbar">
+		<div class="mb-inner">
+			<a href="/" class="brand">
+				<img src="/images/logo-fesqua-white.png" alt="Fesqua" />
+				<span class="brand-divider" aria-hidden="true"></span>
+				<img src="/images/logo-fesqua-vetro-white.png" alt="Fesqua Vetro" />
+			</a>
+
+			<div class="mb-center">
+				<div class="mb-sim">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+						<path d="M12 3 3 8l9 5 9-5-9-5Z" stroke-linejoin="round"></path>
+						<path d="M3 12l9 5 9-5M3 16l9 5 9-5" stroke-linejoin="round"></path>
+					</svg>
+					<span class="sim-label">Eventos simultâneos</span>
+					<img class="sim-logo" src="/images/logos/feipat.webp" alt="Feipat" />
+				</div>
+
+				<nav class="main-nav" aria-label="Atalhos">
+					{shortcuts.map((item) =>
+						item.dropdown && item.children?.length ? (
+							<div class="nav-item">
+								<a href={item.href} class="nav-link">
+									{item.label}
+									<svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+										<path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+									</svg>
+								</a>
+								<div class="nav-dropdown">
+									<div class="nav-dropdown-panel">
+										<ul>
+											{item.children.map((child) => (
+												<li>
+													<a href={child.href}>{child.label}</a>
+												</li>
+											))}
+										</ul>
+									</div>
+								</div>
+							</div>
+						) : (
+							<a href={item.href} class="nav-link">
+								{item.label}
+							</a>
+						),
+					)}
+				</nav>
+			</div>
+
+			<div class="mb-actions">
+				<span class="cd-chip" aria-hidden="true">
+					<span class="cd-dot"></span>
+					<span class="chip-full"><span data-chip="d">000</span>d <small>·</small> <span data-chip="t">00:00:00</span></span>
+					<span class="chip-short" data-chip="short">000 dias</span>
+				</span>
+
+				<div class="header-ctas">
+					<a href="/quero-expor" class="btn Outline_White btn-sm">
+						<div class="slime">
+							<span></span><span></span><span></span>
+						</div>
+						<div class="btn-content"><span>Quero Expor</span></div>
+					</a>
+					<a href="/quero-visitar" class="btn Solid_Blush btn-sm">
+						<div class="slime">
+							<span></span><span></span><span></span>
+						</div>
+						<div class="btn-content"><span>Quero Visitar</span></div>
+					</a>
+				</div>
+
+				<button
+					class="hamburger_menu_wrapper"
+					id="menu-toggle"
+					type="button"
+					aria-label="Abrir menu"
+					aria-expanded="false"
+					aria-controls="site-sidebar"
+				>
+					<span class="menu-label">Menu</span>
+					<div class="not-active">
+						<span></span><span></span><span></span>
+					</div>
+				</button>
+			</div>
+		</div>
 	</div>
 </header>
 
@@ -323,16 +415,271 @@ const nav: NavItem[] = [
 		position: fixed;
 		inset: 0 0 auto 0;
 		z-index: 4000;
-		height: 5.5rem;
+		color: var(--color-white);
+		transition: transform 0.45s var(--ease-in-out);
+	}
+
+	/* ao rolar, o header inteiro sobe exatamente a altura da barra superior */
+	.site-header.is-compact {
+		transform: translateY(calc(-1 * var(--topbar-h)));
+	}
+
+	/* ---------- barra superior ---------- */
+	.topbar {
+		height: var(--topbar-h);
+		background: var(--color-primary-deep);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	}
+
+	.tb-inner {
+		height: 100%;
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		gap: 1rem;
 		padding: 0 clamp(1.25rem, 4vw, 3rem);
-		background: linear-gradient(
-			115deg,
-			var(--color-primary-deep),
-			var(--color-primary)
-		);
+	}
+
+	.tb-sep {
+		width: 1px;
+		height: 22px;
+		background: rgba(255, 255, 255, 0.18);
+		flex: none;
+	}
+
+	.tb-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		white-space: nowrap;
+		color: var(--color-white);
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.9375rem;
+		letter-spacing: 0.01em;
+	}
+
+	a.tb-meta {
+		text-decoration: none;
+		transition: color 0.25s var(--ease-in-out);
+	}
+
+	a.tb-meta:hover {
+		color: var(--color-blush);
+	}
+
+	.tb-meta svg {
+		width: 19px;
+		height: 19px;
+		color: var(--color-blush);
+		flex: none;
+	}
+
+	.tb-meta .muted,
+	.sim-label {
+		font-family: var(--font-body);
+		font-weight: 400;
+		font-size: 0.875rem;
+		color: var(--color-rose-200);
+		letter-spacing: 0;
+	}
+
+	.addr-mid,
+	.addr-short {
+		display: none;
+	}
+
+	.sim-logo {
+		height: 26px;
+		width: auto;
+		display: block;
+	}
+
+	.socials {
+		margin-left: auto;
+		display: flex;
+		gap: 0.4rem;
+		flex: none;
+	}
+
+	.socials a {
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--color-rose-200);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		transition:
+			color 0.25s var(--ease-in-out),
+			border-color 0.25s var(--ease-in-out),
+			background 0.25s var(--ease-in-out);
+	}
+
+	.socials a:hover {
+		color: var(--color-primary);
+		background: var(--color-blush);
+		border-color: var(--color-blush);
+	}
+
+	.socials svg {
+		width: 14px;
+		height: 14px;
+	}
+
+	/* ---------- contagem regressiva (blocos de placar) ---------- */
+	.countdown {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		white-space: nowrap;
+	}
+
+	.cd-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: var(--color-blush);
+		flex: none;
+		position: relative;
+	}
+
+	.cd-dot::after {
+		content: "";
+		position: absolute;
+		inset: -4px;
+		border-radius: 50%;
+		border: 1px solid var(--color-blush);
+		animation: cd-pulse 2s var(--ease-out) infinite;
+	}
+
+	@keyframes cd-pulse {
+		0% {
+			transform: scale(0.5);
+			opacity: 0.9;
+		}
+		100% {
+			transform: scale(1.6);
+			opacity: 0;
+		}
+	}
+
+	.cd-label {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 0.8125rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-blush);
+	}
+
+	.cd-units {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+
+	.cd-unit {
+		display: flex;
+		align-items: baseline;
+		gap: 0.25rem;
+		padding: 0.28rem 0.55rem;
+		border-radius: 6px;
+		overflow: hidden;
+		background: rgba(255, 255, 255, 0.09);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+	}
+
+	.cd-num {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 1.1875rem;
+		line-height: 1;
+		color: #fff;
+		font-variant-numeric: tabular-nums;
+		display: inline-block;
+	}
+
+	.cd-u {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.6875rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--color-rose-300);
+	}
+
+	/* só o número que mudou anima — o overflow:hidden do bloco dá o
+	   efeito de placar */
+	.cd-num.tick {
+		animation: cd-tick 0.45s var(--ease-out);
+	}
+
+	@keyframes cd-tick {
+		from {
+			transform: translateY(-35%);
+			opacity: 0;
+		}
+		to {
+			transform: none;
+			opacity: 1;
+		}
+	}
+
+	.cd-msg {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.9375rem;
+		color: #fff;
+		display: none;
+	}
+
+	.countdown[data-state="live"] :is(.cd-units, .cd-label),
+	.countdown[data-state="after"] :is(.cd-units, .cd-label) {
+		display: none;
+	}
+
+	.countdown[data-state="live"] .cd-msg,
+	.countdown[data-state="after"] .cd-msg {
+		display: inline;
+	}
+
+	.countdown[data-state="live"] .cd-dot {
+		background: #3ddc84;
+	}
+
+	.countdown[data-state="live"] .cd-dot::after {
+		border-color: #3ddc84;
+	}
+
+	.countdown[data-state="after"] .cd-dot {
+		background: var(--color-rose-300);
+	}
+
+	.countdown[data-state="after"] .cd-dot::after {
+		display: none;
+	}
+
+	/* ---------- barra principal ---------- */
+	.mainbar {
+		height: var(--main-h);
+		background: linear-gradient(115deg, var(--color-primary-deep), var(--color-primary));
+		transition:
+			height 0.45s var(--ease-in-out),
+			box-shadow 0.45s var(--ease-in-out);
+	}
+
+	.site-header.is-compact .mainbar {
+		height: var(--main-h-compact);
+		box-shadow: 0 10px 30px -12px rgba(31, 3, 4, 0.55);
+	}
+
+	.mb-inner {
+		height: 100%;
+		display: flex;
+		align-items: center;
+		gap: 2rem;
+		padding: 0 clamp(1.25rem, 4vw, 3rem);
 	}
 
 	.brand {
@@ -345,6 +692,11 @@ const nav: NavItem[] = [
 	.brand img {
 		height: 56px;
 		width: auto;
+		transition: height 0.45s var(--ease-in-out);
+	}
+
+	.site-header.is-compact .brand img {
+		height: 44px;
 	}
 
 	.brand-divider {
@@ -354,73 +706,274 @@ const nav: NavItem[] = [
 		flex: none;
 	}
 
-	/* ---------- ações do header: redes sociais + hambúrguer ---------- */
-	.header-actions {
-		display: flex;
-		align-items: center;
-		gap: clamp(1rem, 3vw, 2rem);
-		flex: none;
-	}
-
-	.social-nav {
-		display: flex;
-		align-items: center;
-		gap: 0.625rem;
-	}
-
-	.social-link {
-		width: 2.25rem;
-		height: 2.25rem;
-		flex: none;
-		border-radius: 9999px;
-		border: 0;
-		background: var(--color-white);
-		color: var(--color-primary);
+	/* ---------- centro da barra principal: eventos simultâneos + atalhos,
+	   centralizados como um único grupo no espaço entre a marca e as
+	   ações (não é o centro exato da barra se marca/ações tiverem
+	   larguras diferentes — é centralizado no espaço livre entre elas,
+	   o padrão usual de header). ---------- */
+	.mb-center {
+		flex: 1 1 auto;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		transition:
-			background-color 0.3s var(--ease-in-out),
-			color 0.3s var(--ease-in-out),
-			transform 0.1s var(--ease-in-out);
+		gap: 2rem;
+		min-width: 0;
 	}
 
-	.social-link svg {
+	.mb-sim {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		white-space: nowrap;
+		flex: none;
+	}
+
+	.mb-sim svg {
 		width: 18px;
 		height: 18px;
+		color: var(--color-blush);
+		flex: none;
 	}
 
-	.social-link:hover {
+	.main-nav {
+		display: flex;
+		align-items: center;
+		gap: 1.75rem;
+	}
+
+	.nav-item {
+		position: relative;
+	}
+
+	.nav-link {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.875rem;
+		color: var(--color-rose-200);
+		padding: 0.4rem 0;
+		text-decoration: none;
+		transition: color 0.25s var(--ease-in-out);
+	}
+
+	.nav-link::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 1.5px;
 		background: var(--color-blush);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.3s var(--ease-in-out);
 	}
 
-	.social-link:active {
-		transform: scale(0.92);
+	.nav-link:hover,
+	.nav-item:focus-within .nav-link {
+		color: #fff;
 	}
 
-	/* ---------- hambúrguer (componente do DS, recolorido para header escuro) ---------- */
+	.nav-link:hover::after,
+	.nav-item:focus-within .nav-link::after {
+		transform: scaleX(1);
+	}
+
+	.nav-chevron {
+		width: 13px;
+		height: 13px;
+		flex: none;
+		color: var(--color-rose-300);
+		transition:
+			transform 0.25s var(--ease-in-out),
+			color 0.25s var(--ease-in-out);
+	}
+
+	.nav-item:hover .nav-chevron,
+	.nav-item:focus-within .nav-chevron {
+		transform: rotate(180deg);
+		color: var(--color-blush);
+	}
+
+	/* ---------- dropdown do atalho: mesma estrutura de dados da
+	   sidebar (item.children), mas como painel de vidro sob hover/foco
+	   em vez do acordeão vertical — o padrão certo pra um menu
+	   horizontal. .nav-dropdown é a "ponte" invisível (zero gap real
+	   até o link, o respiro visual vem do padding-top) que mantém o
+	   :hover ativo enquanto o mouse desce até o painel; sem ela, o
+	   gap fecha o menu antes de chegar lá. ---------- */
+	.nav-dropdown {
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		padding-top: 0.75rem;
+		min-width: 240px;
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+		transition:
+			opacity 0.25s var(--ease-out),
+			visibility 0s 0.25s;
+		z-index: 10;
+	}
+
+	.nav-item:hover .nav-dropdown,
+	.nav-item:focus-within .nav-dropdown {
+		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
+		transition:
+			opacity 0.25s var(--ease-out),
+			visibility 0s;
+	}
+
+	.nav-dropdown-panel {
+		padding: 0.5rem;
+		border-radius: 0.875rem;
+		background: rgba(31, 3, 4, 0.92);
+		border: 1px solid rgba(255, 255, 255, 0.14);
+		backdrop-filter: blur(24px) saturate(140%);
+		-webkit-backdrop-filter: blur(24px) saturate(140%);
+		box-shadow: 0 20px 40px rgba(31, 3, 4, 0.4);
+	}
+
+	.nav-dropdown ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.nav-dropdown li a {
+		display: block;
+		padding: 0.6rem 0.75rem;
+		border-radius: 0.5rem;
+		font-family: var(--font-body);
+		font-size: 0.875rem;
+		white-space: nowrap;
+		color: var(--color-rose-200);
+		text-decoration: none;
+		transition:
+			background-color 0.2s var(--ease-in-out),
+			color 0.2s var(--ease-in-out);
+	}
+
+	.nav-dropdown li a:hover,
+	.nav-dropdown li a:focus-visible {
+		background: rgba(255, 255, 255, 0.08);
+		color: var(--color-white);
+	}
+
+	/* ---------- ações da barra principal: selo + CTAs + hambúrguer ---------- */
+	.mb-actions {
+		margin-left: auto;
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	/* selo compacto: aparece quando a barra superior some */
+	.cd-chip {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.4rem 0.8rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		background: rgba(0, 0, 0, 0.14);
+		white-space: nowrap;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.875rem;
+		font-variant-numeric: tabular-nums;
+		opacity: 0;
+		transform: translateY(-6px);
+		pointer-events: none;
+		transition:
+			opacity 0.35s var(--ease-out),
+			transform 0.35s var(--ease-out);
+	}
+
+	.cd-chip .cd-dot {
+		width: 6px;
+		height: 6px;
+	}
+
+	.cd-chip small {
+		font-weight: 500;
+		color: var(--color-rose-300);
+		font-size: 0.6875rem;
+	}
+
+	.site-header.is-compact .cd-chip {
+		opacity: 1;
+		transform: none;
+		pointer-events: auto;
+	}
+
+	.chip-short {
+		display: none;
+	}
+
+	/* ---------- CTAs de destaque na barra principal (mesmos botões
+	   "Quero Expor" / "Quero Visitar" da hero) — somem no mobile, onde o
+	   hambúrguer já dá acesso aos mesmos links na sidebar. ---------- */
+	.header-ctas {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		flex: none;
+	}
+
+	.header-ctas .btn {
+		font-family: var(--font-display);
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	/* ---------- hambúrguer (componente do DS, recolorido para header
+	   escuro) com rótulo "Menu" ao lado ---------- */
 	.hamburger_menu_wrapper {
+		width: auto;
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
 		position: relative;
 		z-index: 50;
-		height: 2rem;
-		width: 2rem;
 		cursor: pointer;
 		background: none;
 		border: 0;
 		padding: 0;
 		flex: none;
+		color: var(--color-white);
+	}
+
+	.menu-label {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.75rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		transition: color 0.3s var(--ease-in-out);
+	}
+
+	.hamburger_menu_wrapper:hover .menu-label {
+		color: var(--color-blush);
 	}
 
 	.hamburger_menu_wrapper > div {
-		position: absolute;
-		top: 0;
-		left: 0;
+		position: relative;
+		width: 2rem;
+		height: 2rem;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		height: 100%;
-		width: 100%;
 	}
 
 	.hamburger_menu_wrapper > div span {
@@ -846,11 +1399,170 @@ const nav: NavItem[] = [
 		display: block;
 	}
 
-	@media (max-width: 480px) {
-		.site-header {
-			height: 4.5rem;
+	/* ---------- pontos de quebra da barra superior — prioridade:
+	   contagem > local > data > redes sociais.
+	   Medidos no navegador (ver seção 9 do briefing), não arredondar. ---------- */
+	@media (max-width: 1799px) {
+		.socials {
+			display: none;
+		}
+	}
+
+	@media (max-width: 1675px) {
+		.addr-full {
+			display: none;
+		}
+		.addr-mid {
+			display: inline;
+		}
+	}
+
+	@media (max-width: 1484px) {
+		.dur {
+			display: none;
+		}
+	}
+
+	/* eventos simultâneos + atalhos (centro da barra principal) somem
+	   juntos: sem os links de atalho, o selo sozinho fica sem função —
+	   o hambúrguer já dá acesso aos mesmos links e à mesma info na
+	   sidebar abaixo dessa largura. Medido no navegador: abaixo de
+	   1600px o grupo (com marca + CTAs + hambúrguer nas pontas) não
+	   cabe mais numa linha só. */
+	@media (max-width: 1610px) {
+		.mb-center {
+			display: none;
+		}
+	}
+
+	@media (max-width: 1431px) {
+		.addr-mid {
+			display: none;
+		}
+		.addr-short {
+			display: inline;
+		}
+	}
+
+	/* abaixo disso não cabe tudo lado a lado: letreiro rotativo */
+	@media (max-width: 1328px) {
+		.tb-inner {
+			position: relative;
+			justify-content: center;
 		}
 
+		.tb-sep {
+			display: none;
+		}
+
+		.tb-item {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -30%);
+			opacity: 0;
+			visibility: hidden;
+			max-width: calc(100% - 2.5rem);
+			transition:
+				opacity 0.45s var(--ease-out),
+				transform 0.45s var(--ease-out),
+				visibility 0s 0.45s;
+		}
+
+		.tb-item.is-active {
+			opacity: 1;
+			visibility: visible;
+			transform: translate(-50%, -50%);
+			transition:
+				opacity 0.45s var(--ease-out),
+				transform 0.45s var(--ease-out),
+				visibility 0s;
+		}
+
+		.tb-venue .addr-mid {
+			display: none;
+		}
+		.tb-venue .addr-short {
+			display: inline;
+		}
+
+		.dur {
+			display: inline;
+		} /* no letreiro sobra espaço: o "4 dias" volta */
+	}
+
+	/* Abaixo disso o header fica apertado demais pros dois botões de
+	   texto ao lado da marca + ícones sociais + hambúrguer — o hambúrguer
+	   já dá acesso aos mesmos links (Quero Expor/Quero Visitar) na
+	   sidebar, então eles só somem daqui. */
+	@media (max-width: 899px) {
+		.header-ctas {
+			display: none;
+		}
+	}
+
+	@media (max-width: 639px) {
+		.tb-meta,
+		.cd-msg,
+		.tb-meta .muted,
+		.sim-label {
+			font-size: 0.8125rem;
+		}
+		.tb-meta svg {
+			width: 16px;
+			height: 16px;
+		}
+		.countdown {
+			gap: 0.55rem;
+		}
+		.cd-label {
+			font-size: 0.6875rem;
+		}
+		.cd-units {
+			gap: 0.3rem;
+		}
+		.cd-unit {
+			padding: 0.22rem 0.4rem;
+			gap: 0.18rem;
+		}
+		.cd-num {
+			font-size: 1rem;
+		}
+		.cd-u {
+			font-size: 0.5625rem;
+		}
+		.mb-inner {
+			gap: 1rem;
+		}
+		.menu-label {
+			display: none;
+		}
+		.site-header.is-compact .brand img {
+			height: 36px;
+		}
+
+		/* o selo não pode ocupar espaço invisível no celular (ver aviso
+		   da seção 6): com opacity:0 ele continua no fluxo e empurra o
+		   botão do menu pra fora da tela — por isso display:none, não
+		   opacity. */
+		.cd-chip {
+			display: none;
+			padding: 0.3rem 0.6rem;
+			font-size: 0.6875rem;
+			gap: 0.4rem;
+		}
+		.site-header.is-compact .cd-chip {
+			display: flex;
+		}
+		.chip-full {
+			display: none;
+		}
+		.chip-short {
+			display: inline;
+		}
+	}
+
+	@media (max-width: 480px) {
 		.brand {
 			gap: 0.625rem;
 		}
@@ -863,12 +1575,6 @@ const nav: NavItem[] = [
 			height: 24px;
 		}
 
-		/* Sem espaço pros três ícones ao lado das duas marcas — some no
-		   mobile mais estreito; hambúrguer continua abrindo o menu. */
-		.social-nav {
-			display: none;
-		}
-
 		.sidebar-inner {
 			padding: 1.5rem 1.25rem 2.5rem;
 		}
@@ -876,6 +1582,24 @@ const nav: NavItem[] = [
 		.nav-row a,
 		.nav-row span {
 			font-size: 1.2rem;
+		}
+	}
+
+	@media (max-width: 399px) {
+		.cd-label {
+			display: none;
+		}
+	}
+
+	@media (max-width: 379px) {
+		.site-header.is-compact .cd-chip {
+			display: none;
+		}
+	}
+
+	@media (max-width: 359px) {
+		.tb-venue .addr {
+			display: none;
 		}
 	}
 
@@ -901,6 +1625,128 @@ const nav: NavItem[] = [
 </style>
 
 <script>
+	/* ---------- datas do evento: ÚNICO lugar para ajustar ----------
+	   ⚠️ Confirme as datas reais do evento antes de publicar. */
+	const EVENT_START = new Date("2028-09-12T13:00:00-03:00");
+	const EVENT_END = new Date("2028-09-15T20:00:00-03:00");
+
+	const header = document.getElementById("site-header");
+	const cd = document.getElementById("countdown");
+	if (header && cd) {
+		const num = (k: string) =>
+			cd.querySelector<HTMLElement>(`[data-cd="${k}"]`)!;
+		const els = { d: num("d"), h: num("h"), m: num("m"), s: num("s") };
+		const msg = document.getElementById("cd-msg")!;
+		const sr = document.getElementById("cd-sr")!;
+		const chipD = header.querySelector<HTMLElement>('[data-chip="d"]')!;
+		const chipT = header.querySelector<HTMLElement>('[data-chip="t"]')!;
+		const chipShort = header.querySelector<HTMLElement>(
+			'[data-chip="short"]',
+		)!;
+		const chipFull = header.querySelector<HTMLElement>(".chip-full")!;
+		const pad = (n: number) => String(n).padStart(2, "0");
+		let lastSr = "";
+
+		const set = (el: HTMLElement, v: string) => {
+			if (el.textContent === v) return; // só mexe no que mudou
+			el.textContent = v;
+			el.classList.remove("tick");
+			void el.offsetWidth;
+			el.classList.add("tick");
+		};
+
+		const render = () => {
+			const now = new Date();
+			const state =
+				now < EVENT_START ? "before" : now <= EVENT_END ? "live" : "after";
+			cd.dataset.state = state;
+			if (state === "before") {
+				const t = Math.floor((+EVENT_START - +now) / 1000);
+				const d = Math.floor(t / 86400),
+					h = Math.floor((t % 86400) / 3600),
+					m = Math.floor((t % 3600) / 60),
+					s = t % 60;
+				set(els.d, String(d));
+				set(els.h, pad(h));
+				set(els.m, pad(m));
+				set(els.s, pad(s));
+				chipFull.hidden = false;
+				chipD.textContent = String(d);
+				chipT.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+				chipShort.textContent = `${d} dias`;
+				const txt = `Faltam ${d} dias para a abertura da FESQUA`;
+				if (txt !== lastSr) {
+					sr.textContent = txt;
+					lastSr = txt;
+				} // leitor de tela: só quando o DIA muda
+			} else {
+				const live = state === "live";
+				msg.textContent = live
+					? "Ao vivo · A FESQUA está acontecendo agora no São Paulo Expo"
+					: "Edição 2028 encerrada · Obrigado a todos — até a próxima!";
+				chipFull.hidden = true;
+				chipShort.textContent = live ? "Ao vivo" : "Encerrado";
+				sr.textContent = msg.textContent;
+			}
+		};
+
+		/* recalcula a partir do relógio a cada tick: não acumula atraso */
+		render();
+		let timer = window.setInterval(render, 1000);
+		document.addEventListener("visibilitychange", () => {
+			clearInterval(timer);
+			if (!document.hidden) {
+				render();
+				timer = window.setInterval(render, 1000);
+			}
+		});
+
+		/* ---------- letreiro da barra superior (≤1328px) ---------- */
+		const items = [...header.querySelectorAll<HTMLElement>(".tb-item")];
+		const tickerMq = matchMedia("(max-width:1328px)");
+		const reduceMq = matchMedia("(prefers-reduced-motion: reduce)");
+		const tbInner = document.getElementById("tb-inner")!;
+		let idx = 0,
+			tTimer = 0,
+			paused = false;
+		const show = (i: number) =>
+			items.forEach((el, k) => el.classList.toggle("is-active", k === i));
+		const startTicker = () => {
+			clearInterval(tTimer);
+			idx = 0;
+			show(0);
+			if (!tickerMq.matches || reduceMq.matches) return; // reduzir movimento: fica na contagem
+			tTimer = window.setInterval(() => {
+				if (!paused) {
+					idx = (idx + 1) % items.length;
+					show(idx);
+				}
+			}, 3800);
+		};
+		// pausa SÓ com mouse de verdade — em toque, "pointerenter" dispara
+		// ao tocar e "pointerleave" nunca dispara, travando o letreiro.
+		tbInner.addEventListener("pointerenter", (e) => {
+			if (e.pointerType === "mouse") paused = true;
+		});
+		tbInner.addEventListener("pointerleave", (e) => {
+			if (e.pointerType === "mouse") paused = false;
+		});
+		tbInner.addEventListener("focusin", () => {
+			paused = true;
+		});
+		tbInner.addEventListener("focusout", () => {
+			paused = false;
+		});
+		tickerMq.addEventListener("change", startTicker);
+		startTicker();
+
+		/* ---------- compacta o header ao rolar ---------- */
+		const onScroll = () =>
+			header.classList.toggle("is-compact", window.scrollY > 24);
+		window.addEventListener("scroll", onScroll, { passive: true });
+		onScroll();
+	}
+
 	const toggle = document.getElementById(
 		"menu-toggle",
 	) as HTMLButtonElement | null;

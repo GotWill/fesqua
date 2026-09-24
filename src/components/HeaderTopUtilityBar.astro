@@ -1,0 +1,1177 @@
+---
+// ---------------------------------------------------------------------
+// Variante descartada: Quando/Onde/Eventos simultâneos numa barra
+// utilitária ACIMA do header principal. O cliente preferiu o conteúdo
+// dentro do próprio header (ver Header.astro) — este arquivo fica só
+// como referência/backup, não é importado por nenhuma página.
+// ---------------------------------------------------------------------
+interface NavChild {
+	label: string;
+	href: string;
+}
+
+interface NavItem {
+	label: string;
+	href: string;
+	dropdown?: boolean;
+	children?: NavChild[];
+}
+
+// Estrutura pronta para receber novos links: itens com `dropdown: true` e
+// `children: []` já têm a seta e o acordeão funcionando, só falta popular.
+const nav: NavItem[] = [
+	{
+		label: "Fesqua",
+		href: "/fesqua",
+		dropdown: true,
+		children: [
+			{ label: "Sobre o Evento", href: "/fesqua/sobre-o-evento" },
+			{
+				label: "Sobre o Grupo Contramarco",
+				href: "/fesqua/sobre-o-grupo-contramarco",
+			},
+		],
+	},
+	{
+		label: "Expositor",
+		href: "/expositor",
+		dropdown: true,
+		children: [
+			{ label: "Planta da Feira", href: "/expositor/planta-da-feira" },
+			{
+				label: "Lista de Expositores",
+				href: "/expositor/lista-de-expositores",
+			},
+			{ label: "Quero Expor", href: "/expositor/quero-expor" },
+			{
+				label: "Manual do Expositor",
+				href: "/expositor/manual-do-expositor",
+			},
+			{
+				label: "Primeira Participação",
+				href: "/expositor/primeira-participacao",
+			},
+			{
+				label: "Viagem e Hospedagem",
+				href: "/expositor/viagem-e-hospedagem",
+			},
+			{
+				label: "Dúvidas Frequentes – Expositores",
+				href: "/expositor/duvidas-frequentes",
+			},
+		],
+	},
+	{
+		label: "Visitante",
+		href: "/visitante",
+		dropdown: true,
+		children: [
+			{ label: "Planta da Feira", href: "/visitante/planta-da-feira" },
+			{ label: "Quero Visitar", href: "/visitante/quero-visitar" },
+			{
+				label: "Viagem e Hospedagem",
+				href: "/visitante/viagem-e-hospedagem",
+			},
+			{
+				label: "Dúvidas Frequentes – Visitantes",
+				href: "/visitante/duvidas-frequentes",
+			},
+		],
+	},
+	{
+		label: "Programação",
+		href: "/programacao",
+		dropdown: true,
+		children: [
+			{ label: "ENEPE", href: "/programacao/enepe" },
+			{ label: "Encontro AFEAL", href: "/programacao/encontro-afeal" },
+			{ label: "Summit Arq", href: "/programacao/summit-arq" },
+			{ label: "VIDROSOM", href: "/programacao/vidrosom" },
+			{
+				label: "Esquadrias de PVC em Foco",
+				href: "/programacao/esquadrias-de-pvc-em-foco",
+			},
+		],
+	},
+	{ label: "Embaixadores", href: "/embaixadores" },
+	{
+		label: "Eventos Simultâneos",
+		href: "/eventos-simultaneos",
+		dropdown: true,
+		children: [
+			{ label: "Feipat", href: "/eventos-simultaneos/feipat" },
+			{
+				label: "Fesqua Vetro",
+				href: "/eventos-simultaneos/fesqua-vetro",
+			},
+		],
+	},
+	{
+		label: "Imprensa",
+		href: "/imprensa",
+		dropdown: true,
+		children: [
+			{ label: "Canal Fesqua", href: "/imprensa/canal-fesqua" },
+			{ label: "Press Releases", href: "/imprensa/press-releases" },
+			{ label: "Saiu na Mídia", href: "/imprensa/saiu-na-midia" },
+		],
+	},
+	{ label: "Contato", href: "/contato" },
+	{ label: "Quero Visitar", href: "/quero-visitar" },
+	{ label: "Quero Expor", href: "/quero-expor" },
+];
+---
+
+<header class="site-header on-primary" id="site-header">
+	<div class="header-utility">
+		<div class="utility-inner">
+			<div class="utility-item">
+				<svg
+					class="utility-icon"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.75"
+					aria-hidden="true"
+				>
+					<rect x="3" y="5" width="18" height="16" rx="2" stroke-linecap="round" stroke-linejoin="round"></rect>
+					<path d="M3 9h18M8 3v4M16 3v4" stroke-linecap="round"></path>
+				</svg>
+				<div class="utility-text">
+					<span class="utility-primary">12–15 Set 2028</span>
+					<span class="utility-secondary">4 dias · Qua–Sex 13h–20h, Sáb 11h–18h</span>
+				</div>
+			</div>
+
+			<span class="utility-divider" aria-hidden="true"></span>
+
+			<div class="utility-item">
+				<svg
+					class="utility-icon"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.75"
+					aria-hidden="true"
+				>
+					<path
+						d="M12 21s7-6.5 7-11a7 7 0 1 0-14 0c0 4.5 7 11 7 11Z"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					></path>
+					<circle cx="12" cy="10" r="2.25"></circle>
+				</svg>
+				<div class="utility-text">
+					<span class="utility-primary">São Paulo Expo</span>
+					<span
+						class="utility-secondary"
+						title="Rod. dos Imigrantes, km 1,5 – Vila Água Funda, São Paulo - SP, 04329-900"
+					>
+						Rod. dos Imigrantes, km 1,5 – Vila Água Funda, SP
+					</span>
+				</div>
+			</div>
+
+			<span class="utility-divider" aria-hidden="true"></span>
+
+			<div class="utility-item utility-simult">
+				<svg
+					class="utility-icon"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.75"
+					aria-hidden="true"
+				>
+					<path d="M12 3 3 8l9 5 9-5-9-5Z" stroke-linecap="round" stroke-linejoin="round"></path>
+					<path d="M3 12l9 5 9-5M3 16l9 5 9-5" stroke-linecap="round" stroke-linejoin="round"></path>
+				</svg>
+				<span class="utility-primary">Eventos simultâneos</span>
+				<span class="utility-logo">
+					<img src="/images/logos/feipat.webp" alt="Feipat" />
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="header-main">
+		<a href="/" class="brand">
+			<img src="/images/logo-fesqua-white.png" alt="Fesqua" />
+			<span class="brand-divider" aria-hidden="true"></span>
+			<img src="/images/logo-fesqua-vetro-white.png" alt="Fesqua Vetro" />
+		</a>
+
+		<div class="header-actions">
+			<div class="header-ctas">
+			<a href="/quero-expor" class="btn Outline_White btn-sm">
+				<div class="slime">
+					<span></span><span></span><span></span>
+				</div>
+				<div class="btn-content"><span>Quero Expor</span></div>
+			</a>
+			<a href="/quero-visitar" class="btn Outline_Blush btn-sm">
+				<div class="slime">
+					<span></span><span></span><span></span>
+				</div>
+				<div class="btn-content"><span>Quero Visitar</span></div>
+			</a>
+		</div>
+
+		<nav class="social-nav" aria-label="Redes sociais">
+			<a
+				class="social-link"
+				href="https://www.instagram.com/fesqua/"
+				target="_blank"
+				rel="noopener"
+				aria-label="Instagram"
+			>
+				<svg
+					viewBox="0 0 448 512"
+					fill="currentColor"
+					aria-hidden="true"
+				>
+					<path
+						d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"
+					></path>
+				</svg>
+			</a>
+			<a
+				class="social-link"
+				href="https://www.facebook.com/fesqua"
+				target="_blank"
+				rel="noopener"
+				aria-label="Facebook"
+			>
+				<svg
+					viewBox="0 0 512 512"
+					fill="currentColor"
+					aria-hidden="true"
+				>
+					<path
+						d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"
+					></path>
+				</svg>
+			</a>
+			<a
+				class="social-link"
+				href="http://linkedin.com/in/fesqua-feira-internacional-da-ind%C3%BAstria-de-esquadrias-2aa94725a"
+				target="_blank"
+				rel="noopener"
+				aria-label="LinkedIn"
+			>
+				<svg
+					viewBox="0 0 448 512"
+					fill="currentColor"
+					aria-hidden="true"
+				>
+					<path
+						d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"
+					></path>
+				</svg>
+			</a>
+		</nav>
+
+		<button
+			class="hamburger_menu_wrapper"
+			id="menu-toggle"
+			type="button"
+			aria-label="Abrir menu"
+			aria-expanded="false"
+			aria-controls="site-sidebar"
+		>
+			<div class="not-active">
+				<span></span><span></span><span></span>
+			</div>
+		</button>
+		</div>
+	</div>
+</header>
+
+<div class="sidebar-overlay" id="sidebar-overlay" hidden></div>
+
+<aside
+	class="sidebar"
+	id="site-sidebar"
+	aria-hidden="true"
+	aria-label="Menu principal"
+>
+	<div class="sidebar-inner">
+		<div class="sidebar-top">
+			<span class="kicker">Menu</span>
+			<button
+				class="sidebar-close"
+				id="sidebar-close"
+				type="button"
+				aria-label="Fechar menu"
+			>
+				<svg
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.5"
+					aria-hidden="true"
+				>
+					<path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"
+					></path>
+				</svg>
+			</button>
+		</div>
+
+		<div class="sidebar-grid">
+			<div class="sidebar-info">
+				<div class="info-block">
+					<span class="kicker">Quando</span>
+					<div class="info-date">
+						<strong>12–15</strong><span class="info-month"
+							>Set 2028</span
+						>
+					</div>
+					<div class="info-duration">
+						<span class="dash" aria-hidden="true"></span>4 dias
+					</div>
+					<p class="info-hours">Qua a sex 13h–20h<br />Sáb 11h–18h</p>
+				</div>
+
+				<div class="info-block">
+					<span class="kicker">Onde</span>
+					<p class="info-venue">São Paulo Expo</p>
+					<p class="info-address">
+						Rod. dos Imigrantes, km 1,5 – Vila Água Funda, São Paulo
+						- SP, 04329-900
+					</p>
+				</div>
+
+				<div class="info-block">
+					<span class="kicker">Eventos simultâneos</span>
+					<div class="info-logos">
+						<span class="logo-chip"
+							><img
+								src="/images/logos/feipat.webp"
+								alt="Feipat"
+							/></span
+						>
+					</div>
+				</div>
+			</div>
+
+			<nav class="sidebar-nav">
+				<ul>
+					{
+						nav.map((item, i) => (
+							<li
+								class:list={[{ "has-dropdown": item.dropdown }]}
+							>
+								{item.dropdown ? (
+									<button
+										class="nav-row dropdown-toggle"
+										type="button"
+										aria-expanded="false"
+										aria-controls={`sidebar-drop-${i}`}
+									>
+										<span>{item.label}</span>
+										<svg
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.75"
+											aria-hidden="true"
+										>
+											<path
+												d="M6 9l6 6 6-6"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											/>
+										</svg>
+									</button>
+								) : (
+									<div class="nav-row">
+										<a href={item.href}>{item.label}</a>
+									</div>
+								)}
+
+								{item.dropdown && (
+									<ul
+										class="dropdown"
+										id={`sidebar-drop-${i}`}
+									>
+										{item.children?.map((child) => (
+											<li>
+												<a href={child.href}>
+													{child.label}
+												</a>
+											</li>
+										))}
+									</ul>
+								)}
+							</li>
+						))
+					}
+				</ul>
+			</nav>
+		</div>
+	</div>
+</aside>
+
+<style>
+	.site-header {
+		position: fixed;
+		inset: 0 0 auto 0;
+		z-index: 4000;
+		display: flex;
+		flex-direction: column;
+		background: linear-gradient(
+			115deg,
+			var(--color-primary-deep),
+			var(--color-primary)
+		);
+	}
+
+	.header-main {
+		flex: none;
+		height: var(--header-main-h);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 clamp(1.25rem, 4vw, 3rem);
+	}
+
+	/* ---------- barra utilitária: Quando/Onde/Eventos simultâneos, um
+	   resumo persistente do que já existe (completo) na sidebar — só
+	   cabe com conforto a partir de telas bem largas. Abaixo disso o
+	   hambúrguer já entrega o mesmo conteúdo. ---------- */
+	.header-utility {
+		display: none;
+		flex: none;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+		background: rgba(0, 0, 0, 0.15);
+	}
+
+	.utility-inner {
+		height: var(--header-utility-h);
+		display: flex;
+		align-items: center;
+		gap: clamp(1.5rem, 3vw, 2.5rem);
+		padding: 0 clamp(1.25rem, 4vw, 3rem);
+	}
+
+	.utility-item {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		flex: none;
+	}
+
+	.utility-icon {
+		flex: none;
+		width: 18px;
+		height: 18px;
+		color: var(--color-blush);
+	}
+
+	.utility-text {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		line-height: 1.3;
+	}
+
+	.utility-primary {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		color: var(--color-white);
+		white-space: nowrap;
+	}
+
+	.utility-secondary {
+		font-family: var(--font-body);
+		font-size: 0.6875rem;
+		color: var(--color-rose-300);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 320px;
+	}
+
+	.utility-divider {
+		width: 1px;
+		height: 28px;
+		flex: none;
+		background: rgba(255, 255, 255, 0.14);
+	}
+
+	.utility-simult .utility-primary {
+		white-space: nowrap;
+	}
+
+	/* Sem cartão branco: o logo (texto claro + destaque colorido) já foi
+	   desenhado pra sentar direto sobre fundo escuro — mesmo tratamento
+	   da grade de parceiros. */
+	.utility-logo {
+		display: inline-flex;
+		align-items: center;
+		flex: none;
+	}
+
+	.utility-logo img {
+		height: 18px;
+		width: auto;
+		display: block;
+	}
+
+	@media (min-width: 1200px) {
+		.header-utility {
+			display: flex;
+		}
+	}
+
+	.brand {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		flex: none;
+	}
+
+	.brand img {
+		height: 56px;
+		width: auto;
+	}
+
+	.brand-divider {
+		width: 1px;
+		height: 32px;
+		background: rgba(255, 255, 255, 0.3);
+		flex: none;
+	}
+
+	/* ---------- ações do header: redes sociais + hambúrguer ---------- */
+	.header-actions {
+		display: flex;
+		align-items: center;
+		gap: clamp(1rem, 3vw, 2rem);
+		flex: none;
+	}
+
+	/* ---------- CTAs de destaque no header (mesmos botões "Quero Expor" /
+	   "Quero Visitar" da hero) — somem no mobile, onde o hambúrguer já dá
+	   acesso aos mesmos links na sidebar. ---------- */
+	.header-ctas {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		flex: none;
+	}
+
+	.header-ctas .btn {
+		font-family: var(--font-display);
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	.social-nav {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+	}
+
+	.social-link {
+		width: 2.25rem;
+		height: 2.25rem;
+		flex: none;
+		border-radius: 9999px;
+		border: 0;
+		background: var(--color-white);
+		color: var(--color-primary);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition:
+			background-color 0.3s var(--ease-in-out),
+			color 0.3s var(--ease-in-out),
+			transform 0.1s var(--ease-in-out);
+	}
+
+	.social-link svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	.social-link:hover {
+		background: var(--color-blush);
+	}
+
+	.social-link:active {
+		transform: scale(0.92);
+	}
+
+	/* ---------- hambúrguer (componente do DS, recolorido para header escuro) ---------- */
+	.hamburger_menu_wrapper {
+		position: relative;
+		z-index: 50;
+		height: 2rem;
+		width: 2rem;
+		cursor: pointer;
+		background: none;
+		border: 0;
+		padding: 0;
+		flex: none;
+	}
+
+	.hamburger_menu_wrapper > div {
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+		width: 100%;
+	}
+
+	.hamburger_menu_wrapper > div span {
+		display: block;
+		height: 1.5px;
+		width: 1.5rem;
+		border-radius: 9999px;
+		background: var(--color-white);
+		transition: all 0.3s;
+		position: relative;
+	}
+
+	.hamburger_menu_wrapper > div span:nth-child(1),
+	.hamburger_menu_wrapper > div span:nth-child(2) {
+		margin-bottom: 0.375rem;
+	}
+
+	.hamburger_menu_wrapper:hover > div span {
+		background: var(--color-blush);
+	}
+
+	.hamburger_menu_wrapper > div.active span:nth-child(1) {
+		animation: top 0.7s ease forwards;
+	}
+	.hamburger_menu_wrapper > div.not-active span:nth-child(1) {
+		animation: top-2 0.7s ease forwards;
+	}
+	.hamburger_menu_wrapper > div.active span:nth-child(2) {
+		animation: scaled 0.7s ease forwards;
+	}
+	.hamburger_menu_wrapper > div.not-active span:nth-child(2) {
+		animation: scaled-2 0.7s ease forwards;
+	}
+	.hamburger_menu_wrapper > div.active span:nth-child(3) {
+		animation: bottom 0.7s ease forwards;
+	}
+	.hamburger_menu_wrapper > div.not-active span:nth-child(3) {
+		animation: bottom-2 0.7s ease forwards;
+	}
+
+	@keyframes top {
+		0% {
+			top: 0;
+			transform: rotate(0);
+		}
+		50% {
+			top: 7px;
+			transform: rotate(0);
+		}
+		to {
+			top: 7px;
+			transform: rotate(45deg);
+		}
+	}
+	@keyframes top-2 {
+		0% {
+			top: 8px;
+			transform: rotate(45deg);
+		}
+		50% {
+			top: 8px;
+			transform: rotate(0);
+		}
+		to {
+			top: 0;
+			transform: rotate(0);
+		}
+	}
+	@keyframes bottom {
+		0% {
+			bottom: 0;
+			transform: rotate(0);
+		}
+		50% {
+			bottom: 8px;
+			transform: rotate(0);
+		}
+		to {
+			bottom: 8px;
+			transform: rotate(-45deg);
+		}
+	}
+	@keyframes bottom-2 {
+		0% {
+			bottom: 9px;
+			transform: rotate(-45deg);
+		}
+		50% {
+			bottom: 9px;
+			transform: rotate(0);
+		}
+		to {
+			bottom: 0;
+			transform: rotate(0);
+		}
+	}
+	@keyframes scaled {
+		50% {
+			transform: scale(0);
+		}
+		to {
+			transform: scale(0);
+		}
+	}
+	@keyframes scaled-2 {
+		0% {
+			transform: scale(0);
+		}
+		50% {
+			transform: scale(0);
+		}
+		to {
+			transform: scale(1);
+		}
+	}
+
+	/* ---------- overlay ---------- */
+	.sidebar-overlay {
+		position: fixed;
+		inset: 0;
+		z-index: 4998;
+		background: rgba(31, 3, 4, 0.45);
+		opacity: 0;
+		transition: opacity 0.4s var(--ease-in-out);
+	}
+
+	.sidebar-overlay.is-visible {
+		opacity: 1;
+	}
+
+	/* ---------- sidebar de vidro ---------- */
+	.sidebar {
+		position: fixed;
+		inset: 0 0 0 auto;
+		z-index: 4999;
+		width: min(880px, 100vw);
+		will-change: transform;
+		/* Fundo quase opaco por padrão — esconde o conteúdo atrás mesmo
+		   onde backdrop-filter não é suportado (alguns Chrome Android).
+		   Onde é suportado, o @supports abaixo troca pro efeito vidro. */
+		   background: linear-gradient(160deg, #2a0406 0%, #180203 60%, #120102 100%);
+		will-change: transform;
+		border-left: 1px solid rgba(255, 255, 255, 0.14);
+		box-shadow: -40px 0 80px rgba(31, 3, 4, 0.35);
+		transform: translateX(100%);
+		transition: transform 0.5s var(--ease-in-out);
+		overflow-y: auto;
+		color: var(--color-white);
+	}
+
+
+
+	.sidebar.is-open {
+		transform: translateX(0);
+	}
+
+	.sidebar-inner {
+		min-height: 100%;
+		display: flex;
+		flex-direction: column;
+		padding: 2rem clamp(1.5rem, 5vw, 3rem) 3rem;
+	}
+
+	.sidebar-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 3rem;
+	}
+
+	.sidebar-top .kicker {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.75rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-rose-300);
+	}
+
+	.sidebar-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+	}
+
+	.sidebar-close {
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.32);
+		background: transparent;
+		color: var(--color-white);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition:
+			background-color 0.3s var(--ease-in-out),
+			border-color 0.3s var(--ease-in-out),
+			transform 0.1s var(--ease-in-out);
+	}
+
+	.sidebar-close svg {
+		width: 16px;
+		height: 16px;
+	}
+
+	.sidebar-close:hover {
+		background: var(--color-red-700);
+		border-color: var(--color-red-700);
+	}
+
+	.sidebar-close:active {
+		transform: scale(0.92);
+	}
+
+	.sidebar-nav {
+		padding-left: clamp(2rem, 4vw, 3.5rem);
+	}
+
+	.sidebar-nav ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.sidebar-nav > ul > li {
+		border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+	}
+
+	.sidebar-nav > ul > li:first-child {
+		border-top: 1px solid rgba(255, 255, 255, 0.12);
+	}
+
+	.nav-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	/* O título de um item com dropdown não é mais link — o rótulo e a
+	   seta viram um único botão de toggle, então o reset abaixo só
+	   entra quando .nav-row É o próprio botão. */
+	button.nav-row {
+		width: 100%;
+		border: 0;
+		background: none;
+		padding: 0;
+		cursor: pointer;
+		text-align: left;
+		font: inherit;
+	}
+
+	.nav-row a,
+	.nav-row span {
+		flex: 1 1 auto;
+		display: block;
+		padding: 1.1rem 0;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 1.375rem;
+		color: var(--color-white);
+		text-decoration: none;
+		transition: color 0.3s var(--ease-in-out);
+	}
+
+	.nav-row a:hover,
+	.dropdown-toggle:hover span {
+		color: var(--color-blush);
+	}
+
+	.dropdown-toggle svg {
+		flex: none;
+		width: 18px;
+		height: 18px;
+		color: var(--color-rose-300);
+		transition:
+			transform 0.35s var(--ease-in-out),
+			color 0.3s var(--ease-in-out);
+	}
+
+	.dropdown-toggle:hover svg {
+		color: var(--color-blush);
+	}
+
+	li.has-dropdown.is-open .dropdown-toggle svg {
+		transform: rotate(180deg);
+	}
+
+	.dropdown {
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height 0.4s var(--ease-in-out);
+	}
+
+	.dropdown li a {
+		display: block;
+		padding: 0.7rem 0 0.7rem 1.25rem;
+		font-family: var(--font-body);
+		font-size: 0.9375rem;
+		color: var(--color-rose-200);
+		text-decoration: none;
+		border-left: 1px solid rgba(255, 255, 255, 0.18);
+		transition: color 0.3s var(--ease-in-out);
+	}
+
+	.dropdown li a:hover {
+		color: var(--color-white);
+	}
+
+	.dropdown li:last-child a {
+		padding-bottom: 1.1rem;
+	}
+
+	/* ---------- informações do evento ---------- */
+	.sidebar-info {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		padding-right: clamp(2rem, 4vw, 3.5rem);
+		border-right: 1px solid rgba(255, 255, 255, 0.14);
+	}
+
+	.info-block .kicker {
+		display: block;
+	}
+
+	.info-date {
+		display: flex;
+		align-items: baseline;
+		gap: 0.625rem;
+		margin-top: 0.85rem;
+		font-family: var(--font-display);
+		color: var(--color-white);
+	}
+
+	.info-date strong {
+		font-size: 2.25rem;
+		line-height: 1;
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.info-month {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--color-blush);
+	}
+
+	.info-duration {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-top: 0.6rem;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.75rem;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: var(--color-rose-300);
+	}
+
+	.info-duration .dash {
+		width: 28px;
+		height: 1px;
+		background: rgba(255, 255, 255, 0.4);
+		flex: none;
+	}
+
+	.info-hours {
+		margin-top: 0.6rem;
+		font-family: var(--font-body);
+		font-size: 0.8125rem;
+		line-height: 1.6;
+		color: var(--color-rose-200);
+	}
+
+	.info-venue {
+		margin-top: 0.85rem;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 1.1875rem;
+		color: var(--color-white);
+	}
+
+	.info-address {
+		margin-top: 0.375rem;
+		max-width: 26ch;
+		font-family: var(--font-body);
+		font-size: 0.8125rem;
+		line-height: 1.6;
+		color: var(--color-rose-200);
+	}
+
+	.info-logos {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-top: 1rem;
+	}
+
+	/* Logos de parceiros mantêm a cor original — em vez de forçar
+	   monocromia, ganham um cartão branco para garantir contraste sobre
+	   o vidro escuro sem destruir o próprio desenho da marca. */
+	.logo-chip {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.5rem 0.75rem;
+		border-radius: 2px;
+		transition: transform 0.25s var(--ease-in-out);
+	}
+
+	.logo-chip:hover {
+		transform: translateY(-2px);
+	}
+
+	.info-logos img {
+		height: 40px;
+		width: auto;
+		display: block;
+	}
+
+	/* Abaixo disso o header fica apertado demais pros dois botões de
+	   texto ao lado da marca + ícones sociais + hambúrguer — o hambúrguer
+	   já dá acesso aos mesmos links (Quero Expor/Quero Visitar) na
+	   sidebar, então eles só somem daqui. */
+	@media (max-width: 900px) {
+		.header-ctas {
+			display: none;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.brand {
+			gap: 0.625rem;
+		}
+
+		.brand img {
+			height: 42px;
+		}
+
+		.brand-divider {
+			height: 24px;
+		}
+
+		/* Sem espaço pros três ícones ao lado das duas marcas — some no
+		   mobile mais estreito; hambúrguer continua abrindo o menu. */
+		.social-nav {
+			display: none;
+		}
+
+		.sidebar-inner {
+			padding: 1.5rem 1.25rem 2.5rem;
+		}
+
+		.nav-row a,
+		.nav-row span {
+			font-size: 1.2rem;
+		}
+	}
+
+	@media (max-width: 720px) {
+		.sidebar-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.sidebar-nav {
+			padding-left: 0;
+			order: 1;
+		}
+
+		.sidebar-info {
+			padding-right: 0;
+			border-right: 0;
+			padding-top: 2rem;
+			margin-top: 2.5rem;
+			border-top: 1px solid rgba(255, 255, 255, 0.14);
+			order: 2;
+		}
+	}
+</style>
+
+<script>
+	const toggle = document.getElementById(
+		"menu-toggle",
+	) as HTMLButtonElement | null;
+	const closeBtn = document.getElementById("sidebar-close");
+	const overlay = document.getElementById("sidebar-overlay");
+	const sidebar = document.getElementById("site-sidebar");
+	const burgerState = toggle?.querySelector("div");
+
+	const openSidebar = () => {
+		sidebar?.classList.add("is-open");
+		overlay?.removeAttribute("hidden");
+		requestAnimationFrame(() => overlay?.classList.add("is-visible"));
+		sidebar?.setAttribute("aria-hidden", "false");
+		toggle?.setAttribute("aria-expanded", "true");
+		burgerState?.classList.remove("not-active");
+		burgerState?.classList.add("active");
+		document.documentElement.style.overflow = "hidden";
+	};
+
+	const closeSidebar = () => {
+		sidebar?.classList.remove("is-open");
+		overlay?.classList.remove("is-visible");
+		sidebar?.setAttribute("aria-hidden", "true");
+		toggle?.setAttribute("aria-expanded", "false");
+		burgerState?.classList.remove("active");
+		burgerState?.classList.add("not-active");
+		document.documentElement.style.overflow = "";
+		setTimeout(() => {
+			if (!sidebar?.classList.contains("is-open"))
+				overlay?.setAttribute("hidden", "");
+		}, 400);
+	};
+
+	toggle?.addEventListener("click", () => {
+		const isOpen = sidebar?.classList.contains("is-open");
+		isOpen ? closeSidebar() : openSidebar();
+	});
+
+	closeBtn?.addEventListener("click", closeSidebar);
+	overlay?.addEventListener("click", closeSidebar);
+
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape") closeSidebar();
+	});
+
+	sidebar
+		?.querySelectorAll<HTMLElement>("li.has-dropdown")
+		.forEach((item) => {
+			const dropToggle =
+				item.querySelector<HTMLButtonElement>(".dropdown-toggle");
+			const drop = item.querySelector<HTMLElement>(".dropdown");
+
+			dropToggle?.addEventListener("click", () => {
+				const isOpen = item.classList.toggle("is-open");
+				dropToggle.setAttribute("aria-expanded", String(isOpen));
+				if (drop)
+					drop.style.maxHeight = isOpen
+						? `${drop.scrollHeight}px`
+						: "";
+			});
+		});
+</script>

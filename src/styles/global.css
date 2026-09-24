@@ -65,6 +65,35 @@
 	--font-display: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 	--font-body: 'Arial MT Pro', Arial, Helvetica, sans-serif;
 	--font-mono-fallback: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+	/* Altura do header fixo (Header.astro) — fonte única, consumida
+	   aqui (body/hero) e no próprio Header.astro, pra nunca desalinhar.
+	   O header tem duas faixas empilhadas (topbar + mainbar); --header-h
+	   é a soma das duas e é o que "empurra" o conteúdo das páginas.
+	   --header-main-h vira um alias pra --main-h só pra não quebrar
+	   quem ainda referencia o nome antigo. */
+	--topbar-h: 54px;
+	--main-h: 80px;
+	--main-h-compact: 66px;
+	--header-h: calc(var(--topbar-h) + var(--main-h));
+	--header-main-h: var(--main-h);
+}
+
+@media (max-width: 639px) {
+	:root {
+		--topbar-h: 46px;
+		--main-h: 68px;
+		--main-h-compact: 60px;
+	}
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
 }
 
 /* Arial MT Pro só existe no peso 400 (Regular) — sem arquivo Bold nem
@@ -103,11 +132,11 @@ html {
 
 body {
 	margin: 0;
-	/* Compensa o header fixo (5.5rem / 4.5rem no mobile) para que ele
-	   nunca cubra o topo do conteúdo — a primeira dobra (100vh) cancela
-	   isso com margin-top negativa, então o header continua flutuando
-	   apenas sobre ela. */
-	padding-top: 5.5rem;
+	/* Compensa o header fixo (Header.astro) para que ele nunca cubra o
+	   topo do conteúdo — a primeira dobra (100vh) cancela isso com
+	   margin-top negativa (ver .dual-hero), então o header continua
+	   flutuando apenas sobre ela. */
+	padding-top: var(--header-h);
 	font-family: var(--font-body);
 	color: var(--color-text);
 	background: var(--color-surface);
@@ -148,12 +177,6 @@ img {
 button {
 	font: inherit;
 	color: inherit;
-}
-
-@media (max-width: 480px) {
-	body {
-		padding-top: 4.5rem;
-	}
 }
 
 /* Cobre toda transition/animation do site — não só de um componente
@@ -326,6 +349,14 @@ button {
 .Outline_White {
 	--text-color: var(--color-white);
 	--border-color: var(--color-white);
+	--hover-bg-color: var(--color-white);
+	--hover-text-color: var(--color-primary);
+	--pressed-bg-color: var(--color-rose-200);
+}
+
+.Solid_Blush {
+	--bg-color: var(--color-blush);
+	--text-color: var(--color-primary);
 	--hover-bg-color: var(--color-white);
 	--hover-text-color: var(--color-primary);
 	--pressed-bg-color: var(--color-rose-200);

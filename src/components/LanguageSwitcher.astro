@@ -1,0 +1,415 @@
+---
+interface Language {
+	code: string;
+	label: string;
+	flagSvg: string;
+}
+
+// Bandeiras desenhadas à mão em SVG (sem depender de fonte de emoji —
+// no Windows/algumas plataformas a bandeira do Brasil, por exemplo, não
+// tem glyph e cai num retângulo genérico). Canvas quadrado (60x60) de
+// propósito: o badge que envolve cada uma recorta em círculo, e um
+// canvas quadrado preenche esse círculo sem sobrar tarja nem esticar.
+const FLAG_BR = `
+	<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+		<rect width="60" height="60" fill="#009c3b" />
+		<polygon points="30,5 57,30 30,55 3,30" fill="#ffdf00" />
+		<circle cx="30" cy="30" r="11.5" fill="#002776" />
+		<path d="M19,34 A13,13 0 0,0 41,26" stroke="#ffffff" stroke-width="1.8" fill="none" />
+	</svg>
+`;
+
+const FLAG_US = `
+	<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+		<rect width="60" height="60" fill="#ffffff" />
+		<g fill="#b22234">
+			<rect y="0" width="60" height="4.615" />
+			<rect y="9.231" width="60" height="4.615" />
+			<rect y="18.462" width="60" height="4.615" />
+			<rect y="27.692" width="60" height="4.615" />
+			<rect y="36.923" width="60" height="4.615" />
+			<rect y="46.154" width="60" height="4.615" />
+			<rect y="55.385" width="60" height="4.615" />
+		</g>
+		<rect x="0" y="0" width="24" height="32.3" fill="#3c3b6e" />
+		<g fill="#ffffff">
+			<circle cx="4" cy="6" r="1.1" /><circle cx="10" cy="6" r="1.1" /><circle cx="16" cy="6" r="1.1" /><circle cx="22" cy="6" r="1.1" />
+			<circle cx="7" cy="11.5" r="1.1" /><circle cx="13" cy="11.5" r="1.1" /><circle cx="19" cy="11.5" r="1.1" />
+			<circle cx="4" cy="17" r="1.1" /><circle cx="10" cy="17" r="1.1" /><circle cx="16" cy="17" r="1.1" /><circle cx="22" cy="17" r="1.1" />
+			<circle cx="7" cy="22.5" r="1.1" /><circle cx="13" cy="22.5" r="1.1" /><circle cx="19" cy="22.5" r="1.1" />
+			<circle cx="4" cy="28" r="1.1" /><circle cx="10" cy="28" r="1.1" /><circle cx="16" cy="28" r="1.1" /><circle cx="22" cy="28" r="1.1" />
+		</g>
+	</svg>
+`;
+
+const FLAG_ES = `
+	<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+		<rect width="60" height="60" fill="#ffc400" />
+		<rect width="60" height="15" y="0" fill="#c60b1e" />
+		<rect width="60" height="15" y="45" fill="#c60b1e" />
+	</svg>
+`;
+
+const FLAG_IT = `
+	<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+		<rect width="20" height="60" x="0" fill="#008c45" />
+		<rect width="20" height="60" x="20" fill="#ffffff" />
+		<rect width="20" height="60" x="40" fill="#cd212a" />
+	</svg>
+`;
+
+// Só o PT-BR tem conteúdo de fato — os outros ainda não têm páginas
+// traduzidas. Este componente é a interface (visual + estado salvo em
+// localStorage); a troca de conteúdo real fica para quando o site tiver
+// rotas/traduções por idioma.
+const languages: Language[] = [
+	{ code: 'pt', label: 'Português', flagSvg: FLAG_BR },
+	{ code: 'en', label: 'English', flagSvg: FLAG_US },
+	{ code: 'es', label: 'Español', flagSvg: FLAG_ES },
+	{ code: 'it', label: 'Italiano', flagSvg: FLAG_IT },
+];
+---
+
+<div class="lang-switcher" id="lang-switcher">
+	<button
+		class="lang-fab"
+		id="lang-fab"
+		type="button"
+		aria-haspopup="true"
+		aria-expanded="false"
+		aria-controls="lang-menu"
+		aria-label="Selecionar idioma"
+	>
+		<span class="lang-fab-flag" id="lang-fab-flag" aria-hidden="true" set:html={FLAG_BR} />
+		<span class="lang-fab-code" id="lang-fab-code">PT</span>
+	</button>
+
+	<ul class="lang-menu" id="lang-menu" role="menu" aria-label="Idiomas disponíveis">
+		{
+			languages.map((lang, i) => (
+				<li role="none" style={`--i:${i}`}>
+					<button
+						class="lang-option"
+						type="button"
+						role="menuitemradio"
+						data-lang={lang.code}
+						aria-checked={lang.code === 'pt' ? 'true' : 'false'}
+					>
+						<span class="lang-flag" aria-hidden="true" set:html={lang.flagSvg} />
+						<span class="lang-label">{lang.label}</span>
+						<svg class="lang-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" aria-hidden="true">
+							<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</button>
+				</li>
+			))
+		}
+	</ul>
+</div>
+
+<style>
+	.lang-switcher {
+		position: fixed;
+		right: clamp(1.25rem, 4vw, 2rem);
+		bottom: calc(clamp(1.25rem, 4vw, 2rem) + env(safe-area-inset-bottom, 0px));
+		z-index: 4500;
+	}
+
+	/* ---------- gatilho: pílula redonda, mesma linguagem visual dos
+	   botões CTA (gradiente da marca) — mas sólida, pra continuar
+	   legível sobre qualquer fundo da página (foto, seção clara ou
+	   escura) por trás dela. ---------- */
+	.lang-fab {
+		position: relative;
+		z-index: 1;
+		width: 58px;
+		height: 58px;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		background: linear-gradient(140deg, var(--color-primary), var(--color-primary-deep));
+		color: var(--color-white);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1px;
+		cursor: pointer;
+		box-shadow:
+			0 16px 32px rgba(73, 3, 6, 0.32),
+			0 2px 6px rgba(31, 3, 4, 0.25);
+		transition:
+			transform 0.3s var(--ease-out),
+			box-shadow 0.3s var(--ease-out);
+	}
+
+	.lang-fab:hover {
+		transform: translateY(-2px);
+		box-shadow:
+			0 20px 40px rgba(73, 3, 6, 0.38),
+			0 2px 6px rgba(31, 3, 4, 0.25);
+	}
+
+	.lang-fab:active {
+		transform: scale(0.94);
+	}
+
+	.lang-switcher.is-open .lang-fab {
+		transform: scale(0.94);
+	}
+
+	.lang-fab-flag {
+		width: 23px;
+		height: 23px;
+		flex: none;
+		border-radius: 50%;
+		overflow: hidden;
+		display: inline-flex;
+		box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+	}
+
+	.lang-fab-flag :global(svg) {
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
+
+	.lang-fab-code {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 0.5625rem;
+		letter-spacing: 0.08em;
+		color: var(--color-blush);
+	}
+
+	/* ---------- anel de pulso sutil, só pra chamar o olho na primeira
+	   vez — some depois do primeiro clique (via classe .dismissed). ---------- */
+	.lang-fab::before {
+		content: '';
+		position: absolute;
+		inset: -6px;
+		border-radius: inherit;
+		border: 1.5px solid var(--color-blush);
+		opacity: 0;
+		animation: lang-pulse 2.6s ease-out 1.2s infinite;
+	}
+
+	.lang-switcher.dismissed .lang-fab::before {
+		animation: none;
+		opacity: 0;
+	}
+
+	@keyframes lang-pulse {
+		0% {
+			transform: scale(0.88);
+			opacity: 0.6;
+		}
+		100% {
+			transform: scale(1.28);
+			opacity: 0;
+		}
+	}
+
+	/* ---------- menu: cartões sólidos empilhados acima do gatilho,
+	   ancorados no canto — cresce pra cima sem nunca mover o próprio
+	   botão do lugar. ---------- */
+	.lang-menu {
+		position: absolute;
+		right: 0;
+		bottom: calc(100% + 0.75rem);
+		z-index: 0;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.625rem;
+		pointer-events: none;
+	}
+
+	.lang-switcher.is-open .lang-menu {
+		pointer-events: auto;
+	}
+
+	.lang-menu li {
+		opacity: 0;
+		transform: translateY(10px) scale(0.9);
+		transform-origin: bottom right;
+		transition:
+			opacity 0.25s var(--ease-out),
+			transform 0.25s var(--ease-out);
+		transition-delay: calc((3 - var(--i)) * 35ms);
+	}
+
+	.lang-switcher.is-open .lang-menu li {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+		transition-delay: calc(var(--i) * 45ms);
+	}
+
+	.lang-option {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		padding: 0.625rem 1rem 0.625rem 0.75rem;
+		border: 1px solid var(--color-line);
+		border-radius: 9999px;
+		background: var(--color-white);
+		color: var(--color-ink);
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.875rem;
+		white-space: nowrap;
+		cursor: pointer;
+		box-shadow: 0 12px 26px rgba(73, 3, 6, 0.16);
+		transition:
+			transform 0.2s var(--ease-out),
+			box-shadow 0.2s var(--ease-out),
+			background-color 0.2s var(--ease-out),
+			color 0.2s var(--ease-out);
+	}
+
+	.lang-option:hover {
+		transform: translateX(-3px);
+		box-shadow: 0 14px 28px rgba(73, 3, 6, 0.22);
+	}
+
+	.lang-option[aria-checked='true'] {
+		background: var(--color-primary);
+		color: var(--color-white);
+		border-color: var(--color-primary);
+	}
+
+	.lang-flag {
+		width: 21px;
+		height: 21px;
+		flex: none;
+		border-radius: 50%;
+		overflow: hidden;
+		display: inline-flex;
+		box-shadow: 0 0 0 1px rgba(73, 3, 6, 0.12);
+	}
+
+	.lang-flag :global(svg) {
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
+
+	.lang-label {
+		flex: 1 1 auto;
+	}
+
+	.lang-check {
+		flex: none;
+		width: 15px;
+		height: 15px;
+		opacity: 0;
+		transform: scale(0.6);
+		transition:
+			opacity 0.2s var(--ease-out),
+			transform 0.2s var(--ease-out);
+	}
+
+	.lang-option[aria-checked='true'] .lang-check {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	@media (max-width: 560px) {
+		.lang-fab {
+			width: 50px;
+			height: 50px;
+		}
+
+		.lang-fab-flag {
+			width: 20px;
+			height: 20px;
+		}
+
+		.lang-option {
+			padding: 0.5625rem 0.875rem 0.5625rem 0.625rem;
+			font-size: 0.8125rem;
+		}
+
+		.lang-flag {
+			width: 19px;
+			height: 19px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.lang-fab::before {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	const STORAGE_KEY = 'fesqua-lang';
+
+	const root = document.getElementById('lang-switcher');
+	const fab = document.getElementById('lang-fab');
+	const menu = document.getElementById('lang-menu');
+	const fabFlag = document.getElementById('lang-fab-flag');
+	const fabCode = document.getElementById('lang-fab-code');
+
+	if (root && fab && menu && fabFlag && fabCode) {
+		const options = Array.from(menu.querySelectorAll<HTMLButtonElement>('.lang-option'));
+
+		const applyLang = (code: string, persist: boolean) => {
+			const match = options.find((opt) => opt.dataset.lang === code) ?? options[0];
+			options.forEach((opt) => opt.setAttribute('aria-checked', String(opt === match)));
+			const matchFlag = match.querySelector('.lang-flag');
+			if (matchFlag) fabFlag.replaceChildren(...Array.from(matchFlag.cloneNode(true).childNodes));
+			fabCode.textContent = (match.dataset.lang ?? 'pt').toUpperCase();
+			document.documentElement.lang =
+				{ pt: 'pt-BR', en: 'en', es: 'es', it: 'it' }[match.dataset.lang ?? 'pt'] ?? 'pt-BR';
+			if (persist) {
+				try {
+					localStorage.setItem(STORAGE_KEY, match.dataset.lang ?? 'pt');
+				} catch {
+					// localStorage indisponível (modo privado etc.) — só não persiste
+				}
+			}
+		};
+
+		let saved: string | null = null;
+		try {
+			saved = localStorage.getItem(STORAGE_KEY);
+		} catch {
+			saved = null;
+		}
+		if (saved) applyLang(saved, false);
+
+		const closeMenu = () => {
+			root.classList.remove('is-open');
+			fab.setAttribute('aria-expanded', 'false');
+		};
+
+		const openMenu = () => {
+			root.classList.add('is-open');
+			root.classList.add('dismissed');
+			fab.setAttribute('aria-expanded', 'true');
+		};
+
+		fab.addEventListener('click', () => {
+			root.classList.contains('is-open') ? closeMenu() : openMenu();
+		});
+
+		options.forEach((opt) => {
+			opt.addEventListener('click', () => {
+				applyLang(opt.dataset.lang ?? 'pt', true);
+				closeMenu();
+			});
+		});
+
+		document.addEventListener('click', (event) => {
+			if (!root.contains(event.target as Node)) closeMenu();
+		});
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape') closeMenu();
+		});
+	}
+</script>

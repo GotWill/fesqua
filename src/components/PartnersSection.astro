@@ -1,6 +1,7 @@
 ---
 import fs from 'node:fs';
 import path from 'node:path';
+import JanelaDraw from './JanelaDraw.astro';
 
 const LOGOS_DIR = path.resolve('public/images/logos');
 const logoFiles = fs.readdirSync(LOGOS_DIR);
@@ -41,8 +42,6 @@ const tabs: PartnerTab[] = [
 				featured: true,
 			},
 			{ name: 'São Paulo Expo', logo: 'sao-paulo-expo', url: 'https://www.saopauloexpo.com.br/pt/' },
-			{ name: 'Venice Travel', logo: 'venice-travel', url: 'https://www.venicetravel.com.br/' },
-			{ name: 'Balteus', logo: 'balteus', url: 'https://www.balteus.com.br/' },
 		],
 	},
 	{
@@ -78,6 +77,8 @@ const tabs: PartnerTab[] = [
 			{ name: 'Ascevi', logo: 'ascevi', url: 'http://www.ascevi.com.br/' },
 			{ name: 'Asefave', logo: 'asefave', url: 'https://www.asefave.org/' },
 			{ name: 'Aspec PVC', logo: 'aspec-pvc', url: 'https://aspecpvc.org.br/' },
+			{ name: 'Venice Travel', logo: 'venice-travel', url: 'https://www.venicetravel.com.br/' },
+			{ name: 'Balteus', logo: 'balteus', url: 'https://www.balteus.com.br/' },
 			{ name: 'Pro Acústica', logo: 'pro-acustica', url: 'https://www.proacustica.org.br/' },
 			{ name: 'CAU/SP', logo: 'cau-sp', url: 'https://causp.gov.br/' },
 			{ name: 'Guia do Vidro', logo: 'guia-do-vidro', url: 'https://guiadovidro.com.br/' },
@@ -139,11 +140,11 @@ const tabs: PartnerTab[] = [
 		</svg>
 	</div>
 
-	<div class="watermark" aria-hidden="true">
-		<svg viewBox="0 0 40 40" fill="none">
-			<rect x="3" y="3" width="34" height="34" rx="5" stroke="currentColor" stroke-width="2" />
-			<path d="M20 3v34M3 20h34" stroke="currentColor" stroke-width="2" />
-		</svg>
+	<div class="watermark watermark-tl" aria-hidden="true">
+		<JanelaDraw color="var(--color-white)" size="100%" delay={1200} class="watermark-janela" />
+	</div>
+	<div class="watermark watermark-br" aria-hidden="true">
+		<JanelaDraw color="var(--color-white)" size="100%" delay={2400} class="watermark-janela" />
 	</div>
 
 	<div class="partners-inner">
@@ -235,22 +236,29 @@ const tabs: PartnerTab[] = [
 		mask-image: radial-gradient(ellipse 80% 65% at 50% 30%, #000 40%, transparent 85%);
 	}
 
-	/* Marca d'água: textura de marca, não conteúdo — não interfere em nada. */
+	/* Marca d'água: mesmo JanelaDraw do CTA, se desenhando em loop nos
+	   dois cantos — acento de marca visível, mas atrás do conteúdo
+	   (z-index:0) e sem interceptar clique. A do canto superior fica
+	   abaixo do divisor em onda (z-index:2), que cobre o topo da
+	   seção. */
 	.watermark {
 		position: absolute;
-		right: -4%;
-		bottom: -6%;
 		z-index: 0;
-		width: min(52%, 640px);
+		width: min(34%, 420px);
 		aspect-ratio: 1 / 1;
-		color: rgba(255, 255, 255, 0.035);
+		opacity: 0.4;
 		transform: rotate(-8deg);
 		pointer-events: none;
 	}
 
-	.watermark svg {
-		width: 100%;
-		height: 100%;
+	.watermark-tl {
+		left: -6%;
+		top: -11%;
+	}
+
+	.watermark-br {
+		right: -6%;
+		bottom: -11%;
 	}
 
 	/* ---------- divisor em onda: dentro da seção escura, no topo,
@@ -435,11 +443,13 @@ const tabs: PartnerTab[] = [
 		gap: 1.125rem;
 	}
 
-	/* Realização & Local: logos com proporções bem diferentes entre si
-	   (ícone quadrado do balteus vs. faixa larga do São Paulo Expo) —
-	   align-items: center garante que fiquem centralizadas na mesma
-	   linha horizontal do grid. */
+	/* Realização & Local: só 3 marcas — em grid elas grudam à esquerda e
+	   sobra um vão vazio à direita. Vira flex centralizado pra virar um
+	   grupo só, ao meio, com wrap cuidando do mobile sozinho. */
 	#panel-realizacao .ptile-grid {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
 		align-items: center;
 	}
 
@@ -499,8 +509,15 @@ const tabs: PartnerTab[] = [
 
 	@media (max-width: 900px) {
 		.watermark {
-			width: 80%;
-			bottom: -4%;
+			width: 52%;
+		}
+
+		.watermark-tl {
+			top: -8%;
+		}
+
+		.watermark-br {
+			bottom: -8%;
 		}
 
 		.ptile-grid {
@@ -532,13 +549,6 @@ const tabs: PartnerTab[] = [
 			width: 100%;
 			height: 40px;
 			max-width: 130px;
-		}
-
-		/* Realização & Local tem logos largas (Contramarco, Venice
-		   Travel...) que ficam espremidas em 2 colunas — no mobile essa
-		   aba específica vira 1 coluna só. */
-		#panel-realizacao .ptile-grid {
-			grid-template-columns: 1fr;
 		}
 	}
 </style>
