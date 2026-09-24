@@ -834,10 +834,13 @@ const shortcuts = nav.filter((i) =>
 	.nav-dropdown-panel {
 		padding: 0.5rem;
 		border-radius: 0.875rem;
-		background: rgba(31, 3, 4, 0.92);
+		/* Sólido, sem backdrop-filter — mesmo ajuste feito na sidebar
+		   (ver .sidebar): o blur falha em produção em parte dos
+		   navegadores/dispositivos (alguns Chrome Android), deixando o
+		   painel transparente e ilegível sobre o hero. Gradiente sólido
+		   não depende de suporte a nada. */
+		background: linear-gradient(160deg, #2a0406 0%, #180203 60%, #120102 100%);
 		border: 1px solid rgba(255, 255, 255, 0.14);
-		backdrop-filter: blur(24px) saturate(140%);
-		-webkit-backdrop-filter: blur(24px) saturate(140%);
 		box-shadow: 0 20px 40px rgba(31, 3, 4, 0.4);
 	}
 
