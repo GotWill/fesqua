@@ -1572,6 +1572,12 @@ const shortcuts = nav.filter((i) =>
 			margin-left: 0;
 		}
 
+		/* menu na ponta esquerda, antes dos CTAs */
+		.hamburger_menu_wrapper {
+			order: -1;
+			flex-direction: row-reverse; /* ícone antes do rótulo */
+		}
+
 		/* o selo é invisível fora do modo compacto mas ocupa espaço: vai pro
 		   fim do grupo pra não empurrar os botões da margem esquerda. */
 		.cd-chip {
@@ -1594,6 +1600,19 @@ const shortcuts = nav.filter((i) =>
 		.brand {
 			order: 3;
 			margin-left: auto;
+		}
+
+		/* logos maiores no desktop (a barra tem 120px / 104px compacta) */
+		.brand img {
+			height: 68px;
+		}
+
+		.site-header.is-compact .brand img {
+			height: 54px;
+		}
+
+		.brand-divider {
+			height: 40px;
 		}
 	}
 

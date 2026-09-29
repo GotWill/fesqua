@@ -73,8 +73,8 @@
 	   --header-main-h vira um alias pra --main-h só pra não quebrar
 	   quem ainda referencia o nome antigo. */
 	--topbar-h: 54px;
-	--main-h: 104px;
-	--main-h-compact: 90px;
+	--main-h: 120px;
+	--main-h-compact: 104px;
 	--header-h: calc(var(--topbar-h) + var(--main-h));
 	--header-main-h: var(--main-h);
 }
