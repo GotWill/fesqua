@@ -145,7 +145,7 @@ const shortcuts = nav.filter((i) =>
 					<rect x="3" y="5" width="18" height="16" rx="2"></rect>
 					<path d="M3 9h18M8 3v4M16 3v4" stroke-linecap="round"></path>
 				</svg>
-				12–15 Set 2028 <span class="muted dur">· 4 dias</span>
+				12–15 Set 2028 <span class="muted dur">· 4 dias · Terça a sexta-feira</span>
 			</div>
 
 			<span class="tb-sep" aria-hidden="true"></span>
@@ -161,10 +161,19 @@ const shortcuts = nav.filter((i) =>
 					<circle cx="12" cy="10" r="2.25"></circle>
 				</svg>
 				São Paulo Expo
-				<span class="muted addr addr-full">· Rod. dos Imigrantes, km 1,5 – Vila Água Funda, São Paulo - SP, 04329-900</span>
+				<span class="muted addr addr-full">· Rod. dos Imigrantes, São Paulo - SP, 04329-900</span>
 				<span class="muted addr addr-mid">· Rod. dos Imigrantes, km 1,5 – São Paulo/SP</span>
 				<span class="muted addr addr-short">· Rod. dos Imigrantes, km 1,5</span>
 			</a>
+
+			<div class="tb-item mb-sim">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+					<path d="M12 3 3 8l9 5 9-5-9-5Z" stroke-linejoin="round"></path>
+					<path d="M3 12l9 5 9-5M3 16l9 5 9-5" stroke-linejoin="round"></path>
+				</svg>
+				<span class="sim-label">Eventos simultâneos</span>
+				<img class="sim-logo" src="/images/logos/feipat.webp" alt="Feipat" />
+			</div>
 
 			<nav class="socials" aria-label="Redes sociais">
 				<a href="https://www.instagram.com/fesqua/" target="_blank" rel="noopener" aria-label="Instagram">
@@ -205,15 +214,6 @@ const shortcuts = nav.filter((i) =>
 			</a>
 
 			<div class="mb-center">
-				<div class="mb-sim">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
-						<path d="M12 3 3 8l9 5 9-5-9-5Z" stroke-linejoin="round"></path>
-						<path d="M3 12l9 5 9-5M3 16l9 5 9-5" stroke-linejoin="round"></path>
-					</svg>
-					<span class="sim-label">Eventos simultâneos</span>
-					<img class="sim-logo" src="/images/logos/feipat.webp" alt="Feipat" />
-				</div>
-
 				<nav class="main-nav" aria-label="Atalhos">
 					{shortcuts.map((item) =>
 						item.dropdown && item.children?.length ? (
@@ -334,7 +334,7 @@ const shortcuts = nav.filter((i) =>
 					<span class="kicker">Onde</span>
 					<p class="info-venue">São Paulo Expo</p>
 					<p class="info-address">
-						Rod. dos Imigrantes, km 1,5 – Vila Água Funda, São Paulo
+						Rod. dos Imigrantes, São Paulo
 						- SP, 04329-900
 					</p>
 				</div>
@@ -495,7 +495,6 @@ const shortcuts = nav.filter((i) =>
 	}
 
 	.socials {
-		margin-left: auto;
 		display: flex;
 		gap: 0.4rem;
 		flex: none;
@@ -726,6 +725,8 @@ const shortcuts = nav.filter((i) =>
 		gap: 0.5rem;
 		white-space: nowrap;
 		flex: none;
+		/* centraliza no espaço livre entre o local e as redes sociais */
+		margin: 0 auto;
 	}
 
 	.mb-sim svg {
@@ -1133,6 +1134,19 @@ const shortcuts = nav.filter((i) =>
 		transform: translateX(0);
 	}
 
+	/* Desktop: o botão de menu está à esquerda, então a sidebar abre da
+	   esquerda pra direita. No mobile o hambúrguer continua à direita e a
+	   sidebar segue abrindo pela direita. */
+	@media (min-width: 900px) {
+		.sidebar {
+			inset: 0 auto 0 0;
+			border-left: 0;
+			border-right: 1px solid rgba(255, 255, 255, 0.14);
+			box-shadow: 40px 0 80px rgba(31, 3, 4, 0.35);
+			transform: translateX(-100%);
+		}
+	}
+
 	.sidebar-inner {
 		min-height: 100%;
 		display: flex;
@@ -1501,6 +1515,40 @@ const shortcuts = nav.filter((i) =>
 	@media (max-width: 899px) {
 		.header-ctas {
 			display: none;
+		}
+	}
+
+	/* Desktop: inverte as pontas — ações (selo + CTAs + menu) à esquerda e
+	   marca à direita. Só `order` no CSS, então o DOM (e a ordem de foco
+	   no mobile) continua o mesmo. */
+	@media (min-width: 900px) {
+		.mb-actions {
+			order: 1;
+			margin-left: 0;
+		}
+
+		/* o selo é invisível fora do modo compacto mas ocupa espaço: vai pro
+		   fim do grupo pra não empurrar os botões da margem esquerda. */
+		.cd-chip {
+			order: 1;
+		}
+
+		/* links no centro geométrico da barra, independente da largura das
+		   ações (esquerda) e da marca (direita), que são diferentes. */
+		.mb-inner {
+			position: relative;
+		}
+
+		.mb-center {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+		}
+
+		.brand {
+			order: 3;
+			margin-left: auto;
 		}
 	}
 

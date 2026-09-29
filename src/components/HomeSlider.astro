@@ -1,8 +1,6 @@
 ---
 interface HeroPanel {
 	id: 'fesqua' | 'vetro';
-	logo: string;
-	logoAlt: string;
 	headline: string;
 	image: string;
 	imageAlt: string;
@@ -16,8 +14,6 @@ const eventLocation = 'São Paulo Expo — São Paulo, Brasil';
 const panels: HeroPanel[] = [
 	{
 		id: 'fesqua',
-		logo: '/images/logo-fesqua-white.png',
-		logoAlt: 'Fesqua',
 		headline: 'A Maior Feira de Esquadrias e Fachadas da América Latina',
 		image: '/images/home/bg-1.jpg',
 		imageAlt: 'Fachada arquitetônica em vidro e alumínio',
@@ -26,8 +22,6 @@ const panels: HeroPanel[] = [
 	},
 	{
 		id: 'vetro',
-		logo: '/images/logo-fesqua-vetro-white.png',
-		logoAlt: 'Fesqua Vetro',
 		headline: 'Inovação, Tecnologia e Soluções Completas para a Indústria do Vidro',
 		image: '/images/home/bg-2.jpg',
 		imageAlt: 'Estrutura de vidro arquitetônico',
@@ -53,9 +47,7 @@ const panels: HeroPanel[] = [
 				<span class="panel-overlay" aria-hidden="true" />
 
 				<div class="panel-content">
-					<div class="panel-top">
-						<img class="panel-logo" src={panel.logo} alt={panel.logoAlt} />
-					</div>
+					
 
 					<div class="panel-bottom">
 						{i === 0 ? (

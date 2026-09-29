@@ -37,52 +37,60 @@ interface Props {
 	satellites?: Satellite[];
 }
 
-// 7 satélites (Ebrats removida), distribuídos em heptágono regular a
-// partir do topo — passo de 360/7 ≈ 51.43°, raio único = 35 (mesmo
-// valor de RING_RADII, cada satélite mora em cima do anel).
-// Pra recalcular: x = 50 + r·cos(θ), y = 50 + r·sin(θ).
+// 8 satélites distribuídos em octógono regular a partir do topo —
+// passo de 45°, raio único = 35 (mesmo valor de RING_RADII, cada
+// satélite mora em cima do anel).
+// Pra recalcular: x = 50 + r·sin(θ), y = 50 − r·cos(θ).
 const DEFAULT_SATELLITES: Satellite[] = [
 	{ logo: 'fesqua', label: 'Fesqua', x: 50.0, y: 15.0, labelPos: 'above' },
 	{
 		logo: 'saie-vetro',
 		label: 'Saie Vetro',
-		x: 77.36,
-		y: 28.18,
+		x: 74.75,
+		y: 25.25,
 		labelPos: 'above',
 		url: 'https://www.saievetro.com.br/',
 	},
 	{
 		logo: 'nelson-firmino',
 		label: 'Nelson Firmino',
-		x: 84.12,
-		y: 57.79,
+		x: 85.0,
+		y: 50.0,
 		labelPos: 'below',
 		url: 'https://www.premionelsonfirmino.com.br/',
 	},
 	{
 		logo: 'contramarco',
 		label: 'Contramarco',
-		x: 65.19,
-		y: 81.54,
+		x: 74.75,
+		y: 74.75,
 		labelPos: 'below',
 		url: 'https://www.contramarco.com/',
 	},
 	{
 		logo: 'forum-contramarco',
 		label: 'Fórum Contramarco',
-		x: 34.81,
-		y: 81.54,
+		x: 50.0,
+		y: 85.0,
 		labelPos: 'below',
 		url: 'https://www.forumcontramarco.com.br/',
 	},
-	{ logo: 'feipat-v2', label: 'Feipat', x: 15.88, y: 57.79, labelPos: 'below', url: 'https://feipat.com.br/' },
+	{ logo: 'feipat-v2', label: 'Feipat', x: 25.25, y: 74.75, labelPos: 'below', url: 'https://feipat.com.br/' },
 	{
 		logo: 'fesqua-vetro-v2',
 		label: 'Fesqua Vetro',
-		x: 22.64,
-		y: 28.18,
-		labelPos: 'above',
+		x: 15.0,
+		y: 50.0,
+		labelPos: 'below',
 		url: 'https://fesquavetro.com.br/',
+	},
+	{
+		logo: 'digital-tech',
+		label: 'Digital Tech',
+		x: 25.25,
+		y: 25.25,
+		labelPos: 'above',
+		url: 'https://digitaltechshow.com.br/',
 	},
 ];
 
@@ -98,7 +106,7 @@ const {
 		'Cada marca opera de forma independente, mas compartilha a mesma rede de contatos, conhecimento técnico e presença consolidada no setor.',
 		'Juntas, formam um ecossistema que conecta fabricantes, fornecedores, arquitetos e profissionais em <strong>todo o Brasil</strong>.',
 	],
-	stat = { value: '7', label: 'marcas conectadas em um só ecossistema' },
+	stat = { value: '8', label: 'marcas conectadas em um só ecossistema' },
 	satellites = DEFAULT_SATELLITES,
 }: Props = Astro.props;
 ---

@@ -85,7 +85,7 @@ const navColumnB: NavItem[] = [
 ];
 
 const contactInfo = {
-	address2: 'Rod. dos Imigrantes, km 1,5 – Vila Água Funda, São Paulo - SP, 04329-900',
+	address2: 'Rod. dos Imigrantes, São Paulo - SP, 04329-900',
 	phone: '(11) 4280-8860',
 	phoneHref: 'tel:+551142808860',
 	email: 'fesqua@fesqua.com.br',
@@ -111,11 +111,10 @@ const socialLinks = [
 	<div class="footer-inner">
 		<div class="footer-top">
 			<div class="f-brand">
-				<img class="brand-logo" src="/images/logo.webp" alt="Fesqua" />
-				<p>
-					Feira Internacional de Esquadrias e Vidros para Construção Civil. São Paulo Expo, todos os
-					anos.
-				</p>
+				<div class="brand-logos">
+					<img class="brand-logo" src="/images/logo.webp" alt="Fesqua" />
+					<img class="brand-logo" src="/images/logos/fesqua-vetro-v2.png" alt="Fesqua Vetro" />
+				</div>
 				<div class="social-row">
 					{
 						socialLinks.map((s) => (
@@ -331,18 +330,16 @@ const socialLinks = [
 	}
 
 	/* ---------- marca ---------- */
+	.brand-logos {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+	}
+
 	.brand-logo {
 		height: 3.5rem;
 		width: auto;
-	}
-
-	.f-brand p {
-		margin-top: 1rem;
-		max-width: 34ch;
-		font-family: var(--font-body);
-		font-size: 0.9375rem;
-		line-height: 1.6;
-		color: var(--color-ink);
 	}
 
 	.social-row {
