@@ -1134,6 +1134,51 @@ const shortcuts = nav.filter((i) =>
 		transform: translateX(0);
 	}
 
+	/* ---------- barra de rolagem da sidebar ----------
+	   Fina, sem trilho visível e no tom do painel: o polegar é um traço de
+	   4px (o "border" transparente + background-clip faz a área clicável
+	   ficar de 12px sem engordar o desenho), fica discreto em repouso e
+	   acende em blush ao passar o mouse / arrastar. scrollbar-gutter
+	   reserva o espaço, então abrir um dropdown (que faz o conteúdo passar
+	   a rolar) não empurra o layout 12px de lado. */
+	.sidebar {
+		scrollbar-gutter: stable;
+		overscroll-behavior: contain;
+	}
+
+	.sidebar::-webkit-scrollbar {
+		width: 12px;
+	}
+
+	.sidebar::-webkit-scrollbar-track {
+		background: transparent;
+		margin: 0.75rem 0;
+	}
+
+	.sidebar::-webkit-scrollbar-thumb {
+		min-height: 48px;
+		border: 4px solid transparent;
+		border-radius: 9999px;
+		background-color: rgba(255, 255, 255, 0.22);
+		background-clip: padding-box;
+		transition: background-color 0.25s var(--ease-in-out);
+	}
+
+	.sidebar::-webkit-scrollbar-thumb:hover,
+	.sidebar::-webkit-scrollbar-thumb:active {
+		background-color: var(--color-blush);
+	}
+
+	/* Firefox não lê ::-webkit-scrollbar; o Chrome moderno IGNORARIA o
+	   desenho acima se scrollbar-color estivesse definido, por isso o
+	   fallback fica restrito ao Firefox. */
+	@supports (-moz-appearance: none) {
+		.sidebar {
+			scrollbar-width: thin;
+			scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+		}
+	}
+
 	/* Desktop: o botão de menu está à esquerda, então a sidebar abre da
 	   esquerda pra direita. No mobile o hambúrguer continua à direita e a
 	   sidebar segue abrindo pela direita. */
