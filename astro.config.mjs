@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig, envField } from 'astro/config';
-import node from '@astrojs/node';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,12 +16,13 @@ export default defineConfig({
 		// que não existem no mapa). A reserva em português é feita por texto, em `pick()`/`t()`.
 	},
 	// Actions precisam de um servidor: o adaptador Node roda só o endpoint da action; as páginas continuam estáticas.
-	adapter: node({ mode: 'standalone' }),
+	adapter: vercel(),
 	security: {
 		// TROCAR pelos domínios reais do site (necessário atrás de proxy HTTPS)
 		allowedDomains: [
 			{ hostname: 'fesqua.com.br', protocol: 'https' },
 			{ hostname: 'www.fesqua.com.br', protocol: 'https' },
+			{ hostname: '*.vercel.app', protocol: 'https' },
 		],
 	},
 	env: {
