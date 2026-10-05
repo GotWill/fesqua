@@ -29,6 +29,8 @@ export default defineConfig({
 		schema: {
 			// chave do Resend: segredo de servidor (nunca vai para o navegador)
 			RESEND_KEY: envField.string({ context: 'server', access: 'secret' }),
+				// destinatário(s) dos contatos; vários e-mails separados por vírgula
+				CONTACT_TO: envField.string({ context: 'server', access: 'secret' }),
 		},
 	},
 });

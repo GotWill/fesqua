@@ -1,6 +1,6 @@
 import { defineAction, ActionError } from 'astro:actions';
 import { Resend } from 'resend';
-import { RESEND_KEY } from 'astro:env/server';
+import { RESEND_KEY, CONTACT_TO } from 'astro:env/server';
 import { contactSchema } from '../lib/contact-schema';
 import { buildContactEmail } from '../lib/contact-email';
 
@@ -9,9 +9,9 @@ const resend = new Resend(RESEND_KEY);
 
 // ⚠ TROCAR antes de ir para produção:
 //  - FROM precisa ser de um domínio verificado no Resend. Enquanto isso, 'onboarding@resend.dev' só entrega para o e-mail da sua conta Resend.
-//  - TO é quem recebe os contatos.
+//  - TO (quem recebe os contatos) vem da variável de ambiente CONTACT_TO (vários e-mails separados por vírgula).
 const FROM = 'Site FESQUA <onboarding@resend.dev>';
-const TO = ['delivered@resend.dev'];
+const TO = CONTACT_TO.split(',').map((email) => email.trim()).filter(Boolean);
 
 export const user = {
 	sendPost: defineAction({
