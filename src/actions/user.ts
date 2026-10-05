@@ -10,7 +10,7 @@ const resend = new Resend(RESEND_KEY);
 // ⚠ TROCAR antes de ir para produção:
 //  - FROM precisa ser de um domínio verificado no Resend. Enquanto isso, 'onboarding@resend.dev' só entrega para o e-mail da sua conta Resend.
 //  - TO (quem recebe os contatos) vem da variável de ambiente CONTACT_TO (vários e-mails separados por vírgula).
-const FROM = 'Site FESQUA <onboarding@resend.dev>';
+const FROM = 'Site FESQUA <fesqua@fesqua.com.br>';
 const TO = CONTACT_TO.split(',').map((email) => email.trim()).filter(Boolean);
 
 export const user = {
