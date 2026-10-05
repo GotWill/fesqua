@@ -1,0 +1,17 @@
+export const pt = {
+	'site.name': 'FESQUA',
+	'lang.select': 'Selecionar idioma',
+	'lang.available': 'Idiomas disponíveis',
+	'nf.title': 'Página não encontrada - FESQUA',
+	'nf.desc': 'A página que você procura não existe ou foi movida.',
+	'nf.lead': 'Esta página não foi',
+	'nf.strong': 'encontrada',
+	'nf.text': 'O endereço pode ter sido digitado errado ou a página foi movida. Volte ao início ou siga por um dos caminhos abaixo.',
+	'nf.home': 'Voltar ao início',
+	'nf.contact': 'Falar conosco',
+	'nf.links': 'Páginas úteis',
+	'nav.about': 'Sobre o evento',
+	'nav.exhibitors': 'Lista de expositores',
+	'nav.floorplan': 'Planta da feira',
+	'nav.contact': 'Contato',
+} as const;

@@ -1,0 +1,890 @@
+---
+import Layout from '../layouts/Layout.astro';
+import JanelaDraw from '../components/JanelaDraw.astro';
+import { getLang, pick } from '../i18n/utils';
+import { planta } from '../i18n/content/planta';
+import PartnersSection from '../components/PartnersSection.astro';
+
+/* ===================================================================
+   CONFIGURAÇÃO
+   - O PDF fica em /public/planta/. Para trocar a planta do ano: substitua o arquivo
+     e mude PDF_VERSION (evita que o navegador mostre a versão antiga em cache).
+   - Esta página lê o TEXTO do próprio PDF para a busca: não há lista de expositores aqui.
+   =================================================================== */
+const PDF_URL = '/planta/planta-da-feira.pdf';
+const PDF_VERSION = '2026';
+const pdf = `${PDF_URL}?v=${PDF_VERSION}`;
+
+const lang = getLang(Astro.currentLocale);
+const ui = pick(planta, lang);
+const [h1a, ...h1rest] = ui.title.split(' '); // "Planta" / "da Feira"
+const h1b = h1rest.join(' ');
+---
+
+<Layout title={ui.metaTitle} description={ui.metaDesc}>
+	<div class="pl">
+	<section class="jn-hero" aria-labelledby="pl-t">
+		<div class="c">
+			<h1 class="jn-h1" id="pl-t">{h1a} <span>{h1b}</span></h1>
+			<div class="jn-find">
+				<div class="jn-search" role="search">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+						<circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4" stroke-linecap="round"></path>
+					</svg>
+					<label class="sr-only" for="q">{ui.searchLabel}</label>
+					<input
+						id="q"
+						type="search"
+						placeholder={ui.searchLabel}
+						autocomplete="off"
+						spellcheck="false"
+						role="combobox"
+						aria-autocomplete="list"
+						aria-expanded="false"
+						aria-controls="res"
+						aria-haspopup="listbox"
+					/>
+					<ul class="jn-res" id="res" role="listbox" aria-label={ui.results} hidden></ul>
+				</div>
+				<div class="jn-chips" id="chips"></div>
+				<div class="sr-only" id="live" role="status" aria-live="polite"></div>
+			</div>
+		</div>
+	</section>
+
+	<section class="jn-stage">
+		<div class="c">
+			<div class="jn-win">
+				<div class="jn-glass" id="view" data-state="closed" data-pdf={pdf} data-t-none={ui.none} data-t-places={ui.places} data-t-zoom-hint={ui.zoomHint} data-t-zoom-hint-mac={ui.zoomHintMac} data-t-active-hint={ui.activeHint} data-t-showing={ui.showing} data-t-of-n={ui.ofN} data-shortcuts={JSON.stringify(ui.shortcuts)} role="application" aria-label={ui.viewer}>
+					<div class="pv-load" aria-hidden="true">
+						<JanelaDraw color="var(--color-primary)" size="clamp(72px, 10vw, 120px)" label="" />
+					</div>
+					<svg class="jn-mark" hidden aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 100 100">
+						<path class="w" d="M16 0H0V100H16M84 0H100V100H84"></path>
+						<path class="k" d="M16 0H0V100H16M84 0H100V100H84"></path>
+					</svg>
+
+					<div class="jn-ctrl" role="group" aria-label={ui.controls}>
+						<button type="button" class="pr-b" data-pv-ui data-act="plus" aria-label={ui.zoomIn} title={ui.zoomIn}>
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke-linecap="round"></path></svg>
+						</button>
+						<button type="button" class="pr-b" data-pv-ui data-act="minus" aria-label={ui.zoomOut} title={ui.zoomOut}>
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14" stroke-linecap="round"></path></svg>
+						</button>
+						<button type="button" class="pr-b" data-pv-ui data-act="fit" aria-label={ui.fit} title={ui.fit}>
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+						</button>
+						<button type="button" class="pr-b" data-pv-ui data-act="full" aria-label={ui.fullscreen} title={ui.fullscreen}>
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+								<path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5" stroke-linecap="round" stroke-linejoin="round"></path><rect x="9" y="9" width="6" height="6" rx="1"></rect>
+							</svg>
+						</button>
+						<a class="pr-b" data-pv-ui data-act="down" href={pdf} download="planta-da-feira.pdf" aria-label={ui.download} title={ui.download}>
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+						</a>
+					</div>
+
+					<p class="jn-hint">{ui.hint}</p>
+					<p class="jn-tip" role="status" aria-live="polite"></p>
+					<span class="jn-sash l" data-pv-ui aria-hidden="true"></span><span class="jn-sash r" data-pv-ui aria-hidden="true"></span>
+				</div>
+			</div>
+		</div>
+	</section>
+	</div>
+
+    <PartnersSection />
+</Layout>
+
+<style>
+	.pl {
+		text-rendering: geometricPrecision;
+		-webkit-font-smoothing: antialiased;
+	}
+	.pl svg:not(.jn-mark) {
+		display: block;
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		white-space: nowrap;
+	}
+	.pr-b {
+		width: 44px;
+		height: 44px;
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		cursor: pointer;
+		border: 1px solid var(--bd);
+		background: var(--bg);
+		color: var(--fg);
+		transition:
+			background-color 0.25s,
+			color 0.25s,
+			border-color 0.25s,
+			transform 0.1s;
+	}
+	.pr-b svg {
+		width: 20px;
+		height: 20px;
+	}
+	.pr-b:hover {
+		background: var(--hbg);
+		color: var(--hfg);
+		border-color: var(--hbg);
+	}
+	.pr-b:active {
+		transform: scale(0.92);
+	}
+	.pr-b:focus-visible {
+		outline: 2px solid var(--ring);
+		outline-offset: 3px;
+	}
+	.pr-b[aria-pressed='true'] {
+		background: var(--hbg);
+		color: var(--hfg);
+		border-color: var(--hbg);
+	}
+	a.pr-b {
+		text-decoration: none;
+	}
+
+	.c {
+		max-width: 1280px;
+		margin-inline: auto;
+		padding-inline: clamp(1.25rem, 4vw, 3rem);
+	}
+	.jn-hero {
+		position: relative;
+		background-color: var(--color-rose-50);
+		border-bottom: 1px solid var(--color-line);
+		background-image:
+			linear-gradient(rgba(156, 12, 12, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(156, 12, 12, 0.06) 1px, transparent 1px),
+			linear-gradient(rgba(156, 12, 12, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(156, 12, 12, 0.035) 1px, transparent 1px);
+		background-size:
+			96px 96px,
+			96px 96px,
+			24px 24px,
+			24px 24px;
+	}
+	.jn-hero .c {
+		padding-block: 4.25rem 8rem;
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+		gap: clamp(2rem, 5vw, 4rem);
+		align-items: end;
+	}
+	.jn-h1 {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(2.125rem, 6.2vw, 5.25rem);
+		line-height: 0.95;
+		letter-spacing: -0.03em;
+		color: var(--color-primary);
+	}
+	.jn-h1 span {
+		display: block;
+		color: var(--color-text);
+	}
+	.jn-find {
+		position: relative;
+		z-index: 40;
+	}
+	.jn-search {
+		position: relative;
+		display: flex;
+		align-items: center;
+		background: #fff;
+		border: 1px solid var(--color-line);
+		border-radius: 9999px;
+		padding: 0.35rem 0.5rem 0.35rem 1.35rem;
+		box-shadow: 0 24px 40px -26px rgba(73, 3, 6, 0.5);
+		transition:
+			border-color 0.25s,
+			box-shadow 0.25s;
+	}
+	.jn-search:focus-within {
+		border-color: var(--color-primary);
+		box-shadow:
+			0 0 0 4px rgba(156, 12, 12, 0.14),
+			0 24px 40px -26px rgba(73, 3, 6, 0.5);
+	}
+	.jn-search svg {
+		width: 22px;
+		height: 22px;
+		flex: none;
+		color: var(--color-primary);
+	}
+	.jn-search input {
+		flex: 1;
+		min-width: 0;
+		border: 0;
+		background: transparent;
+		padding: 0.95rem 1rem;
+		font-family: var(--font-body);
+		font-size: 1.125rem;
+		color: var(--color-text);
+		outline: 0;
+	}
+	.jn-search input::placeholder {
+		color: #8a7f7d;
+	}
+	.jn-search input::-webkit-search-cancel-button {
+		-webkit-appearance: none;
+		appearance: none;
+		height: 18px;
+		width: 18px;
+		cursor: pointer;
+		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239C0C0C' stroke-width='2.4' stroke-linecap='round'><path d='M6 6l12 12M18 6 6 18'/></svg>")
+			center/contain no-repeat;
+	}
+	.jn-res {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: calc(100% + 0.6rem);
+		z-index: 40;
+		list-style: none;
+		margin: 0;
+		padding: 0.4rem;
+		background: #fff;
+		border: 1px solid var(--color-line);
+		border-radius: 1.1rem;
+		box-shadow: 0 30px 60px -24px rgba(73, 3, 6, 0.5);
+		max-height: min(60vh, 420px);
+		overflow: auto;
+	}
+	.jn-res[hidden] {
+		display: none;
+	}
+	.jn-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 1rem;
+	}
+
+	.jn-stage {
+		position: relative;
+		z-index: 2;
+		margin-top: -5.5rem;
+		padding-bottom: 5rem;
+	}
+	.jn-win {
+		scroll-margin-top: calc(var(--header-h) + 12px);
+	}
+	.jn-win {
+		position: relative;
+		padding: 14px;
+		border-radius: 12px;
+		background: linear-gradient(145deg, #f3eeec, #bdb4b1 55%, #e9e3e1);
+		box-shadow:
+			0 50px 90px -40px rgba(73, 3, 6, 0.55),
+			inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+	}
+	/* os colchetes da marca emolduram a janela */
+	.jn-win::before,
+	.jn-win::after {
+		content: '';
+		position: absolute;
+		width: 22px;
+		border: 3px solid var(--color-primary);
+		pointer-events: none;
+	}
+	.jn-win::before {
+		left: -26px;
+		top: 14%;
+		height: 72%;
+		border-right: 0;
+	}
+	.jn-win::after {
+		right: -26px;
+		top: 6%;
+		height: 72%;
+		border-left: 0;
+	}
+	.jn-glass {
+		--bg: rgba(255, 255, 255, 0.94);
+		--fg: var(--color-primary);
+		--bd: rgba(156, 12, 12, 0.25);
+		--hbg: var(--color-primary);
+		--hfg: #fff;
+		--ring: var(--color-primary);
+		height: min(80svh, 940px);
+		min-height: 500px;
+		border-radius: 3px;
+		box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.28);
+		background:
+			linear-gradient(rgba(156, 12, 12, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(156, 12, 12, 0.05) 1px, transparent 1px),
+			#ebe4e1;
+		background-size:
+			32px 32px,
+			32px 32px,
+			auto;
+	}
+	.jn-ctrl {
+		position: absolute;
+		z-index: 7;
+		right: 14px;
+		top: 14px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+	.jn-ctrl .pr-b {
+		box-shadow: 0 10px 20px -10px rgba(73, 3, 6, 0.5);
+	}
+	.jn-mark {
+		position: absolute;
+		z-index: 5;
+		left: 0;
+		top: 0;
+		pointer-events: none;
+		overflow: visible;
+	}
+	.jn-mark[hidden] {
+		display: none;
+	}
+	.jn-mark path {
+		fill: none;
+		vector-effect: non-scaling-stroke;
+		stroke-linecap: square;
+	}
+	.jn-mark .w {
+		stroke: #fff;
+		stroke-width: 9px;
+	}
+	.jn-mark .k {
+		stroke: #1a0102;
+		stroke-width: 4px;
+	}
+	/* as duas folhas da janela */
+	.jn-sash {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 50.4%;
+		z-index: 6;
+		will-change: transform;
+		background: linear-gradient(125deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 40%), linear-gradient(180deg, #dcd5d2, #a99f9b);
+		border: 9px solid #cfc6c3;
+		box-shadow:
+			inset 0 0 0 1px rgba(255, 255, 255, 0.6),
+			inset 0 0 40px rgba(0, 0, 0, 0.18);
+		transition:
+			transform 1.5s cubic-bezier(0.65, 0, 0.35, 1),
+			visibility 0s 1.5s;
+	}
+	.jn-sash.l {
+		left: 0;
+	}
+	.jn-sash.r {
+		right: 0;
+	}
+	.jn-sash::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		width: 7px;
+		height: 96px;
+		margin-top: -48px;
+		border-radius: 4px;
+		background: linear-gradient(90deg, #8d817e, #fff, #756b68);
+	}
+	.jn-sash.l::after {
+		right: 16px;
+	}
+	.jn-sash.r::after {
+		left: 16px;
+	}
+	.jn-glass[data-state='open'] .jn-sash.l {
+		transform: translateX(-101%);
+		visibility: hidden;
+	}
+	.jn-glass[data-state='open'] .jn-sash.r {
+		transform: translateX(101%);
+		visibility: hidden;
+	}
+	.jn-glass .pv-load {
+		z-index: 8;
+		--ink: var(--color-primary);
+	}
+	.jn-hint {
+		position: absolute;
+		z-index: 7;
+		left: 50%;
+		bottom: 16px;
+		transform: translateX(-50%);
+		margin: 0;
+		padding: 0.55rem 1.1rem;
+		border-radius: 9999px;
+		background: rgba(73, 3, 6, 0.9);
+		color: #fff;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		white-space: nowrap;
+		pointer-events: none;
+		transition:
+			opacity 0.6s,
+			transform 0.6s;
+	}
+	.jn-tip {
+		position: absolute;
+		z-index: 9;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%) scale(0.96);
+		margin: 0;
+		padding: 0.9rem 1.5rem;
+		border-radius: 9999px;
+		background: rgba(26, 1, 2, 0.92);
+		color: #fff;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 0.9375rem;
+		text-align: center;
+		max-width: 86%;
+		pointer-events: none;
+		opacity: 0;
+		transition:
+			opacity 0.3s,
+			transform 0.3s;
+	}
+	.jn-tip.on {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+	}
+	.jn-glass.is-active {
+		box-shadow: inset 0 0 0 3px var(--color-primary-bright);
+	}
+	.jn-glass.is-touched .jn-hint,
+	.jn-glass:not(.is-ready) .jn-hint,
+	.jn-glass:not([data-state='open']) .jn-hint {
+		opacity: 0;
+		transform: translate(-50%, 10px);
+	}
+	@media (max-width: 900px) {
+		.jn-hero .c {
+			grid-template-columns: 1fr;
+			gap: 1.75rem;
+			padding-block: 3rem 7rem;
+		}
+		.jn-stage {
+			margin-top: -4.75rem;
+		}
+		.jn-win::before,
+		.jn-win::after {
+			display: none;
+		}
+		.jn-glass {
+			height: 72svh;
+			min-height: 440px;
+		}
+		.jn-hint {
+			display: none;
+		}
+		.pr-b {
+			width: 42px;
+			height: 42px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.jn-sash,
+		.jn-hint,
+		.pv-base,
+		.pv-load {
+			transition: none !important;
+		}
+	}
+</style>
+
+<!-- Elementos criados por JavaScript (camadas do PDF, lista de resultados, atalhos) não recebem o escopo
+     do Astro: por isso este bloco é global. Os nomes de classe são todos prefixados (pv-, jn-). -->
+<style is:global>
+	.pv {
+		position: relative;
+		overflow: hidden;
+		touch-action: none;
+		user-select: none;
+		-webkit-user-select: none;
+		cursor: grab;
+		outline: none;
+	}
+	.pv.is-grabbing {
+		cursor: grabbing;
+	}
+	.pv[data-coop] {
+		touch-action: auto;
+	}
+	.pv[data-coop].is-active {
+		touch-action: none;
+	}
+	.pv:focus-visible {
+		box-shadow: inset 0 0 0 3px var(--color-blush);
+	}
+	.pv-stage {
+		position: absolute;
+		left: 0;
+		top: 0;
+		transform-origin: 0 0;
+		background: #fff;
+		will-change: transform;
+		box-shadow:
+			0 40px 90px -30px rgba(0, 0, 0, 0.65),
+			0 0 0 1px rgba(0, 0, 0, 0.12);
+	}
+	.pv-base {
+		display: block;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		transition: opacity 0.5s;
+	}
+	.pv.is-ready .pv-base {
+		opacity: 1;
+	}
+	.pv-sharp {
+		position: absolute;
+		left: 0;
+		top: 0;
+		transform-origin: 0 0;
+		pointer-events: none;
+		display: none;
+		will-change: transform;
+	}
+	.pv-load {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		pointer-events: none;
+		z-index: 2;
+		transition: opacity 0.5s;
+	}
+	.pv.is-ready .pv-load {
+		opacity: 0;
+	}
+	.jn-res li {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.8rem 1rem;
+		border-radius: 0.7rem;
+		cursor: pointer;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 0.9375rem;
+		color: var(--color-text);
+	}
+	.jn-res li small {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.75rem;
+		letter-spacing: 0.04em;
+		color: var(--color-ink);
+		white-space: nowrap;
+	}
+	.jn-res li mark {
+		background: none;
+		color: var(--color-primary);
+	}
+	.jn-res li[aria-selected='true'],
+	.jn-res li:hover {
+		background: var(--color-rose-50);
+		color: var(--color-primary);
+	}
+	.jn-res .none {
+		cursor: default;
+		color: var(--color-ink);
+		font-weight: 600;
+	}
+	.jn-chips button {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		padding: 0.55rem 1rem;
+		border-radius: 9999px;
+		cursor: pointer;
+		border: 1px solid var(--color-line);
+		background: #fff;
+		color: var(--color-ink);
+		transition:
+			background-color 0.25s,
+			color 0.25s,
+			border-color 0.25s;
+	}
+	.jn-chips button:hover,
+	.jn-chips button:focus-visible {
+		background: var(--color-primary);
+		border-color: var(--color-primary);
+		color: #fff;
+	}
+</style>
+
+<script>
+	import { loadPdf, createViewer, norm, clamp } from '../scripts/planta-viewer.js';
+
+	const view = document.getElementById('view');
+	// textos da interface que aparecem durante o uso (lista de resultados, avisos, atalhos): vêm do servidor, já traduzidos
+	const d = view.dataset;
+	const UI = {
+		none: d.tNone,
+		places: d.tPlaces,
+		zoomHint: d.tZoomHint,
+		zoomHintMac: d.tZoomHintMac,
+		activeHint: d.tActiveHint,
+		showing: (label) => d.tShowing.replace('{label}', label),
+		ofN: (i, n) => d.tOfN.replace('{i}', i).replace('{n}', n),
+		// atalhos sob a busca: [rótulo, termo buscado no PDF]; só aparecem se o termo existir no PDF
+		shortcuts: JSON.parse(d.shortcuts || '[]'),
+	};
+
+	const q = document.getElementById('q'),
+		res = document.getElementById('res'),
+		chipsEl = document.getElementById('chips'),
+		live = document.getElementById('live');
+	const mark = view.querySelector('.jn-mark');
+	const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+	(async () => {
+		const page = await loadPdf(view.dataset.pdf);
+		const v = createViewer(view, page, { pad: 36, coop: true });
+		window.__planta = v; // gancho de depuração/testes
+		const tip = view.querySelector('.jn-tip');
+		let tipT = 0;
+		const mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+		v.onHint((k) => {
+			clearTimeout(tipT);
+			if (k === 'inactive') {
+				tip.classList.remove('on');
+				return;
+			}
+			tip.textContent = k === 'ctrl' ? (mac ? UI.zoomHintMac : UI.zoomHint) : UI.activeHint;
+			tip.classList.add('on');
+			tipT = setTimeout(() => tip.classList.remove('on'), k === 'ctrl' ? 1500 : 2600);
+		});
+		const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		/* ---- janela de correr: abre quando a planta está pronta e a janela aparece na tela ---- */
+		let visible = false,
+			opened = false;
+		const tryOpen = () => {
+			if (opened || !v.ready || !visible) return;
+			opened = true;
+			setTimeout(
+				() => {
+					view.dataset.state = 'open';
+				},
+				reduce ? 0 : 1000,
+			);
+		};
+		new IntersectionObserver(
+			(es) => {
+				visible = es[0].isIntersecting;
+				tryOpen();
+			},
+			{ threshold: 0.25 },
+		).observe(view);
+		v.onChange(() => {
+			tryOpen();
+			view.classList.toggle('is-touched', v.touched);
+			placeMark();
+		});
+
+		/* ---- botões ---- */
+		view.addEventListener('click', (e) => {
+			const b = e.target.closest('[data-act]');
+			if (!b) return;
+			const a = b.dataset.act;
+			if (a === 'plus') v.zoomBy(1.5);
+			else if (a === 'minus') v.zoomBy(1 / 1.5);
+			else if (a === 'fit') {
+				v.fit(900);
+			} else if (a === 'full') {
+				if (document.fullscreenElement) document.exitFullscreen();
+				else view.requestFullscreen && view.requestFullscreen();
+			}
+		});
+
+		/* ---- marcador (colchetes da marca, preto com contorno branco: aparece sobre vermelho, amarelo e azul) ---- */
+		let target = null;
+		const ring = document.createElement('div');
+		ring.className = 'jn-mark-ring';
+		view.appendChild(ring);
+		ring.style.cssText =
+			'position:absolute;z-index:5;pointer-events:none;border:3px solid #1a0102;border-radius:6px;box-shadow:0 0 0 2px #fff;opacity:0';
+		function placeMark() {
+			if (!target) return;
+			const a = v.toScreen(target.x0, target.y0),
+				b = v.toScreen(target.x1, target.y1);
+			const w = Math.max(b.x - a.x + 22, 54),
+				h = Math.max(b.y - a.y + 18, 40),
+				cx = (a.x + b.x) / 2,
+				cy = (a.y + b.y) / 2;
+			mark.style.width = w + 'px';
+			mark.style.height = h + 'px';
+			mark.style.transform = `translate(${cx - w / 2}px,${cy - h / 2}px)`;
+			ring.style.width = w + 'px';
+			ring.style.height = h + 'px';
+			ring.style.left = cx - w / 2 + 'px';
+			ring.style.top = cy - h / 2 + 'px';
+		}
+		function showMark(t) {
+			target = t;
+			mark.removeAttribute('hidden');
+			placeMark();
+			ring.animate(
+				[
+					{ transform: 'scale(.75)', opacity: 0.95 },
+					{ transform: 'scale(1.9)', opacity: 0 },
+				],
+				{ duration: 1250, iterations: reduce ? 1 : 3, easing: 'cubic-bezier(0,0,.2,1)' },
+			);
+		}
+		function hideMark() {
+			target = null;
+			mark.setAttribute('hidden', '');
+			ring.style.opacity = 0;
+			ring.getAnimations().forEach((a) => a.cancel());
+		}
+
+		/* ---- localizador ---- */
+		let groups = [],
+			shown = [],
+			active = -1,
+			cur = null,
+			occ = 0;
+		const NOISE = (n) => !n || n.length < 2 || /^\d+(\.\d+)?m2$/.test(n) || /^(rua|ligacao|fechamento)\b/.test(n);
+		async function build() {
+			const items = await v.text(),
+				map = new Map();
+			for (const it of items) {
+				const n = norm(it.str);
+				if (NOISE(n)) continue;
+				if (!map.has(n)) map.set(n, { n, label: it.str, occ: [] });
+				map.get(n).occ.push(it);
+			}
+			groups = [...map.values()];
+			const want = UI.shortcuts;
+			chipsEl.innerHTML = want
+				.filter(([, w]) => groups.some((g) => g.n.includes(norm(w))))
+				.map(([label, w]) => `<button type="button" data-q="${esc(w)}">${esc(label)}</button>`)
+				.join('');
+			view.dataset.indexed = String(groups.length);
+		}
+		function find(term) {
+			const t = norm(term);
+			if (t.length < 2) return [];
+			const score = (g) =>
+				g.n === t ? 0 : g.n.startsWith(t) ? 1 : g.n.split(/[\s\/\-\.]+/).some((w) => w.startsWith(t)) ? 2 : g.n.includes(t) ? 3 : 9;
+			return groups
+				.map((g) => [score(g), g])
+				.filter((x) => x[0] < 9)
+				.sort((a, b) => a[0] - b[0] || a[1].label.length - b[1].label.length)
+				.slice(0, 8)
+				.map((x) => x[1]);
+		}
+		function hi(label, term) {
+			const i = norm(label).indexOf(norm(term));
+			if (i < 0 || norm(label).length !== label.length) return esc(label);
+			return esc(label.slice(0, i)) + '<mark>' + esc(label.slice(i, i + term.length)) + '</mark>' + esc(label.slice(i + term.length));
+		}
+		function paint(term) {
+			shown = find(term);
+			active = shown.length ? 0 : -1;
+			if (!term.trim() || term.trim().length < 2) {
+				close();
+				return;
+			}
+			res.innerHTML = shown.length
+				? shown
+						.map(
+							(g, i) =>
+								`<li role="option" id="opt-${i}" data-i="${i}" aria-selected="${i === 0}"><span>${hi(g.label, term.trim())}</span>${g.occ.length > 1 ? `<small>${g.occ.length} ${UI.places}</small>` : ''}</li>`,
+						)
+						.join('')
+				: `<li class="none" role="option" aria-disabled="true">${UI.none}</li>`;
+			res.hidden = false;
+			q.setAttribute('aria-expanded', 'true');
+			q.setAttribute('aria-activedescendant', shown.length ? 'opt-0' : '');
+		}
+		function close() {
+			res.hidden = true;
+			q.setAttribute('aria-expanded', 'false');
+			q.removeAttribute('aria-activedescendant');
+		}
+		function setActive(i) {
+			active = (i + shown.length) % shown.length;
+			res.querySelectorAll('li').forEach((li, k) => li.setAttribute('aria-selected', k === active));
+			q.setAttribute('aria-activedescendant', 'opt-' + active);
+			res.children[active].scrollIntoView({ block: 'nearest' });
+		}
+		function go(g) {
+			if (!g) return;
+			occ = cur === g ? (occ + 1) % g.occ.length : 0;
+			cur = g;
+			const o = g.occ[occ],
+				vw = view.clientWidth - v.inset.l - v.inset.r;
+			const sw = (0.38 * vw) / Math.max(o.x1 - o.x0, 1),
+				sh = 28 / Math.max(o.fs, 4);
+			v.flyTo({ x: o.cx, y: o.cy, s: clamp(Math.max(sh, Math.min(sw, 3)), 1.2, 6) }, reduce ? 0 : 1100);
+			showMark(o);
+			close();
+			live.textContent = UI.showing(g.label) + (g.occ.length > 1 ? UI.ofN(occ + 1, g.occ.length) : '');
+			document.querySelector('.jn-win').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+		}
+		q.addEventListener('input', () => {
+			if (!q.value.trim()) {
+				hideMark();
+				cur = null;
+			}
+			paint(q.value);
+		});
+		q.addEventListener('focus', () => {
+			if (q.value.trim().length >= 2) paint(q.value);
+		});
+		q.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				if (res.hidden) paint(q.value);
+				else setActive(active + 1);
+			} else if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				if (!res.hidden) setActive(active - 1);
+			} else if (e.key === 'Enter') {
+				e.preventDefault();
+				if (res.hidden) paint(q.value);
+				if (shown.length) go(shown[Math.max(active, 0)]);
+			} else if (e.key === 'Escape') {
+				close();
+			}
+		});
+		res.addEventListener('mousedown', (e) => {
+			const li = e.target.closest('li[data-i]');
+			if (li) {
+				e.preventDefault();
+				const g = shown[+li.dataset.i];
+				q.value = g.label;
+				go(g);
+			}
+		});
+		document.addEventListener('click', (e) => {
+			if (!e.target.closest('.jn-find')) close();
+		});
+		chipsEl.addEventListener('click', (e) => {
+			const b = e.target.closest('button[data-q]');
+			if (!b) return;
+			q.value = b.dataset.q;
+			paint(q.value);
+			if (shown.length) go(shown[0]);
+		});
+		v.text().then(build); // lê o texto do PDF em segundo plano
+	})();
+</script>

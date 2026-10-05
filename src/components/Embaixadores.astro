@@ -1,0 +1,755 @@
+---
+import JanelaDraw from './JanelaDraw.astro';
+import { getLang, pick } from '../i18n/utils';
+import { content as contentAll } from '../i18n/content/embaixadores';
+
+/* ===================================================================
+   DADOS — um objeto por embaixador. É só editar este array.
+   - name: nome exatamente como enviado pelo cliente (não é traduzido).
+   - description: opcional. Sem ela, o texto vem de src/i18n/content/embaixadores.ts (por idioma),
+     indexado pelo id do embaixador. "\n" na descrição vira quebra de linha.
+   - photo:     caminho da foto em /public (ex.: '/images/embaixadores/ana.webp').
+                Vazio = aparece a área reservada. Proporção ideal 4:5 (retrato).
+   - instagram: URL completa do perfil (ex.: 'https://www.instagram.com/usuario/').
+                Vazio = o ícone do Instagram NÃO aparece para essa pessoa.
+   =================================================================== */
+interface Ambassador {
+	name: string;
+	description?: string;
+	photo?: string;
+	instagram?: string;
+}
+
+const defaultAmbassadors: Ambassador[] = [
+	{
+		name: 'Alessandra Ribeiro',
+		photo: '/images/embaixadores/alessandra.jpg',
+		instagram: 'https://www.instagram.com/ealessandraribeiro',
+	},
+	{
+		name: 'PROF. ALEXANDRE ARAUJO, ME',
+		photo: '/images/embaixadores/alexandre.jpg',
+		instagram: 'https://www.instagram.com/canaldoserralheiro',
+	},
+	{
+		name: 'Audrey Dias',
+		photo: '/images/embaixadores/audrey.jpg',
+		instagram: 'https://www.instagram.com/arq.audreydias',
+	},
+	{
+		name: 'Cirilo Paes',
+		photo: '/images/embaixadores/cirilo.jpg',
+		instagram: 'https://www.instagram.com/cirilopaesespecialistaemvidros/',
+	},
+	{
+		name: 'Daniel Estrela',
+		photo: 'images/embaixadores/daniel.jpg',
+		instagram: 'https://www.instagram.com/vidronaobra/',
+	},
+	{
+		name: 'Felipe Leite',
+		photo: '/images/embaixadores/felipe.jpg',
+		instagram: '',
+	},
+	{
+		name: 'Fernanda Lisot',
+		photo: '',
+		instagram: 'https://www.instagram.com/setorvidreiro',
+	},
+	{
+		name: 'Gabriel Batista',
+		photo: '',
+		instagram: 'https://www.instagram.com/setorvidreiro',
+	},
+	{
+		name: 'Marcelo de lima',
+		photo: '/images/embaixadores/marcelo.jpg',
+		instagram: 'https://www.instagram.com/marcelotop_/',
+	},
+	{
+		name: 'Nicole Fischer',
+		photo: '/images/embaixadores/nicole.jpg',
+		instagram: 'https://www.instagram.com/nicoleafischer/',
+	},
+	{
+		name: 'Michele gleice',
+		photo: '',
+		instagram: 'https://www.instagram.com/eng.michele.gleice',
+	},
+	{
+		name: 'Ricardo Câmara',
+		photo: '/images/embaixadores/ricardo.jpg',
+		instagram: 'https://www.instagram.com/ricardocamarabr/',
+	},
+	{
+		name: 'Vagner Bispo',
+		photo: '/images/embaixadores/vagner.jpg',
+		instagram: 'https://www.instagram.com/vagnervieirabispo',
+	},
+];
+
+const lang = getLang(Astro.currentLocale);
+const content = pick(contentAll, lang);
+
+interface Props {
+	/** Sobrescreve a lista padrão acima (útil para testes ou para outra página). */
+	ambassadors?: Ambassador[];
+}
+const { ambassadors = defaultAmbassadors } = Astro.props;
+
+const { titleA, titleB } = content; // "Embaixadores" / "Fesqua" (a ordem das palavras muda por idioma)
+
+// id estável para o link do índice: "PROF. ALEXANDRE ARAUJO, ME" -> "prof-alexandre-araujo-me"
+const slugify = (s: string) =>
+	s
+		.normalize('NFD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '');
+const used = new Set<string>();
+const people = ambassadors.map((a, i) => {
+	let id = slugify(a.name) || `embaixador-${i + 1}`;
+	if (used.has(id)) id = `${id}-${i + 1}`; // nomes repetidos não podem gerar o mesmo id
+	used.add(id);
+	const description = a.description ?? content.people[id] ?? contentAll.pt.people[id] ?? '';
+	return { ...a, id, num: String(i + 1).padStart(2, '0'), lines: description.split('\n') };
+});
+---
+
+{/* liga o modo animado ANTES de a lista ser desenhada: evita o "pisca" das janelas abertas -> fechadas.
+    Com "reduzir movimento" ou sem IntersectionObserver, a classe não entra e tudo já aparece aberto. */}
+<script is:inline>
+	if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+		document.documentElement.classList.add('emb-anim');
+	}
+</script>
+
+<section class="hero" aria-labelledby="emb-title">
+	<JanelaDraw color="var(--color-primary)" size="84px" class="emb-janela" />
+	<div class="c">
+		<h1 class="h1" id="emb-title">{titleA} <span>{titleB}</span></h1>
+		<div class="intro">
+			{content.intro.map((p) => <p>{p}</p>)}
+		</div>
+	</div>
+</section>
+
+<section class="sec" aria-labelledby="emb-sec">
+	<div class="c">
+		<h2 id="emb-sec">{content.section}</h2>
+
+		<nav aria-label={content.navLabel}>
+			<ol class="index">
+				{
+					people.map((p) => (
+						<li>
+							<a href={`#${p.id}`}>
+								<span class="cn">{p.num}</span>
+								{p.name}
+							</a>
+						</li>
+					))
+				}
+			</ol>
+		</nav>
+
+		<ol class="roster" data-roster>
+			{
+				people.map((p) => (
+					<li class="emb" id={p.id}>
+						<div class="win">
+							<div class:list={['slot', { ph: !p.photo }]}>
+								{
+									p.photo ? (
+										<img class="photo" src={p.photo} alt={p.name} loading="lazy" decoding="async" />
+									) : (
+										<>
+											<svg class="person" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+												<circle cx="50" cy="33" r="17" />
+												<path d="M10 100C10 73 28 60 50 60s40 13 40 40Z" />
+											</svg>
+											<svg class="wm" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+												<rect x="3" y="3" width="34" height="34" rx="5" stroke="currentColor" stroke-width="2" />
+												<path d="M20 3v34M3 20h34" stroke="currentColor" stroke-width="2" />
+											</svg>
+										</>
+									)
+								}
+								<span class="sash l" aria-hidden="true"></span>
+								<span class="sash r" aria-hidden="true"></span>
+							</div>
+						</div>
+						<div class="txt">
+							<span class="n" aria-hidden="true">{p.num}</span>
+							<h3>{p.name}</h3>
+							<p>
+								{
+									p.lines.map((line, i) => (
+										<>
+											{i > 0 && <br />}
+											{line}
+										</>
+									))
+								}
+							</p>
+							{
+								p.instagram && (
+									<a class="ig" href={p.instagram} target="_blank" rel="noopener" aria-label={content.instagramLabel.replace('{name}', p.name)}>
+										<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+											<rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+											<circle cx="12" cy="12" r="4" />
+											<circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+										</svg>
+									</a>
+								)
+							}
+						</div>
+					</li>
+				))
+			}
+		</ol>
+
+		<div class="fecho" data-fecho>
+			<div class="fecho-grid">
+				<p class="fecho-lead">{content.closing.lead}</p>
+				<div class="fecho-body">
+					{content.closing.body.map((p) => <p>{p}</p>)}
+				</div>
+			</div>
+			<p class="fecho-final">{content.closing.final}</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.c {
+		max-width: 1280px;
+		margin-inline: auto;
+		padding-inline: clamp(1.25rem, 4vw, 3rem);
+	}
+
+	/* ---------- hero: papel milimetrado ---------- */
+	.hero {
+		position: relative;
+		overflow: hidden;
+		background-color: var(--color-rose-50);
+		border-bottom: 1px solid var(--color-line);
+		background-image:
+			linear-gradient(rgba(156, 12, 12, 0.06) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(156, 12, 12, 0.06) 1px, transparent 1px),
+			linear-gradient(rgba(156, 12, 12, 0.035) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(156, 12, 12, 0.035) 1px, transparent 1px);
+		background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+	}
+	.hero .c {
+		padding-block: 5rem;
+	}
+	.h1 {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(2.125rem, 8.4vw, 7.25rem);
+		line-height: 0.94;
+		letter-spacing: -0.03em;
+		color: var(--color-primary);
+	}
+	.h1 span {
+		display: block;
+		color: var(--color-text);
+	}
+	.intro {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+		column-gap: clamp(2rem, 5vw, 5rem);
+		margin-top: clamp(2rem, 4vw, 3.5rem);
+		padding-top: 1.75rem;
+		border-top: 1px solid var(--color-rose-300);
+		font-size: 1.0625rem;
+		line-height: 1.75;
+		color: var(--color-ink);
+	}
+	.intro p {
+		margin: 0 0 1rem;
+		max-width: 54ch;
+	}
+	.intro p:first-child {
+		grid-row: 1 / span 2;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+		line-height: 1.5;
+		color: var(--color-text);
+	}
+	/* o ícone é de outro componente: precisa de :global E de um ancestral na frente
+	   (o CSS do próprio ícone tem seletor mais forte e ganharia) */
+	.hero :global(.emb-janela) {
+		position: absolute;
+		right: clamp(1.25rem, 4vw, 3rem);
+		top: 2.5rem;
+	}
+
+	/* ---------- chamada + índice ---------- */
+	.sec {
+		padding: 5.5rem 0 7rem;
+	}
+	.sec h2 {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.75rem, 3.6vw, 3rem);
+		line-height: 1.1;
+		letter-spacing: -0.015em;
+		color: var(--color-primary);
+	}
+	.index {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem;
+		margin: 1.75rem 0 2rem;
+		padding: 0;
+	}
+	.index a {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.55rem;
+		padding: 0.5rem 1rem;
+		border: 1px solid var(--color-line);
+		border-radius: 9999px;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		color: var(--color-ink);
+		text-decoration: none;
+		transition:
+			background-color 0.25s,
+			color 0.25s,
+			border-color 0.25s;
+	}
+	.cn {
+		font-weight: 800;
+		font-size: 0.6875rem;
+		color: var(--color-primary);
+		font-variant-numeric: tabular-nums;
+		transition: color 0.25s;
+	}
+	.index a:hover,
+	.index a:focus-visible {
+		background: var(--color-primary);
+		border-color: var(--color-primary);
+		color: #fff;
+	}
+	.index a:hover .cn,
+	.index a:focus-visible .cn {
+		color: var(--color-blush);
+	}
+
+	/* ---------- lista: vãos alternados ---------- */
+	.roster {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.emb {
+		position: relative;
+		display: grid;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		column-gap: 1.5rem;
+		align-items: center;
+		padding: 5rem 0;
+		scroll-margin-top: calc(var(--header-h) + 0.5rem);
+	}
+	/* linha de cota entre um embaixador e o próximo */
+	.emb + .emb::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		height: 1px;
+		background: var(--color-rose-300);
+	}
+	.emb + .emb::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: -6px;
+		height: 13px;
+		border-left: 1px solid var(--color-rose-300);
+		border-right: 1px solid var(--color-rose-300);
+	}
+	.win {
+		grid-column: 1 / span 5;
+		grid-row: 1;
+		position: relative;
+		width: 100%;
+		max-width: 440px;
+	}
+	.txt {
+		grid-column: 7 / span 6;
+		grid-row: 1;
+	}
+	.emb:nth-child(even) .win {
+		grid-column: 8 / span 5;
+		justify-self: end;
+	}
+	.emb:nth-child(even) .txt {
+		grid-column: 1 / span 6;
+	}
+
+	/* os colchetes da marca Contramarco emolduram a foto */
+	.win::before,
+	.win::after {
+		content: '';
+		position: absolute;
+		width: 18px;
+		border: 3px solid var(--color-primary);
+	}
+	.win::before {
+		left: -16px;
+		top: 12%;
+		height: 80%;
+		border-right: 0;
+	}
+	.win::after {
+		right: -16px;
+		top: 4%;
+		height: 80%;
+		border-left: 0;
+	}
+
+	/* ---------- a foto (ou a área reservada) ---------- */
+	.slot {
+		position: relative;
+		/* aspect-ratio: 4 / 5; */
+		overflow: hidden;
+		background: #2a0204;
+		box-shadow: 0 34px 60px -34px rgba(73, 3, 6, 0.55);
+	}
+	.photo {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 25%;
+	}
+	.ph {
+		background:
+			radial-gradient(120% 80% at 50% 0%, rgba(255, 206, 197, 0.24), transparent 60%),
+			linear-gradient(165deg, #8a0d0f 0%, #5a0507 55%, #2a0204 100%);
+	}
+	.ph::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		opacity: 0.5;
+		background-image:
+			linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+		background-size: 32px 32px;
+	}
+	.person {
+		position: absolute;
+		left: 50%;
+		bottom: -2%;
+		width: 80%;
+		transform: translateX(-50%);
+		color: rgba(255, 206, 197, 0.2);
+	}
+	.wm {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		width: 30px;
+		color: rgba(255, 206, 197, 0.35);
+	}
+
+	/* ---------- as duas folhas de vidro que abrem ---------- */
+	.sash {
+		display: none;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 50.6%;
+		z-index: 2;
+		will-change: transform;
+		background:
+			linear-gradient(125deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 42%),
+			linear-gradient(180deg, #7d0a0c, #330304);
+		border: 5px solid #260304;
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+		transition: transform 1.15s cubic-bezier(0.65, 0, 0.35, 1) 0.2s;
+	}
+	.sash.l {
+		left: 0;
+	}
+	.sash.r {
+		right: 0;
+	}
+	.sash::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		width: 5px;
+		height: 64px;
+		margin-top: -32px;
+		border-radius: 3px;
+		background: linear-gradient(90deg, #c9b3ae, #fff, #b9a39e);
+	}
+	.sash.l::after {
+		right: 10px;
+	}
+	.sash.r::after {
+		left: 10px;
+	}
+	/* a classe emb-anim vem do <script is:inline> lá em cima */
+	:global(.emb-anim) .sash {
+		display: block;
+	}
+	:global(.emb-anim) .emb.in .sash.l {
+		transform: translateX(-103%);
+	}
+	:global(.emb-anim) .emb.in .sash.r {
+		transform: translateX(103%);
+	}
+	:global(.emb-anim) .emb .txt {
+		opacity: 0;
+		transform: translateY(22px);
+		transition:
+			opacity 0.8s var(--ease-out) 0.45s,
+			transform 0.8s var(--ease-out) 0.45s;
+	}
+	:global(.emb-anim) .emb.in .txt {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* ---------- texto ---------- */
+	.n {
+		display: block;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(3.5rem, 8vw, 7.5rem);
+		line-height: 0.85;
+		letter-spacing: -0.04em;
+		color: rgba(156, 12, 12, 0.14);
+		font-variant-numeric: tabular-nums;
+	}
+	.txt h3 {
+		margin: 0.4rem 0 1.1rem;
+		max-width: 20ch;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.625rem, 3vw, 2.5rem);
+		line-height: 1.1;
+		letter-spacing: -0.015em;
+		color: var(--color-primary);
+	}
+	.txt p {
+		margin: 0;
+		max-width: 50ch;
+		font-size: 1.125rem;
+		line-height: 1.75;
+		color: var(--color-ink);
+	}
+	.ig {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 42px;
+		height: 42px;
+		margin-top: 1.75rem;
+		border: 1px solid currentColor;
+		border-radius: 50%;
+		color: var(--color-primary);
+		transition:
+			background-color 0.3s,
+			color 0.3s,
+			transform 0.2s;
+	}
+	.ig svg {
+		width: 19px;
+		height: 19px;
+	}
+	.ig:hover,
+	.ig:focus-visible {
+		background: var(--color-primary);
+		color: #fff;
+	}
+	.ig:active {
+		transform: scale(0.92);
+	}
+
+	/* ---------- fechamento: separador + texto ---------- */
+	.fecho {
+		position: relative;
+		margin-top: 2rem;
+		padding-top: 5rem;
+	}
+	/* mesmo traço de cota que separa os embaixadores, só que em vermelho para marcar o fim da lista */
+	.fecho::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		height: 2px;
+		background: var(--color-primary);
+	}
+	.fecho::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: -8px;
+		height: 18px;
+		border-left: 2px solid var(--color-primary);
+		border-right: 2px solid var(--color-primary);
+	}
+	.fecho-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		row-gap: 2rem;
+	}
+	.fecho-lead {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.375rem, 2.4vw, 2rem);
+		line-height: 1.3;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+	}
+	.fecho-body p {
+		margin: 0 0 1.5rem;
+		font-size: 1.125rem;
+		line-height: 1.75;
+		color: var(--color-ink);
+	}
+	.fecho-body p:last-child {
+		margin-bottom: 0;
+	}
+	.fecho-final {
+		margin: 4rem 0 0;
+		padding-left: 1.5rem;
+		border-left: 4px solid var(--color-primary-bright);
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.625rem, 3.6vw, 3rem);
+		line-height: 1.15;
+		letter-spacing: -0.015em;
+		color: var(--color-primary);
+	}
+	:global(.emb-anim) .fecho-grid,
+	:global(.emb-anim) .fecho-final {
+		opacity: 0;
+		transform: translateY(22px);
+		transition:
+			opacity 0.8s var(--ease-out),
+			transform 0.8s var(--ease-out);
+	}
+	:global(.emb-anim) .fecho-final {
+		transition-delay: 0.15s;
+	}
+	:global(.emb-anim) .fecho.in .fecho-grid,
+	:global(.emb-anim) .fecho.in .fecho-final {
+		opacity: 1;
+		transform: none;
+	}
+
+	@media (max-width: 980px) {
+		.fecho {
+			padding-top: 3.5rem;
+		}
+		.fecho-final {
+			margin-top: 2.5rem;
+		}
+		.hero .c {
+			padding-block: 4rem;
+		}
+		.intro {
+			grid-template-columns: 1fr;
+		}
+		.intro p:first-child {
+			grid-row: auto;
+		}
+		.hero :global(.emb-janela) {
+			display: none;
+		}
+		.emb {
+			grid-template-columns: 1fr;
+			row-gap: 2rem;
+			padding: 3.5rem 0;
+		}
+		/* a largura desconta os 16px de cada colchete, senão a página ganha rolagem horizontal */
+		.win,
+		.emb:nth-child(even) .win {
+			grid-column: 1;
+			grid-row: 1;
+			width: calc(100% - 32px);
+			max-width: 340px;
+			justify-self: start;
+			margin-left: 16px;
+		}
+		.txt,
+		.emb:nth-child(even) .txt {
+			grid-column: 1;
+			grid-row: 2;
+		}
+		.n {
+			font-size: 3.5rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.sash {
+			transition: none;
+		}
+	}
+	/* impressão: nada de folhas fechadas nem de texto esperando para aparecer */
+	@media print {
+		.sash {
+			display: none !important;
+		}
+		:global(.emb-anim) .fecho-grid,
+		:global(.emb-anim) .fecho-final,
+		:global(.emb-anim) .emb .txt {
+			opacity: 1 !important;
+			transform: none !important;
+			transition: none !important; /* senão a impressão captura o texto no meio do fade */
+		}
+	}
+</style>
+
+<script>
+	// abre cada janela quando o embaixador entra na tela (só roda se o script inline ligou o modo animado)
+	const roster = document.querySelector<HTMLElement>('[data-roster]');
+	if (roster && document.documentElement.classList.contains('emb-anim')) {
+		const io = new IntersectionObserver(
+			(entries) =>
+				entries.forEach((e) => {
+					if (e.isIntersecting) {
+						e.target.classList.add('in');
+						io.unobserve(e.target);
+					}
+				}),
+			{ threshold: 0.3 },
+		);
+		roster.querySelectorAll('.emb').forEach((el) => io.observe(el));
+		const fecho = document.querySelector<HTMLElement>('[data-fecho]');
+		if (fecho) {
+			const io2 = new IntersectionObserver(
+				(entries, obs) =>
+					entries.forEach((e) => {
+						if (e.isIntersecting) {
+							e.target.classList.add('in');
+							obs.unobserve(e.target);
+						}
+					}),
+				{ threshold: 0.15 },
+			);
+			io2.observe(fecho);
+		}
+	}
+</script>

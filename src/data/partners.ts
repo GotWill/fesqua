@@ -16,6 +16,8 @@ export interface PartnerGroup {
 	partners: Partner[];
 }
 
+import { type Lang } from '../i18n/routes';
+
 export const partnerGroups: PartnerGroup[] = [
 	{
 		id: 'realizacao',
@@ -116,3 +118,31 @@ export const partnerGroups: PartnerGroup[] = [
 		],
 	},
 ];
+
+// Rótulos dos grupos por idioma (nomes dos parceiros ficam como estão). Sem tradução, cai em pt.
+const groupText: Record<string, Partial<Record<Lang, { label: string; countLabel: string }>>> = {
+	realizacao: {
+		en: { label: 'Organization & Venue', countLabel: 'items' },
+		es: { label: 'Realización y sede', countLabel: 'elementos' },
+		it: { label: 'Organizzazione e sede', countLabel: 'elementi' },
+	},
+	eventos: {
+		en: { label: 'Concurrent Events', countLabel: 'events' },
+		es: { label: 'Eventos simultáneos', countLabel: 'eventos' },
+		it: { label: 'Eventi in contemporanea', countLabel: 'eventi' },
+	},
+	apoio: {
+		en: { label: 'Institutional Support', countLabel: 'institutions' },
+		es: { label: 'Apoyo institucional', countLabel: 'instituciones' },
+		it: { label: 'Supporto istituzionale', countLabel: 'istituzioni' },
+	},
+	midia: {
+		en: { label: 'Media Partners', countLabel: 'outlets' },
+		es: { label: 'Socios de medios', countLabel: 'medios' },
+		it: { label: 'Media partner', countLabel: 'testate' },
+	},
+};
+
+export function getPartnerGroups(lang: Lang): PartnerGroup[] {
+	return partnerGroups.map((g) => ({ ...g, ...(groupText[g.id]?.[lang] ?? {}) }));
+}

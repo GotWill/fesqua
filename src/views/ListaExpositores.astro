@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Expositores from '../components/Expositores.astro';
+import PartnersSection from '../components/PartnersSection.astro';
+import { getLang, pick } from '../i18n/utils';
+import { content } from '../i18n/content/expositores';
+
+const c = pick(content, getLang(Astro.currentLocale));
+---
+
+<Layout title={c.metaTitle} description={c.metaDescription}>
+	<Expositores />
+	<PartnersSection/>
+</Layout>

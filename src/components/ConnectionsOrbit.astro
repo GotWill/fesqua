@@ -1,6 +1,11 @@
 ---
 import fs from 'node:fs';
 import path from 'node:path';
+import { getLang, pick } from '../i18n/utils';
+import { orbit as orbitText } from '../i18n/content/home';
+
+const lang = getLang(Astro.currentLocale);
+const c = pick(orbitText, lang);
 
 const LOGOS_DIR = path.resolve('public/images/logos');
 const logoFiles = fs.readdirSync(LOGOS_DIR);
@@ -99,14 +104,10 @@ const DEFAULT_SATELLITES: Satellite[] = [
 const RING_RADII = [16, 21, 26, 30, 35, 41, 46];
 
 const {
-	title = 'Grupo Contramarco',
-	tagline = 'Nós conectamos a indústria de esquadrias e vidro',
-	paragraphs = [
-		'O <strong>Grupo Contramarco</strong> reúne feiras, publicações e iniciativas que já fazem parte do dia a dia de quem trabalha com esquadrias, vidro e construção civil.',
-		'Cada marca opera de forma independente, mas compartilha a mesma rede de contatos, conhecimento técnico e presença consolidada no setor.',
-		'Juntas, formam um ecossistema que conecta fabricantes, fornecedores, arquitetos e profissionais em <strong>todo o Brasil</strong>.',
-	],
-	stat = { value: '8', label: 'marcas conectadas em um só ecossistema' },
+	title = c.title,
+	tagline = c.tagline,
+	paragraphs = c.paragraphs,
+	stat = { value: '8', label: c.statLabel },
 	satellites = DEFAULT_SATELLITES,
 }: Props = Astro.props;
 ---
@@ -114,7 +115,7 @@ const {
 <section class="event">
 	<div class="event-inner">
 		<div class="event-text">
-			<span class="kicker">Um evento</span>
+			<span class="kicker">{c.kicker}</span>
 
 			<div class="lockup">
 				<img src={resolveLogo('lockup')} alt={`${title} — ${tagline}`} />
@@ -127,7 +128,7 @@ const {
 
 		<div class="event-visual">
 			<div class="orbit-wrap">
-				<div class="orbit" id="orbit" aria-label={`Marcas conectadas ao ${title}`}>
+				<div class="orbit" id="orbit" aria-label={c.orbitLabel}>
 					<svg class="orbit-rings" viewBox="0 0 100 100" aria-hidden="true">
 						{RING_RADII.map((r) => (
 							<circle cx="50" cy="50" r={r} />

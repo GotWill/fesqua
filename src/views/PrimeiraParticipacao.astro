@@ -1,0 +1,613 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import PartnersSection from '../components/PartnersSection.astro';
+import { getLang, pick, route } from '../i18n/utils';
+import { primeiraParticipacao } from '../i18n/content/primeira-participacao';
+
+const lang = getLang(Astro.currentLocale);
+const c = pick(primeiraParticipacao, lang);
+
+// Espaço reservado ao lado do texto de abertura. Para usar uma foto, informe o
+// caminho aqui (ex.: '/images/primeira-participacao.webp'); enquanto estiver vazio,
+// aparece a planta ilustrada do estande.
+const IMAGE_SRC = '';
+const IMAGE_ALT = c.imageAlt;
+
+const pacote = c.pacote;
+const motivos = c.motivos;
+const taxas = c.taxas;
+---
+
+<Layout title={c.title} description={c.description}>
+	<PageHero lineA={c.heroA} lineB={c.heroB} lineC={c.heroC} id="pp-title" />
+
+	<!-- ================= Abertura ================= -->
+	<section class="intro" aria-label={c.introLabel}>
+		<div class="wrap intro-grid">
+			<div class="intro-txt">
+				<p class="lead reveal">
+					{c.lead}
+				</p>
+				<p class="corpo reveal" style="--rd:80ms">
+					{c.body1}
+				</p>
+				<p class="corpo reveal" style="--rd:160ms">
+					{c.body2}
+				</p>
+				<p class="programa reveal" style="--rd:240ms">{c.programa}</p>
+			</div>
+
+			<figure class="foto reveal" style="--rd:160ms">
+				{
+					IMAGE_SRC ? (
+						<img src={IMAGE_SRC} alt={IMAGE_ALT} loading="lazy" decoding="async" />
+					) : (
+						<svg
+							viewBox="0 0 400 400"
+							role="img"
+							aria-label={c.svgLabel}
+						>
+							<!-- testeira -->
+							<rect class="ln" x="60" y="28" width="280" height="26" />
+							<text class="tx" x="200" y="45" text-anchor="middle">{c.svgLogo}</text>
+							<!-- paredes -->
+							<path class="wall" d="M60 66V340M340 66V340M60 66H340" />
+							<!-- frente aberta -->
+							<path class="dash" d="M60 340H340" />
+							<!-- balcão -->
+							<rect class="ln fill" x="120" y="92" width="160" height="28" />
+							<text class="tx" x="200" y="110" text-anchor="middle">{c.svgCounter}</text>
+							<!-- mesa e cadeiras -->
+							<circle class="ln fill" cx="200" cy="228" r="30" />
+							<circle class="ln" cx="200" cy="176" r="10" />
+							<circle class="ln" cx="200" cy="280" r="10" />
+							<circle class="ln" cx="148" cy="228" r="10" />
+							<circle class="ln" cx="252" cy="228" r="10" />
+							<text class="tx" x="200" y="232" text-anchor="middle">{c.svgTable}</text>
+							<!-- cota -->
+							<text class="area" x="322" y="324" text-anchor="end">9 m²</text>
+						</svg>
+					)
+				}
+			</figure>
+		</div>
+	</section>
+
+	<!-- ================= Diferenciais ================= -->
+	<section class="dif" aria-labelledby="dif-title">
+		<div class="wrap">
+			<h2 class="dif-title reveal" id="dif-title">{c.difTitle}</h2>
+			<p class="dif-intro reveal" style="--rd:80ms">
+				{c.difIntro}
+			</p>
+
+			<ul class="pacote" role="list">
+				{
+					pacote.map((p, i) => (
+						<li class="pk reveal" style={`--rd:${i * 80}ms`}>
+							<span class="chk" aria-hidden="true">
+								<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+							</span>
+							<p>
+								{p.text}
+								{p.strong && <strong>{p.strong}</strong>}
+								{p.rest}
+							</p>
+						</li>
+					))
+				}
+				<li class="pk pk-taxas reveal" style="--rd:240ms">
+					<span class="chk" aria-hidden="true">
+						<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+					</span>
+					<div>
+						<p>{c.taxasTitle}</p>
+						<ul class="chips" role="list">
+							{taxas.map((t) => <li>{t}</li>)}
+						</ul>
+					</div>
+				</li>
+			</ul>
+
+			<div class="condicoes">
+				<div class="cond reveal">
+					<span class="cond-k">{c.investimentoK}</span>
+					<span class="cond-v">{c.investimentoV}</span>
+				</div>
+				<div class="cond reveal" style="--rd:80ms">
+					<span class="cond-k">{c.parcelamentoK}</span>
+					<span class="cond-v">{c.parcelamentoV}</span>
+				</div>
+			</div>
+
+			<div class="fecho">
+				<p class="fecho-1 reveal">
+					{c.fecho1}
+				</p>
+				<p class="fecho-2 reveal" style="--rd:80ms">
+					{c.fecho2}
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- ================= CTA ================= -->
+	<section class="cta" aria-labelledby="cta-title">
+		<span class="cta-dots" aria-hidden="true"></span>
+		<div class="wrap cta-inner reveal">
+			<h2 id="cta-title">{c.ctaTitle}</h2>
+			<a href={route(lang, 'queroExpor')} class="btn Solid_Blush btn-lg">
+				<div class="slime"><span></span><span></span><span></span></div>
+				<div class="btn-content"><span>{c.ctaBtn}</span></div>
+			</a>
+		</div>
+	</section>
+
+	<!-- ================= Motivos ================= -->
+	<section class="motivos" aria-labelledby="motivos-title">
+		<div class="wrap motivos-grid">
+			<div class="motivos-head reveal">
+				<p class="motivos-kicker">{c.motivosKicker}</p>
+				<h2 id="motivos-title">
+					<span>{c.motivosA}</span>
+					<span class="m2">{c.motivosB}</span>
+				</h2>
+			</div>
+			<ul class="motivos-list" role="list">
+				{
+					motivos.map((m, i) => (
+						<li class="reveal" style={`--rd:${i * 80}ms`}>{m}</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<PartnersSection />
+</Layout>
+
+
+<style>
+	.wrap {
+		max-width: 1040px;
+		margin-inline: auto;
+		padding-inline: clamp(1.25rem, 4vw, 3rem);
+	}
+
+	/* ---------- abertura ---------- */
+	.intro {
+		background: #fff;
+	}
+	.intro-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+		gap: clamp(2rem, 5vw, 4.5rem);
+		align-items: center;
+		padding-block: 5rem 5.5rem;
+	}
+	.lead {
+		margin: 0 0 1.75rem;
+		padding-left: 1.25rem;
+		border-left: 3px solid var(--color-primary-bright);
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.375rem, 2.6vw, 2rem);
+		line-height: 1.25;
+		letter-spacing: -0.01em;
+		color: var(--color-primary);
+	}
+	.corpo {
+		margin: 0 0 1.25rem;
+		max-width: 56ch;
+		font-family: var(--font-body);
+		font-size: 1.125rem;
+		line-height: 1.7;
+		color: var(--color-ink);
+	}
+	.programa {
+		display: inline-block;
+		margin: 0.5rem 0 0;
+		padding: 0.7rem 1.4rem;
+		border-radius: 9999px;
+		background: var(--color-primary);
+		color: #fff;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.0625rem, 1.8vw, 1.25rem);
+		letter-spacing: 0.01em;
+	}
+
+	/* espaço da imagem / planta */
+	.foto {
+		margin: 0;
+		aspect-ratio: 1;
+		border: 1px solid var(--color-line);
+		border-radius: 1.25rem;
+		overflow: hidden;
+		background-color: var(--color-rose-50);
+		background-image:
+			linear-gradient(rgba(156, 12, 12, 0.06) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(156, 12, 12, 0.06) 1px, transparent 1px);
+		background-size: 24px 24px;
+		box-shadow: 0 30px 60px -36px rgba(73, 3, 6, 0.35);
+	}
+	.foto img,
+	.foto svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+	.foto img {
+		object-fit: cover;
+	}
+	.foto svg {
+		padding: 6%;
+	}
+	.foto :global(.ln) {
+		fill: none;
+		stroke: var(--color-primary);
+		stroke-width: 2;
+	}
+	.foto :global(.fill) {
+		fill: rgba(156, 12, 12, 0.08);
+	}
+	.foto :global(.wall) {
+		fill: none;
+		stroke: var(--color-primary);
+		stroke-width: 9;
+		stroke-linecap: square;
+	}
+	.foto :global(.dash) {
+		fill: none;
+		stroke: var(--color-primary-bright);
+		stroke-width: 2;
+		stroke-dasharray: 8 8;
+	}
+	.foto :global(.tx) {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 11px;
+		letter-spacing: 0.08em;
+		fill: var(--color-primary);
+	}
+	.foto :global(.area) {
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: 28px;
+		fill: var(--color-primary);
+	}
+
+	/* ---------- diferenciais ---------- */
+	.dif {
+		background: var(--color-rose-50);
+		border-block: 1px solid var(--color-line);
+		padding-block: 5.5rem 6rem;
+	}
+	.dif-title {
+		margin: 0 0 1.25rem;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.75rem, 4vw, 3rem);
+		line-height: 1.05;
+		letter-spacing: -0.01em;
+		text-transform: uppercase;
+		color: var(--color-primary);
+	}
+	.dif-intro {
+		margin: 0 0 2.75rem;
+		max-width: 60ch;
+		font-family: var(--font-body);
+		font-size: 1.125rem;
+		line-height: 1.7;
+		color: var(--color-ink);
+	}
+
+	.pacote {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--color-line);
+	}
+	.pk {
+		display: grid;
+		grid-template-columns: 44px 1fr;
+		gap: 1.25rem;
+		align-items: center;
+		padding: 1.5rem 0;
+		border-bottom: 1px solid var(--color-line);
+	}
+	.pk p {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: clamp(1.0625rem, 1.8vw, 1.375rem);
+		line-height: 1.4;
+		color: var(--color-text);
+	}
+	.pk strong {
+		font-weight: 800;
+		color: var(--color-primary);
+	}
+	.chk {
+		display: grid;
+		place-items: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 50%;
+		background: var(--color-primary);
+	}
+	.chk svg {
+		width: 22px;
+		height: 22px;
+		fill: none;
+		stroke: #fff;
+		stroke-width: 2.5;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.pk-taxas {
+		align-items: start;
+	}
+	.pk-taxas .chk {
+		margin-top: -0.2rem;
+	}
+	.chips {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin: 0.9rem 0 0;
+		padding: 0;
+	}
+	.chips li {
+		padding: 0.5rem 1.1rem;
+		border: 1px solid var(--color-primary);
+		border-radius: 9999px;
+		background: #fff;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 0.9375rem;
+		color: var(--color-primary);
+	}
+
+	/* investimento e parcelamento */
+	.condicoes {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+		margin-top: 2.5rem;
+	}
+	.cond {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 1.75rem 2rem;
+		border-radius: 1rem;
+		color: #fff;
+		background: linear-gradient(135deg, var(--color-primary-deep), var(--color-primary));
+	}
+	.cond-k {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-blush);
+	}
+	.cond-v {
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.375rem, 2.6vw, 2rem);
+		line-height: 1.2;
+	}
+
+	.fecho {
+		margin-top: 3.5rem;
+	}
+	.fecho-1 {
+		margin: 0 0 0.75rem;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: clamp(1.125rem, 2vw, 1.5rem);
+		line-height: 1.4;
+		color: var(--color-ink);
+	}
+	.fecho-2 {
+		margin: 0;
+		max-width: 28ch;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.5rem, 3.2vw, 2.5rem);
+		line-height: 1.15;
+		letter-spacing: -0.01em;
+		color: var(--color-primary);
+	}
+
+	/* ---------- cta ---------- */
+	.cta {
+		position: relative;
+		overflow: hidden;
+		padding-block: clamp(3.5rem, 7vw, 5.5rem);
+		background: linear-gradient(45deg, var(--color-primary-deep) 0%, var(--color-primary) 65%);
+	}
+	.cta-dots {
+		position: absolute;
+		top: 50%;
+		right: clamp(1rem, 8vw, 7rem);
+		width: 260px;
+		height: 200px;
+		transform: translateY(-50%);
+		background-image: radial-gradient(var(--color-red-700) 1.5px, transparent 1.5px);
+		background-size: 18px 18px;
+		-webkit-mask-image: radial-gradient(ellipse at center, black 45%, transparent 80%);
+		mask-image: radial-gradient(ellipse at center, black 45%, transparent 80%);
+		pointer-events: none;
+	}
+	.cta-inner {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 2rem;
+	}
+	.cta h2 {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.75rem, 4.2vw, 3.25rem);
+		line-height: 1.1;
+		letter-spacing: -0.01em;
+		color: #fff;
+	}
+
+	.cta .btn,
+	.cta .btn span {
+		white-space: nowrap;
+	}
+
+	/* ---------- motivos ---------- */
+	.motivos {
+		background: #fff;
+		padding-block: 5rem 5.5rem;
+	}
+	.motivos-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+		gap: clamp(2rem, 5vw, 4.5rem);
+		align-items: center;
+	}
+	.motivos-kicker {
+		margin: 0 0 1rem;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.9375rem;
+		color: var(--color-ink);
+	}
+	.motivos h2 {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+		line-height: 1.1;
+		letter-spacing: -0.01em;
+		text-transform: uppercase;
+		color: var(--color-text);
+	}
+	.motivos h2 span {
+		display: block;
+	}
+	.motivos h2 .m2 {
+		color: var(--color-primary);
+	}
+	.motivos-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--color-line);
+	}
+	.motivos-list li {
+		position: relative;
+		padding: 1.15rem 0 1.15rem 2rem;
+		border-bottom: 1px solid var(--color-line);
+		font-family: var(--font-body);
+		font-size: 1.0625rem;
+		line-height: 1.6;
+		color: var(--color-ink);
+	}
+	.motivos-list li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 1.15rem;
+		bottom: 1.15rem;
+		width: 3px;
+		border-radius: 2px;
+		background: var(--color-primary-bright);
+	}
+
+	/* ---------- entrada suave ---------- */
+	.reveal {
+		opacity: 0;
+		transform: translateY(20px);
+		transition:
+			opacity 0.7s var(--ease-out),
+			transform 0.7s var(--ease-out);
+		transition-delay: var(--rd, 0s);
+	}
+	.reveal.in {
+		opacity: 1;
+		transform: none;
+	}
+
+	@media (max-width: 820px) {
+		.intro-grid {
+			grid-template-columns: 1fr;
+			padding-block: 3.5rem 4rem;
+		}
+		.foto {
+			max-width: 440px;
+		}
+		.dif {
+			padding-block: 4rem 4.5rem;
+		}
+		.cta-inner {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+		.motivos {
+			padding-block: 3.5rem 4rem;
+		}
+		.motivos-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (max-width: 640px) {
+		.condicoes {
+			grid-template-columns: 1fr;
+		}
+		.cond {
+			padding: 1.4rem 1.4rem;
+		}
+		.pk {
+			grid-template-columns: 36px 1fr;
+			gap: 1rem;
+			padding: 1.25rem 0;
+		}
+		.chk {
+			width: 36px;
+			height: 36px;
+		}
+		.chk svg {
+			width: 18px;
+			height: 18px;
+		}
+		.cta .btn {
+			width: 100%;
+			justify-content: center;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.reveal {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const io = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((en) => {
+				if (en.isIntersecting) {
+					en.target.classList.add('in');
+					io.unobserve(en.target);
+				}
+			});
+		},
+		{ threshold: 0.15 },
+	);
+	document.querySelectorAll('.intro .reveal, .dif .reveal, .cta .reveal, .motivos .reveal').forEach((el) => io.observe(el));
+</script>

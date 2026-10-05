@@ -3,15 +3,30 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+import { LANGS, HTML_LANG, OG_LOCALE, getLang, alternateUrl, pageExists } from '../i18n/utils';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title = 'Fesqua', description } = Astro.props;
+
+const lang = getLang(Astro.currentLocale);
+const pathname = Astro.url.pathname;
+const site = Astro.site ?? Astro.url;
+const abs = (path: string) => new URL(path, site).href;
+// hreflang só em páginas que existem nos 4 idiomas (a 404 e rotas sem página ficam de fora)
+const hasAlternates = pageExists(pathname);
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<html lang={HTML_LANG[lang]}>
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/png" href="/images/favicon.png" />
+		<link rel="apple-touch-icon" href="/images/favicon.png" />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,7 +34,20 @@ import LanguageSwitcher from '../components/LanguageSwitcher.astro';
 			href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
 			rel="stylesheet"
 		/>
-		<title>Fesqua</title>
+		<title>{title}</title>
+		{description && <meta name="description" content={description} />}
+		{hasAlternates && <link rel="canonical" href={abs(alternateUrl(pathname, lang))} />}
+		{
+			hasAlternates &&
+				LANGS.map((l) => <link rel="alternate" hreflang={HTML_LANG[l]} href={abs(alternateUrl(pathname, l))} />)
+		}
+		{hasAlternates && <link rel="alternate" hreflang="x-default" href={abs(alternateUrl(pathname, 'pt'))} />}
+		<meta property="og:locale" content={OG_LOCALE[lang]} />
+		{LANGS.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={OG_LOCALE[l]} />)}
+		<meta property="og:title" content={title} />
+		{description && <meta property="og:description" content={description} />}
+		{hasAlternates && <meta property="og:url" content={abs(alternateUrl(pathname, lang))} />}
+		<meta property="og:type" content="website" />
 	</head>
 	<body>
 		<!-- Filtro do "slime" dos botões (.btn/.slime) — precisa existir uma

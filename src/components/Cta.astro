@@ -1,5 +1,10 @@
 ---
 import JanelaDraw from './JanelaDraw.astro';
+import { getLang, pick, route } from '../i18n/utils';
+import { cta } from '../i18n/content/home';
+
+const lang = getLang(Astro.currentLocale);
+const c = pick(cta, lang);
 ---
 
 <section class="cta on-primary" id="participe" aria-labelledby="cta-heading">
@@ -7,17 +12,17 @@ import JanelaDraw from './JanelaDraw.astro';
 
 	<div class="cta-inner">
 		<div class="cta-copy">
-			<span class="kicker">Fesqua 2028 · 12–15 Set · São Paulo Expo</span>
+			<span class="kicker">{c.kicker}</span>
 
 			<h2 id="cta-heading">
-				<span class="cta-lead">Amplie seus negócios na</span>
-				<span class="cta-strong">PRINCIPAL FEIRA DO SETOR</span>
+				<span class="cta-lead">{c.lead}</span>
+				<span class="cta-strong">{c.strong}</span>
 			</h2>
 
-			<a href="/quero-visitar" class="btn cta-btn btn-lg">
+			<a href={route(lang, 'queroVisitar')} class="btn cta-btn btn-lg">
 				<div class="slime"><span></span><span></span><span></span></div>
 				<div class="btn-content">
-					<span>Quero Participar</span>
+					<span>{c.button}</span>
 				</div>
 			</a>
 		</div>

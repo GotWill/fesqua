@@ -1,4 +1,10 @@
 ---
+import { getLang, pick } from '../i18n/utils';
+import { stats as statsText } from '../i18n/content/home';
+
+const lang = getLang(Astro.currentLocale);
+const c = pick(statsText, lang);
+
 interface HeroStat {
 	value: number;
 	suffix: string;
@@ -15,16 +21,16 @@ interface Stat {
 
 const heroStat: HeroStat = {
 	value: 50,
-	suffix: ' mil',
-	label: 'Visitantes',
+	suffix: c.thousand,
+	label: c.hero,
 	image: '/images/pavilhao.jpg',
 };
 
 const stats: Stat[] = [
-	{ icon: 'globe', value: 36, suffix: '', label: 'Países' },
-	{ icon: 'clock', value: 80, suffix: 'h', label: 'Programação' },
-	{ icon: 'expand', value: 45, suffix: ' mil', label: 'M² de exposição' },
-	{ icon: 'building', value: 700, suffix: '', label: 'Marcas expositoras' },
+	{ icon: 'globe', value: 36, suffix: '', label: c.labels[0] },
+	{ icon: 'clock', value: 80, suffix: 'h', label: c.labels[1] },
+	{ icon: 'expand', value: 45, suffix: c.thousand, label: c.labels[2] },
+	{ icon: 'building', value: 700, suffix: '', label: c.labels[3] },
 ];
 ---
 
@@ -38,9 +44,9 @@ const stats: Stat[] = [
 
 	<div class="stats-inner">
 		<div class="stats-head">
-			<h2 id="numeros-heading">Um marco histórico em 2026</h2>
-			<p class="stats-subtitle">Resultados que consolidam a força do setor</p>
-			<span class="stats-badge">*Números da última edição</span>
+			<h2 id="numeros-heading">{c.title}</h2>
+			<p class="stats-subtitle">{c.subtitle}</p>
+			<span class="stats-badge">{c.badge}</span>
 		</div>
 
 		<div class="bento">

@@ -1,4 +1,10 @@
 ---
+import { getLang, pick, route } from '../i18n/utils';
+import { slider } from '../i18n/content/home';
+
+const lang = getLang(Astro.currentLocale);
+const c = pick(slider, lang);
+
 interface HeroPanel {
 	id: 'fesqua' | 'vetro';
 	headline: string;
@@ -8,30 +14,30 @@ interface HeroPanel {
 	visitorHref: string;
 }
 
-const eventDate = '12 a 15 de Setembro | 2028';
-const eventLocation = 'São Paulo Expo — São Paulo, Brasil';
+const eventDate = c.date;
+const eventLocation = c.location;
 
 const panels: HeroPanel[] = [
 	{
 		id: 'fesqua',
-		headline: 'A Maior Feira de Esquadrias e Fachadas da América Latina',
+		headline: c.panels[0].headline,
 		image: '/images/home/bg-1.jpg',
-		imageAlt: 'Fachada arquitetônica em vidro e alumínio',
-		exhibitorHref: '/quero-expor',
-		visitorHref: '/quero-visitar',
+		imageAlt: c.panels[0].imageAlt,
+		exhibitorHref: route(lang, 'queroExpor'),
+		visitorHref: route(lang, 'queroVisitar'),
 	},
 	{
 		id: 'vetro',
-		headline: 'Inovação, Tecnologia e Soluções Completas para a Indústria do Vidro',
+		headline: c.panels[1].headline,
 		image: '/images/home/bg-2.jpg',
-		imageAlt: 'Estrutura de vidro arquitetônico',
-		exhibitorHref: '/quero-expor',
-		visitorHref: '/quero-visitar',
+		imageAlt: c.panels[1].imageAlt,
+		exhibitorHref: route(lang, 'queroExpor'),
+		visitorHref: route(lang, 'queroVisitar'),
 	},
 ];
 ---
 
-<section class="dual-hero" id="hero" aria-label="Fesqua e Fesqua Vetro">
+<section class="dual-hero" id="hero" aria-label={c.sectionLabel}>
 	{
 		panels.map((panel, i) => (
 			<div class="panel" data-panel={panel.id}>
@@ -70,7 +76,7 @@ const panels: HeroPanel[] = [
 										<span />
 									</div>
 									<div class="btn-content">
-										<span>Quero Expor</span>
+										<span>{c.exhibit}</span>
 									</div>
 								</a>
 								<a href={panel.visitorHref} class="btn Outline_Blush btn-md">
@@ -80,7 +86,7 @@ const panels: HeroPanel[] = [
 										<span />
 									</div>
 									<div class="btn-content">
-										<span>Quero Visitar</span>
+										<span>{c.visit}</span>
 									</div>
 								</a>
 							</div>
@@ -95,7 +101,7 @@ const panels: HeroPanel[] = [
 		class="split-handle"
 		role="slider"
 		tabindex="0"
-		aria-label="Ajustar comparação entre Fesqua e Fesqua Vetro"
+		aria-label={c.handle}
 		aria-valuemin="20"
 		aria-valuemax="80"
 		aria-valuenow="50"

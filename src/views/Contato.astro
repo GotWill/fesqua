@@ -1,0 +1,582 @@
+---
+import Layout from '../layouts/Layout.astro';
+import JanelaDraw from '../components/JanelaDraw.astro';
+import PartnersSection from '../components/PartnersSection.astro';
+import { getLang, pick, route } from '../i18n/utils';
+import { contato } from '../i18n/content/contato';
+
+const lang = getLang(Astro.currentLocale);
+const c = pick(contato, lang);
+
+// values enviados ao servidor: sempre os mesmos (pt, sem acento), independentemente do idioma
+const deptoValues = ['comercial', 'operacional', 'marketing', 'financeiro', 'outros'];
+const consentValues = ['eu-concordo', 'eu-nao-concordo'];
+const consents = [
+	{ id: 'f-c5', name: 'perfil_avancado_finalidade_5', label: c.consents[0] },
+	{ id: 'f-c8a', name: 'transferencia_dados_finalidade_8a', label: c.consents[1] },
+	{ id: 'f-c6', name: 'soft_spam_objetivo_6', label: c.consents[2] },
+];
+const privacyUrl = route(lang, 'privacidade');
+---
+
+<Layout title={c.title} description={c.description}>
+	<section class="hero" aria-labelledby="ct-title">
+		<div class="c hero-in">
+			<div>
+				<h1 class="h1" id="ct-title">{c.titleA} <span>{c.titleB}</span></h1>
+				<p class="lead">{c.lead}</p>
+				<p class="intro">{c.intro}</p>
+			</div>
+			<JanelaDraw color="var(--color-primary)" size="110px" class="ct-janela" />
+		</div>
+	</section>
+
+	<div class="c wrap">
+		<div class="card">
+			<form
+					class="form"
+					id="ct-form"
+					novalidate
+					data-lang={lang}
+					data-msg-ok={c.msg.ok}
+					data-msg-invalid={c.msg.invalid}
+					data-msg-server={c.msg.server}
+					data-msg-select={c.msg.select}
+					data-msg-sending={c.msg.sending}
+				>
+					<input type="hidden" name="lang" value={lang} />
+				<p class="note">{c.note}</p>
+
+				<div class="grid">
+					<div class="f">
+						<label for="f-nome">{c.name} <span class="req" aria-hidden="true">*</span></label>
+						<input id="f-nome" name="name" type="text" autocomplete="name" placeholder={c.namePh} required aria-required="true" />
+					</div>
+					<div class="f">
+						<label for="f-empresa">{c.company} <span class="req" aria-hidden="true">*</span></label>
+						<input id="f-empresa" name="company" type="text" autocomplete="organization" placeholder={c.companyPh} required aria-required="true" />
+					</div>
+					<div class="f">
+						<label for="f-telefone">{c.phone} <span class="req" aria-hidden="true">*</span></label>
+						<input id="f-telefone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder={c.phonePh} maxlength="15" pattern="\(\d{2}\) \d{4,5}-\d{4}" required aria-required="true" />
+					</div>
+					<div class="f">
+						<label for="f-email">{c.email} <span class="req" aria-hidden="true">*</span></label>
+						<input id="f-email" name="email" type="email" autocomplete="email" placeholder={c.emailPh} required aria-required="true" />
+					</div>
+
+					<div class="f full">
+						<label for="f-depto">{c.deptoLabel} <span class="req" aria-hidden="true">*</span></label>
+						<select id="f-depto" name="departament" required aria-required="true">
+							<option value="" selected disabled hidden>{c.deptoPh}</option>
+							{c.deptos.map((d, i) => <option value={deptoValues[i]}>{d}</option>)}
+						</select>
+					</div>
+
+					<div class="f full">
+						<label for="f-msg">{c.message} <span class="req" aria-hidden="true">*</span></label>
+						<textarea id="f-msg" name="message" rows="5" placeholder={c.messagePh} required aria-required="true"></textarea>
+					</div>
+				</div>
+
+				<div class="consents">
+					{
+						consents.map((cs) => (
+							<div class="f">
+								<label for={cs.id}>{cs.label} <span class="req" aria-hidden="true">*</span></label>
+								<select id={cs.id} name={cs.name} required aria-required="true">
+									<option value="" selected disabled hidden>{c.selectPh}</option>
+									{c.consentOptions.map((o, i) => <option value={consentValues[i]}>{o}</option>)}
+								</select>
+							</div>
+						))
+					}
+				</div>
+
+				<div class="alert" id="ct-alert" role="status" aria-live="polite" aria-atomic="true"></div>
+
+				<div class="actions">
+					<button type="submit" class="send">{c.send}</button>
+					<a class="privacy" href={privacyUrl} target="_blank" rel="noopener">
+						{c.privacy}
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+							<path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"></path>
+						</svg>
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+    <PartnersSection/>
+</Layout>
+<script>
+	import { actions, isInputError } from 'astro:actions';
+	import { z } from 'astro/zod';
+	import { makeContactSchema } from '../lib/contact-schema';
+	import type { Lang } from '../i18n/routes';
+
+	const form = document.querySelector<HTMLFormElement>('#ct-form')!;
+	const alertBox = document.querySelector<HTMLElement>('#ct-alert')!;
+	const sendBtn = form.querySelector<HTMLButtonElement>('.send')!;
+	const sendLabel = sendBtn.textContent ?? '';
+
+	// textos dos alertas e idioma: vêm do servidor por data-attributes, já traduzidos
+	const contactSchema = makeContactSchema((form.dataset.lang as Lang) ?? 'pt');
+	const MSG = {
+		ok: form.dataset.msgOk ?? '',
+		invalid: form.dataset.msgInvalid ?? '',
+		server: form.dataset.msgServer ?? '',
+		select: form.dataset.msgSelect ?? '',
+		sending: form.dataset.msgSending ?? '',
+	};
+	const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	// Os 3 selects de consentimento continuam obrigatórios na tela, mas NÃO fazem parte da action:
+	// aqui só se confere (no navegador) que cada um foi respondido.
+	const answered = z.preprocess((v) => v ?? '', z.string().min(1, MSG.select));
+	const consentSchema = z.object({
+		perfil_avancado_finalidade_5: answered,
+		transferencia_dados_finalidade_8a: answered,
+		soft_spam_objetivo_6: answered,
+	});
+
+	/* ---------- erros por campo ---------- */
+	function showFieldError(name: string, message: string) {
+		const field = form.elements.namedItem(name) as HTMLElement | null;
+		if (!field) return;
+		let p = form.querySelector<HTMLElement>(`[data-err="${name}"]`);
+		if (!p) {
+			p = document.createElement('p');
+			p.className = 'err';
+			p.dataset.err = name;
+			p.id = `err-${name}`;
+			field.closest('.f')?.appendChild(p);
+		}
+		p.textContent = message;
+		field.setAttribute('aria-invalid', 'true');
+		field.setAttribute('aria-describedby', p.id);
+	}
+	function clearFieldError(name: string) {
+		form.querySelector(`[data-err="${name}"]`)?.remove();
+		const field = form.elements.namedItem(name) as HTMLElement | null;
+		field?.removeAttribute('aria-invalid');
+		field?.removeAttribute('aria-describedby');
+	}
+	const clearAllErrors = () => form.querySelectorAll<HTMLElement>('[data-err]').forEach((p) => clearFieldError(p.dataset.err!));
+	// primeira mensagem de cada campo
+	function firstMessages(issues: { path: PropertyKey[]; message: string }[]) {
+		const out: Record<string, string> = {};
+		for (const i of issues) {
+			const key = String(i.path[0] ?? '');
+			if (key && !out[key]) out[key] = i.message;
+		}
+		return out;
+	}
+	function showFieldErrors(errors: Record<string, string>) {
+		Object.entries(errors).forEach(([name, message]) => showFieldError(name, message));
+		// leva o foco ao primeiro campo com erro, na ordem em que aparecem na tela
+		const first = [...form.elements].find((el) => (el as HTMLElement).getAttribute?.('aria-invalid') === 'true') as HTMLElement | undefined;
+		first?.focus();
+	}
+
+	/* ---------- alerta de sucesso / erro ---------- */
+	function showAlert(type: 'success' | 'error', message: string) {
+		alertBox.dataset.type = type;
+		alertBox.textContent = message;
+		alertBox.scrollIntoView({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' });
+	}
+	function hideAlert() {
+		delete alertBox.dataset.type;
+		alertBox.textContent = '';
+	}
+
+	// ao corrigir um campo, o erro dele some
+	form.addEventListener('input', (e) => {
+		const name = (e.target as HTMLInputElement).name;
+		if (name) clearFieldError(name);
+	});
+	form.addEventListener('change', (e) => {
+		const name = (e.target as HTMLInputElement).name;
+		if (name) clearFieldError(name);
+	});
+
+	/* ---------- envio ---------- */
+	let sending = false;
+	form.addEventListener('submit', async (event) => {
+		event.preventDefault();
+		if (sending) return; // evita envio duplo
+		hideAlert();
+		clearAllErrors();
+
+		// 1) validação no NAVEGADOR (mesmo schema do servidor)
+		const formData = new FormData(form);
+		const values = Object.fromEntries(formData);
+		const local = contactSchema.safeParse(values);
+		const consents = consentSchema.safeParse(values);
+		if (!local.success || !consents.success) {
+			showFieldErrors({
+				...firstMessages(local.success ? [] : local.error.issues),
+				...firstMessages(consents.success ? [] : consents.error.issues),
+			});
+			showAlert('error', MSG.invalid);
+			return;
+		}
+
+		// 2) envio para a action (o servidor valida de novo)
+		sending = true;
+		sendBtn.disabled = true;
+		sendBtn.setAttribute('aria-busy', 'true');
+		sendBtn.textContent = MSG.sending;
+		try {
+			const { error } = await actions.user.sendPost(formData);
+			if (isInputError(error)) {
+				// o servidor recusou algum campo (não deveria acontecer se o navegador validou)
+				const fields: Record<string, string> = {};
+				for (const [name, msgs] of Object.entries(error.fields)) if (msgs?.length) fields[name] = msgs[0];
+				showFieldErrors(fields);
+				showAlert('error', MSG.invalid);
+			} else if (error) {
+				showAlert('error', MSG.server);
+			} else {
+				form.reset();
+				showAlert('success', MSG.ok);
+			}
+		} catch {
+			showAlert('error', MSG.server); // sem conexão, servidor fora do ar etc.
+		} finally {
+			sending = false;
+			sendBtn.disabled = false;
+			sendBtn.removeAttribute('aria-busy');
+			sendBtn.textContent = sendLabel;
+		}
+	});
+</script>
+
+
+<style>
+	.c {
+		max-width: 1040px;
+		margin-inline: auto;
+		padding-inline: clamp(1.25rem, 4vw, 3rem);
+	}
+
+	/* ---------- hero: papel milimetrado ---------- */
+	.hero {
+		position: relative;
+		overflow: hidden;
+		background-color: var(--color-rose-50);
+		background-image:
+			linear-gradient(rgba(156, 12, 12, 0.06) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(156, 12, 12, 0.06) 1px, transparent 1px),
+			linear-gradient(rgba(156, 12, 12, 0.035) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(156, 12, 12, 0.035) 1px, transparent 1px);
+		background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+	}
+	.hero-in {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 2rem;
+		padding-block: 4.5rem 8rem;
+	}
+	.h1 {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(2.125rem, 4.6vw, 3.75rem);
+		line-height: 1.05;
+		letter-spacing: -0.015em;
+		color: var(--color-primary);
+	}
+	.h1 span {
+		color: var(--color-text);
+	}
+	.lead {
+		margin: 1.5rem 0 0;
+		max-width: 34ch;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(1.125rem, 1.8vw, 1.4rem);
+		line-height: 1.4;
+		color: var(--color-text);
+	}
+	.intro {
+		margin: 1rem 0 0;
+		max-width: 56ch;
+		font-size: 1.0625rem;
+		line-height: 1.7;
+		color: var(--color-ink);
+	}
+	/* o ícone é de outro componente: precisa de :global E de um ancestral na frente,
+	   porque o CSS do próprio ícone tem seletor mais forte e ganharia */
+	.hero-in :global(.ct-janela) {
+		flex: none;
+		margin-top: 0.5rem;
+	}
+	@media (max-width: 560px) {
+		.hero-in :global(.ct-janela) {
+			display: none;
+		}
+	}
+
+	/* ---------- cartão escuro sobreposto ao hero ---------- */
+	.wrap {
+		position: relative;
+		z-index: 2;
+		margin-top: -5rem;
+		padding-bottom: 6rem;
+	}
+	.card {
+		position: relative;
+		overflow: hidden;
+		border-radius: 1rem;
+		padding: clamp(1.5rem, 4vw, 3rem);
+		color: #fff;
+		background:
+			radial-gradient(90% 60% at 100% 0%, rgba(208, 45, 37, 0.28), transparent 60%),
+			linear-gradient(160deg, #490306 0%, #2a0204 70%, #1c0102 100%);
+		box-shadow: 0 40px 80px -40px rgba(73, 3, 6, 0.65);
+	}
+	.note {
+		margin: 0 0 1.75rem;
+		font-size: 0.875rem;
+		color: var(--color-rose-200);
+	}
+
+	/* ---------- campos ---------- */
+	.grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.75rem;
+	}
+	.full {
+		grid-column: 1 / -1;
+	}
+	.f {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		min-width: 0;
+	}
+	label {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.8125rem;
+		line-height: 1.45;
+		letter-spacing: 0.01em;
+		color: var(--color-rose-200);
+	}
+	.req {
+		font-weight: 800;
+		color: var(--color-blush);
+	}
+	.f:focus-within label {
+		color: #fff;
+	}
+
+	input,
+	select,
+	textarea {
+		width: 100%;
+		min-width: 0;
+		/* 17px: abaixo de 16px o iPhone dá zoom automático ao focar o campo */
+		font-family: var(--font-body);
+		font-size: 1.0625rem;
+		line-height: 1.4;
+		color: #fff;
+		background-color: rgba(255, 255, 255, 0.08);
+		/* borda com contraste >= 3:1 contra o cartão (WCAG 1.4.11): não clarear a transparência */
+		border: 1px solid rgba(255, 255, 255, 0.42);
+		border-radius: 0.5rem;
+		padding: 0.85rem 1rem;
+		-webkit-appearance: none;
+		appearance: none;
+		transition:
+			border-color 0.25s,
+			box-shadow 0.25s,
+			background-color 0.25s;
+	}
+	textarea {
+		resize: vertical;
+		min-height: 8.5rem;
+	}
+	select {
+		cursor: pointer;
+		padding-right: 2.5rem;
+		text-overflow: ellipsis;
+		background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFCEC5' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+		background-repeat: no-repeat;
+		background-position: right 0.9rem center;
+		background-size: 1.1rem;
+	}
+	select option {
+		color: #2a0204;
+		background: #fff;
+	}
+	/* placeholder: enquanto nada foi escolhido (value vazio), o texto fica esmaecido */
+	select:required:invalid {
+		color: rgba(255, 255, 255, 0.65);
+	}
+	input::placeholder,
+	textarea::placeholder {
+		color: rgba(255, 255, 255, 0.5);
+		opacity: 1;
+	}
+	input:hover,
+	select:hover,
+	textarea:hover {
+		background-color: rgba(255, 255, 255, 0.12);
+		border-color: var(--color-blush);
+	}
+	input:focus,
+	select:focus,
+	textarea:focus {
+		outline: 0;
+		border-color: var(--color-blush);
+		background-color: rgba(255, 255, 255, 0.14);
+		box-shadow: 0 0 0 3px rgba(255, 206, 197, 0.25);
+	}
+
+	.consents {
+		display: grid;
+		gap: 1.5rem;
+		margin-top: 2.5rem;
+		padding-top: 2.25rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.2);
+	}
+
+	/* ---------- ações ---------- */
+	.actions {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 1.25rem 2rem;
+		margin-top: 2.25rem;
+	}
+	.send {
+		cursor: pointer;
+		padding: 0.95rem 2.25rem;
+		border: 1px solid var(--color-blush);
+		border-radius: 9999px;
+		background: var(--color-blush);
+		color: var(--color-primary);
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 1rem;
+		transition:
+			background-color 0.3s,
+			border-color 0.3s,
+			transform 0.1s;
+	}
+	.send:hover {
+		background: #fff;
+		border-color: #fff;
+	}
+	.send:active {
+		transform: scale(0.96);
+	}
+	.privacy {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.875rem;
+		color: var(--color-blush);
+		text-decoration: underline;
+		text-underline-offset: 4px;
+		text-decoration-thickness: 1px;
+		transition: color 0.2s;
+	}
+	.privacy:hover {
+		color: #fff;
+	}
+	.privacy svg {
+		width: 16px;
+		height: 16px;
+	}
+	/* o contorno padrão do site (vermelho) rende pouco contraste sobre o vinho */
+	.card :is(a, button):focus-visible {
+		outline: 2px solid var(--color-blush);
+		outline-offset: 4px;
+	}
+
+	/* ---------- alertas e erros de campo ---------- */
+	.alert {
+		margin-top: 2rem;
+		padding: 0.9rem 1.1rem;
+		border: 1px solid transparent;
+		border-radius: 0.5rem;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 0.9375rem;
+		line-height: 1.5;
+	}
+	.alert:empty {
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+	.alert[data-type='success'] {
+		color: #dcfce7;
+		background: rgba(34, 197, 94, 0.16);
+		border-color: #4ade80;
+	}
+	.alert[data-type='error'] {
+		color: #ffe4e1;
+		background: rgba(208, 45, 37, 0.3);
+		border-color: #ff8a80;
+	}
+	/* o <p> do erro é criado pelo script, por isso :global */
+	.f :global(.err) {
+		margin: 0;
+		font-size: 0.8125rem;
+		line-height: 1.4;
+		color: #ffb4ab;
+	}
+	input[aria-invalid='true'],
+	select[aria-invalid='true'],
+	textarea[aria-invalid='true'] {
+		border-color: #ff8a80;
+	}
+	.send[disabled] {
+		opacity: 0.65;
+		cursor: progress;
+	}
+
+	@media (max-width: 640px) {
+		.hero-in {
+			padding-block: 3rem 6.5rem;
+		}
+		.wrap {
+			margin-top: -4rem;
+		}
+		.grid {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		input,
+		select,
+		textarea,
+		.send,
+		.privacy {
+			transition: none;
+		}
+	}
+</style>
+<script>
+	// máscara do telefone: (00) 0000-0000 (fixo) ou (00) 00000-0000 (celular)
+	const tel = document.getElementById('f-telefone') as HTMLInputElement | null;
+	if (tel) {
+		tel.addEventListener('input', () => {
+			const d = tel.value.replace(/\D/g, '').slice(0, 11);
+			let out = d;
+			if (d.length > 10) out = `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+			else if (d.length > 6) out = `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+			else if (d.length > 2) out = `(${d.slice(0, 2)}) ${d.slice(2)}`;
+			else if (d.length > 0) out = `(${d}`;
+			tel.value = out;
+		});
+	}
+</script>

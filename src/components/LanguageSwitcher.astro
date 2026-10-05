@@ -1,6 +1,9 @@
 ---
+import { LANGS, LANG_NAME, HTML_LANG, getLang, alternateUrl, t } from '../i18n/utils';
+import type { Lang } from '../i18n/utils';
+
 interface Language {
-	code: string;
+	code: Lang;
 	label: string;
 	flagSvg: string;
 }
@@ -58,16 +61,14 @@ const FLAG_IT = `
 	</svg>
 `;
 
-// Só o PT-BR tem conteúdo de fato — os outros ainda não têm páginas
-// traduzidas. Este componente é a interface (visual + estado salvo em
-// localStorage); a troca de conteúdo real fica para quando o site tiver
-// rotas/traduções por idioma.
-const languages: Language[] = [
-	{ code: 'pt', label: 'Português', flagSvg: FLAG_BR },
-	{ code: 'en', label: 'English', flagSvg: FLAG_US },
-	{ code: 'es', label: 'Español', flagSvg: FLAG_ES },
-	{ code: 'it', label: 'Italiano', flagSvg: FLAG_IT },
-];
+// Seletor de idioma: cada opção é um link para a MESMA página no outro idioma
+// (ou para a home daquele idioma, se a página não existir lá). Sem redirecionamento
+// automático pelo idioma do navegador: a pessoa escolhe aqui.
+const FLAGS: Record<Lang, string> = { pt: FLAG_BR, en: FLAG_US, es: FLAG_ES, it: FLAG_IT };
+const languages: Language[] = LANGS.map((code) => ({ code, label: LANG_NAME[code], flagSvg: FLAGS[code] }));
+
+const current = getLang(Astro.currentLocale);
+const pathname = Astro.url.pathname;
 ---
 
 <div class="lang-switcher" id="lang-switcher">
@@ -78,29 +79,30 @@ const languages: Language[] = [
 		aria-haspopup="true"
 		aria-expanded="false"
 		aria-controls="lang-menu"
-		aria-label="Selecionar idioma"
+		aria-label={t(current, 'lang.select')}
 	>
-		<span class="lang-fab-flag" id="lang-fab-flag" aria-hidden="true" set:html={FLAG_BR} />
-		<span class="lang-fab-code" id="lang-fab-code">PT</span>
+		<span class="lang-fab-flag" id="lang-fab-flag" aria-hidden="true" set:html={FLAGS[current]} />
+		<span class="lang-fab-code" id="lang-fab-code">{current.toUpperCase()}</span>
 	</button>
 
-	<ul class="lang-menu" id="lang-menu" role="menu" aria-label="Idiomas disponíveis">
+	<ul class="lang-menu" id="lang-menu" aria-label={t(current, 'lang.available')}>
 		{
 			languages.map((lang, i) => (
-				<li role="none" style={`--i:${i}`}>
-					<button
+				<li style={`--i:${i}`}>
+					<a
 						class="lang-option"
-						type="button"
-						role="menuitemradio"
+						href={alternateUrl(pathname, lang.code)}
+						lang={HTML_LANG[lang.code]}
+						hreflang={HTML_LANG[lang.code]}
+						aria-current={lang.code === current ? 'true' : undefined}
 						data-lang={lang.code}
-						aria-checked={lang.code === 'pt' ? 'true' : 'false'}
 					>
 						<span class="lang-flag" aria-hidden="true" set:html={lang.flagSvg} />
 						<span class="lang-label">{lang.label}</span>
 						<svg class="lang-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" aria-hidden="true">
 							<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" />
 						</svg>
-					</button>
+					</a>
 				</li>
 			))
 		}
@@ -225,10 +227,15 @@ const languages: Language[] = [
 		align-items: flex-end;
 		gap: 0.625rem;
 		pointer-events: none;
+		/* fechado: links fora da ordem de tabulação */
+		visibility: hidden;
+		transition: visibility 0s linear 0.3s;
 	}
 
 	.lang-switcher.is-open .lang-menu {
 		pointer-events: auto;
+		visibility: visible;
+		transition-delay: 0s;
 	}
 
 	.lang-menu li {
@@ -248,6 +255,7 @@ const languages: Language[] = [
 	}
 
 	.lang-option {
+		text-decoration: none;
 		display: flex;
 		align-items: center;
 		gap: 0.625rem;
@@ -274,7 +282,7 @@ const languages: Language[] = [
 		box-shadow: 0 14px 28px rgba(73, 3, 6, 0.22);
 	}
 
-	.lang-option[aria-checked='true'] {
+	.lang-option[aria-current='true'] {
 		background: var(--color-primary);
 		color: var(--color-white);
 		border-color: var(--color-primary);
@@ -311,7 +319,7 @@ const languages: Language[] = [
 			transform 0.2s var(--ease-out);
 	}
 
-	.lang-option[aria-checked='true'] .lang-check {
+	.lang-option[aria-current='true'] .lang-check {
 		opacity: 1;
 		transform: scale(1);
 	}
@@ -346,42 +354,11 @@ const languages: Language[] = [
 </style>
 
 <script>
-	const STORAGE_KEY = 'fesqua-lang';
-
 	const root = document.getElementById('lang-switcher');
 	const fab = document.getElementById('lang-fab');
 	const menu = document.getElementById('lang-menu');
-	const fabFlag = document.getElementById('lang-fab-flag');
-	const fabCode = document.getElementById('lang-fab-code');
 
-	if (root && fab && menu && fabFlag && fabCode) {
-		const options = Array.from(menu.querySelectorAll<HTMLButtonElement>('.lang-option'));
-
-		const applyLang = (code: string, persist: boolean) => {
-			const match = options.find((opt) => opt.dataset.lang === code) ?? options[0];
-			options.forEach((opt) => opt.setAttribute('aria-checked', String(opt === match)));
-			const matchFlag = match.querySelector('.lang-flag');
-			if (matchFlag) fabFlag.replaceChildren(...Array.from(matchFlag.cloneNode(true).childNodes));
-			fabCode.textContent = (match.dataset.lang ?? 'pt').toUpperCase();
-			document.documentElement.lang =
-				{ pt: 'pt-BR', en: 'en', es: 'es', it: 'it' }[match.dataset.lang ?? 'pt'] ?? 'pt-BR';
-			if (persist) {
-				try {
-					localStorage.setItem(STORAGE_KEY, match.dataset.lang ?? 'pt');
-				} catch {
-					// localStorage indisponível (modo privado etc.) — só não persiste
-				}
-			}
-		};
-
-		let saved: string | null = null;
-		try {
-			saved = localStorage.getItem(STORAGE_KEY);
-		} catch {
-			saved = null;
-		}
-		if (saved) applyLang(saved, false);
-
+	if (root && fab && menu) {
 		const closeMenu = () => {
 			root.classList.remove('is-open');
 			fab.setAttribute('aria-expanded', 'false');
@@ -391,17 +368,11 @@ const languages: Language[] = [
 			root.classList.add('is-open');
 			root.classList.add('dismissed');
 			fab.setAttribute('aria-expanded', 'true');
+			menu.querySelector<HTMLElement>('.lang-option')?.focus();
 		};
 
 		fab.addEventListener('click', () => {
 			root.classList.contains('is-open') ? closeMenu() : openMenu();
-		});
-
-		options.forEach((opt) => {
-			opt.addEventListener('click', () => {
-				applyLang(opt.dataset.lang ?? 'pt', true);
-				closeMenu();
-			});
 		});
 
 		document.addEventListener('click', (event) => {
@@ -409,7 +380,10 @@ const languages: Language[] = [
 		});
 
 		document.addEventListener('keydown', (event) => {
-			if (event.key === 'Escape') closeMenu();
+			if (event.key === 'Escape' && root.classList.contains('is-open')) {
+				closeMenu();
+				fab.focus();
+			}
 		});
 	}
 </script>

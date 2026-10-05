@@ -2,7 +2,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import JanelaDraw from './JanelaDraw.astro';
-import { partnerGroups as tabs } from '../data/partners';
+import { getPartnerGroups } from '../data/partners';
+import { getLang, pick } from '../i18n/utils';
+import { partnersText } from '../i18n/content/home';
+
+const lang = getLang(Astro.currentLocale);
+const c = pick(partnersText, lang);
+const tabs = getPartnerGroups(lang);
 
 const LOGOS_DIR = path.resolve('public/images/logos');
 const logoFiles = fs.readdirSync(LOGOS_DIR);
@@ -35,16 +41,13 @@ function resolveLogo(name: string): string {
 
 	<div class="partners-inner">
 		<div class="partners-head">
-			<span class="kicker">Quem torna a FESQUA possível</span>
-			<h2>Organização, apoio institucional e <em>parceiros de mídia</em> por trás de cada edição.</h2>
-			<p>
-				Instituições, veículos de imprensa e agências que ajudam a construir a experiência completa da
-				feira — do credenciamento ao conteúdo técnico.
-			</p>
+			<span class="kicker">{c.kicker}</span>
+			<h2>{c.h2a}<em>{c.h2em}</em>{c.h2b}</h2>
+			<p>{c.lead}</p>
 		</div>
 
 		<div class="partners-body reveal">
-			<div class="tabs-bar" role="tablist" aria-label="Categorias de parceiros">
+			<div class="tabs-bar" role="tablist" aria-label={c.tabsLabel}>
 				{
 					tabs.map((tab, i) => (
 						<button

@@ -1,0 +1,189 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import PartnersSection from '../components/PartnersSection.astro';
+import { getLang, pick } from '../i18n/utils';
+import { viagemHospedagem } from '../i18n/content/viagem-hospedagem';
+
+const lang = getLang(Astro.currentLocale);
+const c = pick(viagemHospedagem, lang);
+const VENICE_URL = 'https://www.venicetravel.com.br/';
+---
+
+<Layout title={c.title} description={c.description}>
+	<PageHero lineA={c.heroA} lineB={c.heroB} id="viagem-title" />
+
+	<section class="viagem" aria-label={c.sectionLabel}>
+		<div class="viagem-inner">
+			<div class="texto">
+				<p class="lead reveal">
+					{c.lead}
+				</p>
+				<p class="corpo reveal" style="--rd:80ms">
+					{c.body1}
+				</p>
+				<p class="corpo reveal" style="--rd:160ms">
+					{c.body2Pre}<strong>{c.body2Strong}</strong>{c.body2Post}
+				</p>
+			</div>
+
+			<aside class="contato reveal" style="--rd:240ms" aria-label="Venice Travel">
+				<p class="contato-txt">{c.contactText}</p>
+				<img
+					class="logo"
+					src="/images/logos/venice-travel.webp"
+					alt={c.logoAlt}
+					width="300"
+					height="80"
+					loading="lazy"
+					decoding="async"
+				/>
+				<a href={VENICE_URL} class="btn Solid_Red btn-md" target="_blank" rel="noopener">
+					<div class="slime"><span></span><span></span><span></span></div>
+					<div class="btn-content"><span>{c.cta}</span></div>
+				</a>
+			</aside>
+		</div>
+	</section>
+    <PartnersSection />
+</Layout>
+
+<style>
+	.viagem {
+		background: #fff;
+	}
+	.viagem-inner {
+		max-width: 1040px;
+		margin-inline: auto;
+		padding: 5rem clamp(1.25rem, 4vw, 3rem) 6rem;
+		display: grid;
+		grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+		gap: clamp(2rem, 5vw, 4.5rem);
+		align-items: start;
+	}
+
+	/* ---------- texto ---------- */
+	.lead {
+		margin: 0 0 1.75rem;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(1.5rem, 2.8vw, 2.25rem);
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+		color: var(--color-primary);
+		padding-left: 1.25rem;
+		border-left: 3px solid var(--color-primary-bright);
+	}
+	.corpo {
+		margin: 0 0 1.25rem;
+		max-width: 52ch;
+		font-family: var(--font-body);
+		font-size: 1.125rem;
+		line-height: 1.7;
+		color: var(--color-ink);
+	}
+	.corpo strong {
+		font-family: var(--font-display);
+		font-weight: 700;
+		color: var(--color-text);
+	}
+
+	/* ---------- painel de contato ---------- */
+	.contato {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1.75rem;
+		padding: 2.25rem 2rem 2.5rem;
+		border: 1px solid var(--color-line);
+		border-radius: 1.25rem;
+		background-color: var(--color-rose-50);
+		background-image:
+			linear-gradient(rgba(156, 12, 12, 0.05) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(156, 12, 12, 0.05) 1px, transparent 1px);
+		background-size: 24px 24px;
+		box-shadow: 0 24px 50px -30px rgba(73, 3, 6, 0.3);
+	}
+	.contato::before {
+		content: '';
+		position: absolute;
+		left: 2rem;
+		top: -1px;
+		width: 56px;
+		height: 3px;
+		background: var(--color-primary-bright);
+	}
+	.contato-txt {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 1.0625rem;
+		line-height: 1.45;
+		color: var(--color-text);
+	}
+	.logo {
+		display: block;
+		width: min(100%, 260px);
+		height: auto;
+		padding: 1rem 1.25rem;
+		background: #fff;
+		border: 1px solid var(--color-line);
+		border-radius: 0.875rem;
+	}
+
+	/* ---------- entrada suave ---------- */
+	.reveal {
+		opacity: 0;
+		transform: translateY(20px);
+		transition:
+			opacity 0.7s var(--ease-out),
+			transform 0.7s var(--ease-out);
+		transition-delay: var(--rd, 0s);
+	}
+	.reveal.in {
+		opacity: 1;
+		transform: none;
+	}
+
+	@media (max-width: 820px) {
+		.viagem-inner {
+			grid-template-columns: 1fr;
+			padding-block: 3.5rem 4.5rem;
+		}
+	}
+	@media (max-width: 640px) {
+		.contato {
+			align-items: stretch;
+			padding: 1.75rem 1.25rem 2rem;
+		}
+		.contato::before {
+			left: 1.25rem;
+		}
+		.logo {
+			align-self: flex-start;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.reveal {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const io = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((en) => {
+				if (en.isIntersecting) {
+					en.target.classList.add('in');
+					io.unobserve(en.target);
+				}
+			});
+		},
+		{ threshold: 0.15 },
+	);
+	document.querySelectorAll('.viagem .reveal').forEach((el) => io.observe(el));
+</script>

@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeroCorteTecnico from '../components/HeroCorteTecnico.astro';
+import About from '../components/About.astro';
+import Diferenciais from '../components/Diferenciais.astro';
+import ConnectionsOrbit from '../components/ConnectionsOrbit.astro';
+import PartnersSection from '../components/PartnersSection.astro';
+import { getLang, pick } from '../i18n/utils';
+import { sobreEventoMeta } from '../i18n/content/home';
+
+const lang = getLang(Astro.currentLocale);
+const meta = pick(sobreEventoMeta, lang);
+---
+
+<Layout title={meta.title} description={meta.description}>
+	<HeroCorteTecnico />
+	<About />
+	<Diferenciais />
+	<ConnectionsOrbit />
+	<PartnersSection/>
+
+</Layout>

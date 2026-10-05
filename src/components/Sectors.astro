@@ -1,4 +1,7 @@
 ---
+import { getLang, pick } from '../i18n/utils';
+import { sectorsText } from '../i18n/content/home-sectors';
+
 interface Sector {
 	label: string;
 	shortLabel: string;
@@ -7,60 +10,28 @@ interface Sector {
 	desc: string;
 }
 
-const sectors: Sector[] = [
-	{
-		label: 'Esquadrias e Fachadas',
-		shortLabel: 'Esquadrias',
-		icon: 'window',
-		image: '/images/setores/esquadrias.webp',
-		desc: 'Perfis de alumínio, PVC e aço para portas, janelas e fachadas — soluções que unem estética, desempenho térmico e acústico.',
-	},
-	{
-		label: 'Vidro e Soluções Vidreiras',
-		shortLabel: 'Vidro',
-		icon: 'window',
-		image: '/images/setores/vidro-solucoes.webp',
-		desc: 'Vidros temperados, laminados e de controle solar, além de máquinas e insumos para o beneficiamento vidreiro.',
-	},
-	{
-		label: 'Ferragens e Componentes',
-		shortLabel: 'Ferragens',
-		icon: 'wrench',
-		image: '/images/setores/ferragens-componentes.webp',
-		desc: 'Dobradiças, fechos, trilhos e acessórios que garantem funcionalidade, durabilidade e segurança às esquadrias.',
-	},
-	{
-		label: 'Soluções para Construção Civil',
-		shortLabel: 'Construção',
-		icon: 'building',
-		image: '/images/setores/construcao-civil.webp',
-		desc: 'Materiais, sistemas construtivos e serviços que sustentam obras residenciais, comerciais e industriais.',
-	},
-	{
-		label: 'Automação e Tecnologia',
-		shortLabel: 'Automação',
-		icon: 'radar',
-		image: '/images/setores/automacao-tecnologia.webp',
-		desc: 'Sistemas inteligentes, sensores e automação que trazem eficiência e controle para esquadrias e ambientes.',
-	},
-	{
-		label: 'Máquinas e Equipamentos',
-		shortLabel: 'Máquinas',
-		icon: 'gear',
-		image: '/images/setores/maquinas-equipamentos.webp',
-		desc: 'Maquinário de ponta para corte, usinagem e beneficiamento — a espinha dorsal da produção do setor.',
-	},
+const lang = getLang(Astro.currentLocale);
+const c = pick(sectorsText, lang);
+const meta: { icon: Sector['icon']; image: string | null }[] = [
+	{ icon: 'window', image: '/images/setores/esquadrias.webp' },
+	{ icon: 'window', image: '/images/setores/vidro-solucoes.webp' },
+	{ icon: 'wrench', image: '/images/setores/ferragens-componentes.webp' },
+	{ icon: 'building', image: '/images/setores/construcao-civil.webp' },
+	{ icon: 'radar', image: '/images/setores/automacao-tecnologia.webp' },
+	{ icon: 'gear', image: '/images/setores/maquinas-equipamentos.webp' },
 ];
+const sectors: Sector[] = c.sectors.map((t, i) => ({ ...t, ...meta[i] }));
+
 ---
 
 <section class="sectors" id="setores" aria-labelledby="setores-heading">
 	<div class="sectors-head">
 		<span class="rule" aria-hidden="true"></span>
-		<span class="kicker">Setores atendidos</span>
-		<h2 id="setores-heading">Um universo de soluções em um só lugar</h2>
+		<span class="kicker">{c.kicker}</span>
+		<h2 id="setores-heading">{c.heading}</h2>
 	</div>
 
-	<div class="sectors-row" role="tablist" aria-label="Setores da Fesqua">
+	<div class="sectors-row" role="tablist" aria-label={c.rowLabel}>
 		{
 			sectors.map((sector, i) => (
 				<div class="sector" data-index={i} role="tab" tabindex="0" aria-selected="false" style={`--i:${i + 1}`}>
@@ -118,7 +89,7 @@ const sectors: Sector[] = [
 					</span>
 
 					<span class="sector-textpanel">
-						<button class="sector-back" type="button" aria-label="Voltar">
+						<button class="sector-back" type="button" aria-label={c.back}>
 							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
 								<path d="M19 12H5M11 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
 							</svg>

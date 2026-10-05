@@ -1,0 +1,209 @@
+---
+import { getLang, pick } from '../i18n/utils';
+import { dif } from '../i18n/content/home';
+
+const lang = getLang(Astro.currentLocale);
+const { t1, t3, items } = pick(dif, lang);
+---
+
+<section class="dif" aria-labelledby="dif-title" data-dif>
+	<div class="dif-inner">
+		<h2 class="dif-title reveal" id="dif-title">
+			<span class="t1">{t1}</span>
+			<span class="t2">FESQUA + <span class="nw">FESQUA VETRO</span></span>
+			<span class="t3">{t3}</span>
+		</h2>
+
+		<ol class="dif-list" role="list">
+			{
+				items.map((item, i) => (
+					<li class="dif-row reveal" style={`--rd:${i * 80}ms`}>
+						<span class="dif-num" aria-hidden="true">
+							{String(i + 1).padStart(2, '0')}
+						</span>
+						<p>
+							{item.text}
+							{item.highlight && (
+								<>
+									{' '}
+									<strong>{item.highlight}</strong>
+								</>
+							)}
+						</p>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
+
+<style>
+	.dif {
+		position: relative;
+		overflow: hidden;
+		color: var(--color-white);
+		background:
+			radial-gradient(120% 90% at 0% 0%, #7a0a0c 0%, transparent 55%),
+			linear-gradient(160deg, var(--color-primary-deep) 0%, #2a0204 60%, #1c0102 100%);
+	}
+	.dif-inner {
+		max-width: 1280px;
+		margin-inline: auto;
+		padding: 6.5rem clamp(1.25rem, 4vw, 3rem);
+	}
+
+	/* ---------- título ---------- */
+	.dif-title {
+		font-family: var(--font-display);
+		font-weight: 800;
+		line-height: 1.05;
+		letter-spacing: -0.01em;
+		margin: 0 0 4rem;
+	}
+	.dif-title > span {
+		display: block;
+	}
+	.nw {
+		white-space: nowrap;
+	}
+	.dif-title .t1 {
+		font-weight: 600;
+		font-size: clamp(1.25rem, 2vw, 1.625rem);
+		color: var(--color-rose-200);
+		letter-spacing: 0.01em;
+	}
+	.dif-title .t2 {
+		font-size: clamp(1.875rem, 5.2vw, 4.5rem);
+		margin: 0.35rem 0 0.5rem;
+		color: var(--color-white);
+	}
+	.dif-title .t3 {
+		font-weight: 600;
+		font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+		color: var(--color-blush);
+	}
+
+	/* ---------- lista ---------- */
+	.dif-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.16);
+	}
+	.dif-row {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(90px, 160px) 1fr;
+		gap: 2rem;
+		align-items: center;
+		padding: 1.9rem 0;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+	}
+	.dif-row::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		bottom: -1px;
+		height: 2px;
+		width: 100%;
+		background: var(--color-primary-bright);
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.6s var(--ease-in-out);
+	}
+	.dif-num {
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(2.75rem, 5vw, 4.25rem);
+		line-height: 1;
+		color: rgba(255, 206, 197, 0.24);
+		font-variant-numeric: tabular-nums;
+		transition: color 0.4s var(--ease-in-out);
+	}
+	.dif-row p {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: clamp(1.125rem, 1.9vw, 1.5rem);
+		line-height: 1.4;
+		color: var(--color-rose-200);
+		max-width: 46ch;
+		transition:
+			color 0.4s var(--ease-in-out),
+			transform 0.4s var(--ease-in-out);
+	}
+	.dif-row strong {
+		color: var(--color-blush);
+		font-weight: 700;
+	}
+
+	/* hover só com mouse: no toque o estado "gruda" depois do toque */
+	@media (hover: hover) {
+		.dif-row:hover::after {
+			transform: scaleX(1);
+		}
+		.dif-row:hover .dif-num {
+			color: var(--color-blush);
+		}
+		.dif-row:hover p {
+			color: var(--color-white);
+			transform: translateX(6px);
+		}
+	}
+
+	/* ---------- entrada suave ---------- */
+	.reveal {
+		opacity: 0;
+		transform: translateY(20px);
+		transition:
+			opacity 0.7s var(--ease-out),
+			transform 0.7s var(--ease-out);
+		transition-delay: var(--rd, 0s);
+	}
+	.reveal.in {
+		opacity: 1;
+		transform: none;
+	}
+
+	@media (max-width: 640px) {
+		.dif-row {
+			display: flex;
+			flex-direction: column;
+			align-items: baseline;
+			gap: 1rem;
+			padding: 1.4rem 0;
+		}
+		.dif-title {
+			margin-bottom: 2.5rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.reveal {
+			opacity: 1;
+			transform: none;
+			transition: none;
+		}
+		.dif-row::after,
+		.dif-num,
+		.dif-row p {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-dif]').forEach((section) => {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((en) => {
+					if (en.isIntersecting) {
+						en.target.classList.add('in');
+						io.unobserve(en.target);
+					}
+				});
+			},
+			{ threshold: 0.15 },
+		);
+		section.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+	});
+</script>

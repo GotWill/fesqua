@@ -5,6 +5,9 @@
 // dentro do próprio header (ver Header.astro) — este arquivo fica só
 // como referência/backup, não é importado por nenhuma página.
 // ---------------------------------------------------------------------
+import { getLang, pick, route } from '../i18n/utils';
+import { chrome, navTree } from '../i18n/content/chrome';
+
 interface NavChild {
 	label: string;
 	href: string;
@@ -17,109 +20,22 @@ interface NavItem {
 	children?: NavChild[];
 }
 
-// Estrutura pronta para receber novos links: itens com `dropdown: true` e
-// `children: []` já têm a seta e o acordeão funcionando, só falta popular.
-const nav: NavItem[] = [
-	{
-		label: "Fesqua",
-		href: "/fesqua",
-		dropdown: true,
-		children: [
-			{ label: "Sobre o Evento", href: "/fesqua/sobre-o-evento" },
-			{
-				label: "Sobre o Grupo Contramarco",
-				href: "/fesqua/sobre-o-grupo-contramarco",
-			},
-		],
-	},
-	{
-		label: "Expositor",
-		href: "/expositor",
-		dropdown: true,
-		children: [
-			{ label: "Planta da Feira", href: "/expositor/planta-da-feira" },
-			{
-				label: "Lista de Expositores",
-				href: "/expositor/lista-de-expositores",
-			},
-			{ label: "Quero Expor", href: "/expositor/quero-expor" },
-			{
-				label: "Manual do Expositor",
-				href: "/expositor/manual-do-expositor",
-			},
-			{
-				label: "Primeira Participação",
-				href: "/expositor/primeira-participacao",
-			},
-			{
-				label: "Viagem e Hospedagem",
-				href: "/expositor/viagem-e-hospedagem",
-			},
-			{
-				label: "Dúvidas Frequentes – Expositores",
-				href: "/expositor/duvidas-frequentes",
-			},
-		],
-	},
-	{
-		label: "Visitante",
-		href: "/visitante",
-		dropdown: true,
-		children: [
-			{ label: "Planta da Feira", href: "/visitante/planta-da-feira" },
-			{ label: "Quero Visitar", href: "/visitante/quero-visitar" },
-			{
-				label: "Viagem e Hospedagem",
-				href: "/visitante/viagem-e-hospedagem",
-			},
-			{
-				label: "Dúvidas Frequentes – Visitantes",
-				href: "/visitante/duvidas-frequentes",
-			},
-		],
-	},
-	{
-		label: "Programação",
-		href: "/programacao",
-		dropdown: true,
-		children: [
-			{ label: "ENEPE", href: "/programacao/enepe" },
-			{ label: "Encontro AFEAL", href: "/programacao/encontro-afeal" },
-			{ label: "Summit Arq", href: "/programacao/summit-arq" },
-			{ label: "VIDROSOM", href: "/programacao/vidrosom" },
-			{
-				label: "Esquadrias de PVC em Foco",
-				href: "/programacao/esquadrias-de-pvc-em-foco",
-			},
-		],
-	},
-	{ label: "Embaixadores", href: "/embaixadores" },
-	{
-		label: "Eventos Simultâneos",
-		href: "/eventos-simultaneos",
-		dropdown: true,
-		children: [
-			{ label: "Feipat", href: "/eventos-simultaneos/feipat" },
-			{
-				label: "Fesqua Vetro",
-				href: "/eventos-simultaneos/fesqua-vetro",
-			},
-		],
-	},
-	{
-		label: "Imprensa",
-		href: "/imprensa",
-		dropdown: true,
-		children: [
-			{ label: "Canal Fesqua", href: "/imprensa/canal-fesqua" },
-			{ label: "Press Releases", href: "/imprensa/press-releases" },
-			{ label: "Saiu na Mídia", href: "/imprensa/saiu-na-midia" },
-		],
-	},
-	{ label: "Contato", href: "/contato" },
-	{ label: "Quero Visitar", href: "/quero-visitar" },
-	{ label: "Quero Expor", href: "/quero-expor" },
-];
+const lang = getLang(Astro.currentLocale);
+const c = pick(chrome, lang);
+
+const nav: NavItem[] = navTree.map((n) => ({
+	label: c.labels[n.id as keyof typeof c.labels],
+	href: route(lang, n.route),
+	dropdown: !!n.children,
+	children: n.children?.map((ch) => ({
+		label: c.labels[ch.id as keyof typeof c.labels],
+		href: 'href' in ch ? ch.href : route(lang, ch.route),
+	})),
+}));
+
+const normPath = (p: string) => p.replace(/\/+$/, '') || '/';
+const currentPath = normPath(Astro.url.pathname);
+const isCurrent = (href: string) => (normPath(href) === currentPath ? 'page' : undefined);
 ---
 
 <header class="site-header on-primary" id="site-header">
@@ -138,8 +54,8 @@ const nav: NavItem[] = [
 					<path d="M3 9h18M8 3v4M16 3v4" stroke-linecap="round"></path>
 				</svg>
 				<div class="utility-text">
-					<span class="utility-primary">12–15 Set 2028</span>
-					<span class="utility-secondary">4 dias · Qua–Sex 13h–20h, Sáb 11h–18h</span>
+					<span class="utility-primary">{c.dateFull}</span>
+					<span class="utility-secondary">{c.utilDateSub}</span>
 				</div>
 			</div>
 
@@ -165,9 +81,9 @@ const nav: NavItem[] = [
 					<span class="utility-primary">São Paulo Expo</span>
 					<span
 						class="utility-secondary"
-						title="Rod. dos Imigrantes, São Paulo - SP, 04329-900"
+						title={c.address}
 					>
-						Rod. dos Imigrantes, SP
+						{c.utilAddrShort}
 					</span>
 				</div>
 			</div>
@@ -186,7 +102,7 @@ const nav: NavItem[] = [
 					<path d="M12 3 3 8l9 5 9-5-9-5Z" stroke-linecap="round" stroke-linejoin="round"></path>
 					<path d="M3 12l9 5 9-5M3 16l9 5 9-5" stroke-linecap="round" stroke-linejoin="round"></path>
 				</svg>
-				<span class="utility-primary">Eventos simultâneos</span>
+				<span class="utility-primary">{c.simultaneous}</span>
 				<span class="utility-logo">
 					<img src="/images/logos/feipat.webp" alt="Feipat" />
 				</span>
@@ -195,7 +111,7 @@ const nav: NavItem[] = [
 	</div>
 
 	<div class="header-main">
-		<a href="/" class="brand">
+		<a href={route(lang, 'home')} class="brand">
 			<img src="/images/logo-fesqua-white.png" alt="Fesqua" />
 			<span class="brand-divider" aria-hidden="true"></span>
 			<img src="/images/logo-fesqua-vetro-white.png" alt="Fesqua Vetro" />
@@ -203,21 +119,21 @@ const nav: NavItem[] = [
 
 		<div class="header-actions">
 			<div class="header-ctas">
-			<a href="/quero-expor" class="btn Outline_White btn-sm">
+			<a href={route(lang, 'queroExpor')} class="btn Outline_White btn-sm">
 				<div class="slime">
 					<span></span><span></span><span></span>
 				</div>
-				<div class="btn-content"><span>Quero Expor</span></div>
+				<div class="btn-content"><span>{c.ctaExhibit}</span></div>
 			</a>
-			<a href="/quero-visitar" class="btn Outline_Blush btn-sm">
+			<a href={route(lang, 'queroVisitar')} class="btn Outline_Blush btn-sm">
 				<div class="slime">
 					<span></span><span></span><span></span>
 				</div>
-				<div class="btn-content"><span>Quero Visitar</span></div>
+				<div class="btn-content"><span>{c.ctaVisit}</span></div>
 			</a>
 		</div>
 
-		<nav class="social-nav" aria-label="Redes sociais">
+		<nav class="social-nav" aria-label={c.socialLabel}>
 			<a
 				class="social-link"
 				href="https://www.instagram.com/fesqua/"
@@ -275,7 +191,7 @@ const nav: NavItem[] = [
 			class="hamburger_menu_wrapper"
 			id="menu-toggle"
 			type="button"
-			aria-label="Abrir menu"
+			aria-label={c.menuOpen}
 			aria-expanded="false"
 			aria-controls="site-sidebar"
 		>
@@ -293,16 +209,16 @@ const nav: NavItem[] = [
 	class="sidebar"
 	id="site-sidebar"
 	aria-hidden="true"
-	aria-label="Menu principal"
+	aria-label={c.sidebarLabel}
 >
 	<div class="sidebar-inner">
 		<div class="sidebar-top">
-			<span class="kicker">Menu</span>
+			<span class="kicker">{c.menuLabel}</span>
 			<button
 				class="sidebar-close"
 				id="sidebar-close"
 				type="button"
-				aria-label="Fechar menu"
+				aria-label={c.menuClose}
 			>
 				<svg
 					viewBox="0 0 24 24"
@@ -320,29 +236,24 @@ const nav: NavItem[] = [
 		<div class="sidebar-grid">
 			<div class="sidebar-info">
 				<div class="info-block">
-					<span class="kicker">Quando</span>
+					<span class="kicker">{c.when}</span>
 					<div class="info-date">
-						<strong>12–15</strong><span class="info-month"
-							>Set 2028</span
-						>
+						<strong>{c.dayRange}</strong><span class="info-month">{c.monthYear}</span>
 					</div>
 					<div class="info-duration">
-						<span class="dash" aria-hidden="true"></span>4 dias
+						<span class="dash" aria-hidden="true"></span>{c.durationDays}
 					</div>
-					<p class="info-hours">Qua a sex 13h–20h<br />Sáb 11h–18h</p>
+					<p class="info-hours">{c.hoursWeek}<br />{c.hoursSat}</p>
 				</div>
 
 				<div class="info-block">
-					<span class="kicker">Onde</span>
+					<span class="kicker">{c.where}</span>
 					<p class="info-venue">São Paulo Expo</p>
-					<p class="info-address">
-						Rod. dos Imigrantes, São Paulo
-						- SP, 04329-900
-					</p>
+					<p class="info-address">{c.address}</p>
 				</div>
 
 				<div class="info-block">
-					<span class="kicker">Eventos simultâneos</span>
+					<span class="kicker">{c.simultaneous}</span>
 					<div class="info-logos">
 						<span class="logo-chip"
 							><img
@@ -385,7 +296,7 @@ const nav: NavItem[] = [
 									</button>
 								) : (
 									<div class="nav-row">
-										<a href={item.href}>{item.label}</a>
+										<a href={item.href} aria-current={isCurrent(item.href)}>{item.label}</a>
 									</div>
 								)}
 

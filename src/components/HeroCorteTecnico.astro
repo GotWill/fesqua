@@ -1,0 +1,287 @@
+---
+// Hero da página "Sobre o evento": corte horizontal de esquadria, traçado
+// na tela como desenho técnico. A animação roda ao carregar (sem JS) —
+// não envolver em .reveal.
+//
+// ⚠️ Não mexer: (1) todo <path> precisa de pathLength="1"; (2) nunca usar
+// vector-effect: non-scaling-stroke (o Chrome mede o tracejado em px de
+// tela e ignora o pathLength); (3) os textos das cotas existem em dois
+// conjuntos — lb-d (desktop) e lb-m (celular). Editou um, edite o outro.
+import { getLang, pick, route } from '../i18n/utils';
+import { hero } from '../i18n/content/home';
+
+const lang = getLang(Astro.currentLocale);
+const c = pick(hero, lang);
+---
+
+<section class="hero-tech" aria-labelledby="hero-tech-title">
+	<div class="tech-inner">
+		<div class="tech-text">
+			<span class="tech-kicker">{c.kicker}</span>
+			<h1 id="hero-tech-title">{c.title}</h1>
+			<p><b>{c.edition}</b> · {c.dateLine}</p>
+			<div class="tech-ctas">
+				<a href={route(lang, 'queroVisitar')} class="btn Solid_Red btn-md">
+					<div class="slime"><span></span><span></span><span></span></div>
+					<div class="btn-content"><span>{c.visit}</span></div>
+				</a>
+				<a href={route(lang, 'queroExpor')} class="btn Outline_Red btn-md">
+					<div class="slime"><span></span><span></span><span></span></div>
+					<div class="btn-content"><span>{c.exhibit}</span></div>
+				</a>
+			</div>
+		</div>
+
+		<svg class="drawing" viewBox="0 0 770 500" role="img" aria-label={c.aria}>
+			<path class="dr ln" pathLength="1" style="--d:0.0s" d="M20 40H100V460H20Z"></path>
+			<path class="dr hatch" pathLength="1" style="--d:0.35s" d="M20 56 L36 40 M20 72 L52 40 M20 88 L68 40 M20 104 L84 40 M20 120 L100 40 M20 136 L100 56 M20 152 L100 72 M20 168 L100 88 M20 184 L100 104 M20 200 L100 120 M20 216 L100 136 M20 232 L100 152 M20 248 L100 168 M20 264 L100 184 M20 280 L100 200 M20 296 L100 216 M20 312 L100 232 M20 328 L100 248 M20 344 L100 264 M20 360 L100 280 M20 376 L100 296 M20 392 L100 312 M20 408 L100 328 M20 424 L100 344 M20 440 L100 360 M20 456 L100 376 M32 460 L100 392 M48 460 L100 408 M64 460 L100 424 M80 460 L100 440 M96 460 L100 456"></path>
+			<path class="dr ln" pathLength="1" style="--d:0.7s" d="M100 150 L132 150 L132 350 L100 350"></path>
+			<path class="dr ln" pathLength="1" style="--d:1.0s" d="M132 170H212V330H132Z"></path>
+			<path class="dr ln thin" pathLength="1" style="--d:1.2s" d="M141 180H170V320H141Z M179 180H203V320H179Z"></path>
+			<path class="dr ln" pathLength="1" style="--d:1.4s" d="M212 205H270V295H212Z"></path>
+			<path class="dr ln thin" pathLength="1" style="--d:1.55s" d="M220 213H262V287H220Z"></path>
+			<path class="dr ln" pathLength="1" style="--d:1.7s" d="M270 226H279V235H270Z M270 265H279V274H270Z"></path>
+			<path class="dr ln glass" pathLength="1" style="--d:1.8s" d="M279 233H640V245H279Z M279 255H640V267H279Z"></path>
+			<path class="dr ln thin" pathLength="1" style="--d:2.0s" d="M279 245H306V255H279Z"></path>
+			<path class="dr dim ext" pathLength="1" style="--d:2.3s" d="M100 146 L100 102 M270 201 L270 102"></path>
+			<path class="dr dim" pathLength="1" style="--d:2.45s" d="M100 110 L270 110 M96 114 L104 106 M266 114 L274 106"></path>
+			<path class="dr dim ext" pathLength="1" style="--d:2.6s" d="M644 233 L690 233 M644 267 L690 267"></path>
+			<path class="dr dim" pathLength="1" style="--d:2.7s" d="M682 233 L682 267 M678 237 L686 229 M678 271 L686 263"></path>
+			<path class="dr dim ext" pathLength="1" style="--d:2.85s" d="M279 271 L279 418 M640 271 L640 418"></path>
+			<path class="dr dim" pathLength="1" style="--d:3.0s" d="M279 410 L640 410 M275 414 L283 406 M636 414 L644 406"></path>
+			<path class="dr dim" pathLength="1" style="--d:3.15s" d="M172 330 L206 468 L318 468"></path>
+			<path class="dr dim" pathLength="1" style="--d:3.3s" d="M470 239 L520 150 L640 150"></path>
+			<text class="lb lb-d" x="185" y="94" text-anchor="middle" style="--d:2.6s">{c.lbEdition}</text>
+			<text class="lb lb-d" x="694" y="254" text-anchor="start" style="--d:2.9s">{c.lbDays}</text>
+			<text class="lb lb-d" x="459" y="434" text-anchor="middle" style="--d:3.2s">{c.lbDate}</text>
+			<text class="lb lb-d" x="324" y="472" text-anchor="start" style="--d:3.35s">{c.lbPlace}</text>
+			<text class="lb lb-d" x="644" y="146" text-anchor="end" style="--d:3.5s">{c.lbPeople}</text>
+			<text class="lb lb-m" x="185" y="90" text-anchor="middle" style="--d:2.6s">{c.lbEditionM}</text>
+			<text class="lb lb-m" x="705" y="304" text-anchor="middle" style="--d:2.9s">{c.lbDays}</text>
+			<text class="lb lb-m" x="459" y="444" text-anchor="middle" style="--d:3.2s">{c.lbDate}</text>
+			<text class="lb lb-m" x="324" y="478" text-anchor="start" style="--d:3.35s">{c.lbPlace}</text>
+			<text class="lb lb-m" x="644" y="138" text-anchor="end" style="--d:3.5s">{c.lbPeople}</text>
+			<g class="lb" style="--d:3.7s"><path class="stamp" d="M470 478H760"></path><text class="st" x="760" y="494" text-anchor="end">{c.stamp}</text></g>
+		</svg>
+	</div>
+</section>
+
+<style>
+	.hero-tech {
+		min-height: calc(100vh - var(--header-h));
+		display: flex;
+		align-items: center;
+		padding: 4rem 0;
+		background-color: var(--color-rose-50);
+		/* papel milimetrado: grade grossa a cada 96px e fina a cada 24px */
+		background-image:
+			linear-gradient(rgba(156, 12, 12, 0.06) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(156, 12, 12, 0.06) 1px, transparent 1px),
+			linear-gradient(rgba(156, 12, 12, 0.035) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(156, 12, 12, 0.035) 1px, transparent 1px);
+		background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+		border-bottom: 1px solid var(--color-line);
+	}
+
+	.tech-inner {
+		width: 100%;
+		max-width: 1280px;
+		margin-inline: auto;
+		padding-inline: clamp(1.25rem, 4vw, 3rem);
+		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+		gap: 3rem;
+		align-items: center;
+	}
+
+	.tech-kicker {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 0.75rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-primary-bright);
+	}
+
+	.tech-kicker::before {
+		content: '';
+		width: 22px;
+		height: 2px;
+		background: currentColor;
+	}
+
+	.tech-text h1 {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(2rem, 3.8vw, 3.375rem);
+		line-height: 1.08;
+		letter-spacing: -0.01em;
+		color: var(--color-primary);
+		margin: 1rem 0 1.25rem;
+		max-width: 16ch;
+	}
+
+	.tech-text p {
+		font-family: var(--font-body);
+		font-size: 1.125rem;
+		color: var(--color-ink);
+		margin: 0 0 1.75rem;
+		max-width: 40ch;
+	}
+
+	.tech-text p b {
+		color: var(--color-primary);
+		font-family: var(--font-display);
+		font-weight: 600;
+	}
+
+	.tech-ctas {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	/* ---------- desenho traçado ---------- */
+	.drawing {
+		width: 100%;
+		height: auto;
+		overflow: visible;
+		display: block;
+	}
+
+	.dr {
+		fill: none;
+		stroke: var(--color-primary);
+		stroke-width: 2;
+		stroke-linejoin: round;
+		stroke-linecap: round;
+		stroke-dasharray: 1;
+		stroke-dashoffset: 1;
+		animation: dr 1.1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+		animation-delay: var(--d);
+	}
+
+	.dr.thin {
+		stroke-width: 1.3;
+		stroke: var(--color-red-700);
+	}
+
+	.dr.hatch {
+		stroke-width: 1;
+		stroke: var(--color-rose-300);
+	}
+
+	.dr.glass {
+		stroke: var(--color-primary-bright);
+		fill: rgba(208, 45, 37, 0);
+		animation:
+			dr 1.1s cubic-bezier(0.65, 0, 0.35, 1) forwards var(--d),
+			gfill 0.8s ease-out forwards calc(var(--d) + 0.9s);
+	}
+
+	.dr.dim {
+		stroke-width: 1.1;
+		stroke: var(--color-ink);
+	}
+
+	.dr.ext {
+		stroke-width: 0.9;
+		stroke: var(--color-rose-300);
+	}
+
+	@keyframes dr {
+		to {
+			stroke-dashoffset: 0;
+		}
+	}
+
+	@keyframes gfill {
+		to {
+			fill: rgba(208, 45, 37, 0.1);
+		}
+	}
+
+	.lb {
+		opacity: 0;
+		animation: fade 0.6s cubic-bezier(0, 0, 0.2, 1) forwards;
+		animation-delay: var(--d);
+	}
+
+	text.lb {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 15px;
+		letter-spacing: 0.06em;
+		fill: var(--color-primary);
+	}
+
+	.st {
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 10px;
+		letter-spacing: 0.1em;
+		fill: var(--color-ink);
+	}
+
+	.stamp {
+		stroke: var(--color-ink);
+		stroke-width: 1;
+	}
+
+	@keyframes fade {
+		to {
+			opacity: 1;
+		}
+	}
+
+	text.lb-m {
+		display: none;
+	}
+
+	@media (max-width: 900px) {
+		.tech-inner {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+
+		.hero-tech {
+			padding: 3rem 0;
+		}
+	}
+
+	@media (max-width: 640px) {
+		text.lb-d {
+			display: none;
+		}
+
+		text.lb-m {
+			display: inline;
+			font-size: 24px;
+		}
+
+		.drawing .st,
+		.drawing .stamp {
+			display: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.dr {
+			animation: none;
+			stroke-dashoffset: 0;
+		}
+
+		.dr.glass {
+			animation: none;
+			fill: rgba(208, 45, 37, 0.1);
+		}
+
+		.lb {
+			animation: none;
+			opacity: 1;
+		}
+	}
+</style>

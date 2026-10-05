@@ -1,0 +1,362 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import PartnersSection from '../components/PartnersSection.astro';
+import { content } from '../data/duvidas-frequentes-visitantes';
+import { getLang, pick } from '../i18n/utils';
+
+const lang = getLang(Astro.currentLocale);
+const c = pick(content, lang);
+const faq = c.faq;
+const [titleA, titleB] = c.title;
+const pad = (n: number) => String(n).padStart(2, '0');
+// divide o texto em [antes, depois] do trecho que vira link
+const around = (text: string, linkText: string) => {
+    const i = text.indexOf(linkText);
+    return [text.slice(0, i), text.slice(i + linkText.length)] as const;
+};
+---
+
+<Layout title={c.metaTitle} description={c.metaDesc}>
+    <PageHero lineA={`${titleA} –`} lineB={titleB} id="faq-title" />
+
+    <div class="c faq">
+        <details class="dd" id="dd">
+            <summary>{c.jump}</summary>
+            <nav class="dd-panel" aria-label={c.navLabel}>
+                <ol>
+                    {
+                        faq.map((q) => (
+                            <li>
+                                <a href={`#p-${q.n}`}>
+                                    <span class="inum">{pad(q.n)}</span>
+                                    <span class="it">{q.q}</span>
+                                </a>
+                            </li>
+                        ))
+                    }
+                </ol>
+            </nav>
+        </details>
+
+        <div class="arts">
+            {
+                faq.map((q) => (
+                    <article class="art" id={`p-${q.n}`} aria-labelledby={`h-${q.n}`}>
+                        <span class="a-num" aria-hidden="true">{pad(q.n)}</span>
+                        <div>
+                            <h2 id={`h-${q.n}`}>{q.q}</h2>
+                            <div class="ans">
+                                {q.blocks.map((b) => (
+                                    <>
+                                        {b.type === 'p' && (
+                                            <p>
+                                                {b.link ? (
+                                                    <Fragment>{around(b.text, b.link.text)[0]}<a href={b.link.href} target="_blank" rel="noopener">{b.link.text}</a>{around(b.text, b.link.text)[1]}</Fragment>
+                                                ) : (
+                                                    b.text
+                                                )}
+                                            </p>
+                                        )}
+                                        {b.type === 'labeled' && (
+                                            <p>
+                                                <strong>{b.label}</strong> {b.text}
+                                            </p>
+                                        )}
+                                        {b.type === 'hours' && (
+                                            <div class="hours">
+                                                <p class="hours-title">{b.title}</p>
+                                                <ul>
+                                                    {b.items.map((item) => (
+                                                        <li>{item}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </>
+                                ))}
+                            </div>
+                        </div>
+                    </article>
+                ))
+            }
+        </div>
+    </div>
+
+    <PartnersSection />
+</Layout>
+
+<style>
+    .c {
+        max-width: 1040px;
+        margin-inline: auto;
+        padding-inline: clamp(1.25rem, 4vw, 3rem);
+    }
+
+    /* ---------- dropdown simples ---------- */
+    .faq {
+        padding-block: 2.75rem 6rem;
+    }
+    .dd {
+        position: relative;
+        z-index: 5;
+        max-width: 560px;
+    }
+    .dd summary {
+        list-style: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.95rem 1.4rem;
+        border: 1px solid var(--color-line);
+        border-radius: 9999px;
+        background: #fff;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 0.875rem;
+        color: var(--color-primary);
+        transition:
+            border-color 0.25s,
+            box-shadow 0.25s;
+    }
+    .dd summary::-webkit-details-marker {
+        display: none;
+    }
+    .dd summary:hover {
+        border-color: var(--color-primary);
+    }
+    .dd summary:focus-visible {
+        outline: 2px solid var(--color-primary-bright);
+        outline-offset: 3px;
+    }
+    .dd[open] summary {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(156, 12, 12, 0.12);
+    }
+    .dd summary::after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-right: 2px solid var(--color-primary);
+        border-bottom: 2px solid var(--color-primary);
+        transform: translateY(-2px) rotate(45deg);
+        transition: transform 0.3s var(--ease-in-out);
+    }
+    .dd[open] summary::after {
+        transform: translateY(2px) rotate(-135deg);
+    }
+    .dd-panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(100% + 0.5rem);
+        background: #fff;
+        border: 1px solid var(--color-line);
+        border-radius: 1rem;
+        padding: 0.5rem;
+        max-height: min(60vh, 440px);
+        overflow: auto;
+        box-shadow: 0 24px 50px -20px rgba(73, 3, 6, 0.35);
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-rose-300) transparent;
+    }
+    .dd[open] .dd-panel {
+        animation: ddin 0.25s var(--ease-out);
+    }
+    @keyframes ddin {
+        from {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+    .dd-panel ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .dd-panel a {
+        display: grid;
+        grid-template-columns: 30px 1fr;
+        gap: 0.5rem;
+        padding: 0.65rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.4;
+        color: var(--color-ink);
+        transition:
+            background 0.2s,
+            color 0.2s;
+    }
+    .dd-panel a:hover,
+    .dd-panel a:focus-visible {
+        background: var(--color-rose-50);
+        color: var(--color-primary);
+        outline: 0;
+    }
+    .inum {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 0.6875rem;
+        color: var(--color-primary);
+        padding-top: 0.1rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* ---------- perguntas ---------- */
+    .arts {
+        margin-top: 1rem;
+    }
+    .art {
+        display: grid;
+        grid-template-columns: 84px minmax(0, 1fr);
+        gap: 1.5rem;
+        padding: 2.75rem 0;
+        border-top: 1px solid var(--color-line);
+        scroll-margin-top: calc(var(--header-h) + 1rem);
+    }
+    .a-num {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: clamp(2rem, 3.4vw, 3rem);
+        line-height: 1;
+        color: rgba(156, 12, 12, 0.2);
+        font-variant-numeric: tabular-nums;
+    }
+    .art h2 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(1.25rem, 2vw, 1.625rem);
+        line-height: 1.3;
+        color: var(--color-primary);
+        margin: 0 0 1.1rem;
+        max-width: 34ch;
+        letter-spacing: -0.005em;
+    }
+
+    /* ---------- respostas ---------- */
+    .ans {
+        font-family: var(--font-body);
+        font-size: 1.0625rem;
+        line-height: 1.7;
+        color: var(--color-ink);
+    }
+    .ans p {
+        margin: 0 0 1rem;
+        max-width: 68ch;
+    }
+    .ans > :last-child {
+        margin-bottom: 0;
+    }
+    .ans strong {
+        font-family: var(--font-display);
+        font-weight: 700;
+        color: var(--color-text);
+    }
+    .ans a {
+        color: var(--color-primary);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+        transition: color 0.2s;
+    }
+    .ans a:hover {
+        color: var(--color-primary-bright);
+    }
+    /* horário do transfer (pergunta 7): título + linhas com emoji */
+    .ans .hours {
+        margin: 0 0 1rem;
+        padding: 1rem 1.25rem;
+        border-left: 3px solid var(--color-primary-bright);
+        background: var(--color-rose-50);
+        border-radius: 0 0.5rem 0.5rem 0;
+        max-width: 68ch;
+    }
+    .ans .hours-title {
+        margin: 0 0 0.5rem;
+        font-family: var(--font-display);
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+    .ans .hours ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .ans .hours li {
+        padding: 0.2rem 0;
+        font-family: var(--font-display);
+        font-weight: 500;
+        color: var(--color-text);
+    }
+
+    @media (max-width: 640px) {
+        .dd {
+            max-width: none;
+        }
+        .art {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+            padding: 2rem 0;
+        }
+        .a-num {
+            font-size: 1.75rem;
+        }
+        .art h2 {
+            max-width: none;
+        }
+        .ans {
+            font-size: 1rem;
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .dd[open] .dd-panel {
+            animation: none;
+        }
+        .dd summary::after {
+            transition: none;
+        }
+    }
+    @media print {
+        .dd {
+            display: none;
+        }
+    }
+</style>
+
+<style is:global>
+    html {
+        scroll-behavior: smooth;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
+</style>
+
+<script>
+    const dd = document.getElementById('dd') as HTMLDetailsElement | null;
+    if (dd) {
+        // escolher uma pergunta fecha a lista; clicar fora ou apertar Esc também
+        dd.querySelectorAll('a').forEach((a) =>
+            a.addEventListener('click', () => {
+                dd.open = false;
+            }),
+        );
+        document.addEventListener('click', (e) => {
+            if (dd.open && !dd.contains(e.target as Node)) dd.open = false;
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && dd.open) {
+                dd.open = false;
+                (dd.querySelector('summary') as HTMLElement).focus();
+            }
+        });
+    }
+</script>

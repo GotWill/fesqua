@@ -8,11 +8,14 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "start": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.3.3"
+    "@astrojs/node": "^11.1.6",
+    "astro": "^7.3.3",
+    "pdfjs-dist": "4.10.38",
+    "resend": "^6.32.0"
   },
   "allowScripts": {
     "esbuild": true

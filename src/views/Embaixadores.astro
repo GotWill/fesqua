@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Embaixadores from '../components/Embaixadores.astro';
+import PartnersSection from '../components/PartnersSection.astro';
+import { getLang, pick } from '../i18n/utils';
+import { content } from '../i18n/content/embaixadores';
+
+const c = pick(content, getLang(Astro.currentLocale));
+---
+
+<Layout title={c.metaTitle} description={c.metaDescription}>
+	<Embaixadores />
+	<PartnersSection/>
+</Layout>

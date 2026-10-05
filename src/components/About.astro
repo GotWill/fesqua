@@ -1,34 +1,22 @@
 ---
-interface EventFacet {
-	name: string;
-	description: string;
-}
+import { getLang, pick } from '../i18n/utils';
+import { about } from '../i18n/content/home';
 
-const edition = '16';
-const heading = 'O principal evento de esquadrias e vidro da América Latina!';
-const lede =
-	'A FESQUA chega à sua <strong>16ª edição</strong> consolidada como a principal feira do setor, ao lado da <strong>FESQUA VETRO</strong> — juntas, formam o ponto de encontro essencial para fabricantes, serralheiros, vidraceiros, arquitetos e engenheiros da construção civil.';
+const lang = getLang(Astro.currentLocale);
+const c = pick(about, lang);
 
-const leadIn =
-	'Durante três dias, os visitantes terão acesso às principais inovações e oportunidades do setor:';
-
-const facets: EventFacet[] = [
-	{ name: 'FESQUA', description: 'Feira Internacional da Indústria de Esquadrias' },
-	{ name: 'FESQUA VETRO', description: 'Feira Internacional de Vidro e Esquadrias para Construção Civil' },
-];
-
-const highlights = [
-	'Vamos para a 16ª edição',
-	'Lançamentos e tendências em esquadrias, vidro e fachadas',
-	'Conteúdo técnico especializado com palestras e workshops',
-	'Grandes oportunidades para fechar negócios e ampliar sua rede de contatos',
-];
+const edition = c.edition;
+const heading = c.heading;
+const lede = c.lede;
+const leadIn = c.leadIn;
+const facets = c.facets;
+const highlights = c.highlights;
 
 const video = {
 	src: '/images/video.mp4',
 	duration: '2:28',
 	badge: 'FESQUA 2027',
-	caption: { edition: '16ª edição', event: 'FESQUA' },
+	caption: { edition: c.captionEdition, event: 'FESQUA' },
 };
 ---
 
@@ -45,9 +33,9 @@ const video = {
 						stroke-linecap="round"
 						opacity=".45"></path>
 				</svg>
-				<span class="kicker">Sobre o evento</span>
+				<span class="kicker">{c.kicker}</span>
 			</div>
-			<div class="edition" aria-hidden="true">{edition}<sup>ª</sup></div>
+			<div class="edition" aria-hidden="true">{edition}<sup>{c.editionSup}</sup></div>
 			<h2 id="sobre-heading" class="about-heading">{heading}</h2>
 		</div>
 
@@ -89,7 +77,7 @@ const video = {
 				<button
 					type="button"
 					class="media-play"
-					aria-label={`Reproduzir vídeo institucional da ${video.caption.event}`}
+					aria-label={c.playLabel}
 				>
 					<span class="ring">
 						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7-11-7Z"></path></svg>

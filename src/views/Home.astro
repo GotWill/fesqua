@@ -1,0 +1,25 @@
+---
+import Layout from "../layouts/Layout.astro";
+import HomeSlider from "../components/HomeSlider.astro";
+import About from "../components/About.astro";
+import Stats from "../components/Stats.astro";
+import Cta from "../components/Cta.astro";
+import ConnectionsOrbit from "../components/ConnectionsOrbit.astro";
+import PartnersHome from "../components/PartnersHome.astro";
+import SectorsScroll from "../components/SectorsScroll.astro";
+import { getLang, pick } from "../i18n/utils";
+import { homeMeta } from "../i18n/content/home";
+
+const lang = getLang(Astro.currentLocale);
+const meta = pick(homeMeta, lang);
+---
+
+<Layout title={meta.title} description={meta.description}>
+	<HomeSlider />
+	<About />
+	<Stats />
+	<SectorsScroll />
+	<Cta />
+	<ConnectionsOrbit />
+	<PartnersHome />
+</Layout>

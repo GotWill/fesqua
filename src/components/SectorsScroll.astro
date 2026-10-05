@@ -1,0 +1,540 @@
+---
+/* Quem expõe / Quem visita — duas fitas de fichas presas na tela (sticky), cada
+   uma com o próprio título. A rolagem vertical conduz as fitas na horizontal, em
+   sentidos opostos, e a ficha que cruza o centro "acende". Sem setas e sem pontos.
+   Topo claro (a seção acima é escura): expositores em papel claro, visitantes em escuro.
+   Expositores = célula de estande da planta (porta + número); visitantes = crachá. */
+
+import { getLang, pick } from '../i18n/utils';
+import { sectorsScroll } from '../i18n/content/home-sectors';
+
+const lang = getLang(Astro.currentLocale);
+const c = pick(sectorsScroll, lang);
+const expoe = c.expoe;
+const visita = c.visita;
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+const bands = [
+	{ key: 'expoe', dir: 'rtl', label: c.exhibLabel, items: expoe },
+	{ key: 'visita', dir: 'ltr', label: c.visitLabel, items: visita },
+] as const;
+---
+
+<section class="hs" data-hs aria-label={c.aria}>
+	<div class="hs-stage">
+		{
+			bands.map((b) => (
+				<div class={`band band-${b.key}`} data-band={b.dir}>
+					<div class="bhead">
+						<h2 class="blabel">
+							{b.label}
+						</h2>
+						<span class="brule" aria-hidden="true"></span>
+						<span class="bcount" aria-hidden="true">
+							<b data-cur>{pad(1)}</b>
+							<i>/ {pad(b.items.length)}</i>
+						</span>
+					</div>
+
+					<div class="view">
+						<ul class="track" role="list" data-track>
+							{b.items.map((t, i) => (
+								<li class="it">
+									<div class="cd">
+										<span class="no" aria-hidden="true">{pad(i + 1)}</span>
+										<span class="gh" aria-hidden="true">{pad(i + 1)}</span>
+										<h3 class="nm">{t}</h3>
+										<span class="bars" aria-hidden="true"></span>
+									</div>
+								</li>
+							))}
+						</ul>
+					</div>
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	/* ---------- palco preso na tela ---------- */
+	.hs {
+		--band-pt: clamp(3.5rem, 8vh, 5rem); /* respiro do título ao topo, igual nas duas faixas */
+		--run: 0px; /* distância extra de rolagem — definida pelo script */
+		--p: 0; /* progresso 0→1 — definido pelo script */
+		--gutter: max(1.5rem, calc((100vw - 1280px) / 2));
+		position: relative;
+		height: calc(100svh + var(--run));
+		overflow-x: clip;
+	}
+	.hs-stage {
+		position: sticky;
+		top: 0;
+		height: 100svh;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: 1fr 1fr;
+		overflow: hidden;
+	}
+
+	/* ---------- faixas ---------- */
+	.band {
+		position: relative;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+		padding-bottom: clamp(1rem, 3vh, 2rem);
+	}
+	.band-expoe {
+		--ink: 156, 12, 12;
+		--accent: var(--color-primary);
+		padding-top: var(--band-pt);
+		color: var(--color-primary);
+		background:
+			linear-gradient(rgba(156, 12, 12, 0.06) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(156, 12, 12, 0.06) 1px, transparent 1px),
+			linear-gradient(rgba(156, 12, 12, 0.035) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(156, 12, 12, 0.035) 1px, transparent 1px),
+			var(--color-rose-50);
+		background-size:
+			96px 96px,
+			96px 96px,
+			24px 24px,
+			24px 24px,
+			auto;
+	}
+	.band-visita {
+		--ink: 255, 255, 255;
+		--accent: #ffcec5;
+		padding-top: var(--band-pt);
+		color: #fff;
+		background:
+			linear-gradient(rgba(255, 206, 197, 0.055) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255, 206, 197, 0.055) 1px, transparent 1px),
+			linear-gradient(rgba(255, 206, 197, 0.025) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255, 206, 197, 0.025) 1px, transparent 1px),
+			radial-gradient(90% 90% at 100% 100%, #5a0a0d 0%, transparent 62%),
+			#1a0102;
+		background-size:
+			96px 96px,
+			96px 96px,
+			24px 24px,
+			24px 24px,
+			auto,
+			auto;
+	}
+
+	.bhead {
+		display: flex;
+		align-items: flex-end;
+		gap: clamp(1rem, 2.5vw, 2rem);
+		width: 100%;
+		max-width: 1280px;
+		margin-inline: auto;
+		padding-inline: 1.5rem;
+	}
+	.blabel {
+		color: inherit;
+		display: flex;
+		flex-direction: column;
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(2.5rem, 6.4vw, 5.25rem);
+		line-height: 0.95;
+		letter-spacing: -0.035em;
+		white-space: nowrap;
+	}
+	/* segunda faixa: cabeçalho espelhado (título à direita, contador à esquerda) */
+	.band-visita .bhead {
+		flex-direction: row-reverse;
+	}
+	.band-visita .blabel {
+		color: #fff;
+	}
+	.brule {
+		position: relative;
+		flex: 1;
+		height: 13px;
+		margin-bottom: 0.7rem;
+	}
+	.brule::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 6px;
+		height: 1px;
+		background: rgba(var(--ink), 0.55);
+	}
+	.brule::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-left: 1px solid rgba(var(--ink), 0.55);
+		border-right: 1px solid rgba(var(--ink), 0.55);
+	}
+	.bcount {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.5rem;
+		font-family: var(--font-display);
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+	}
+	.bcount b {
+		font-weight: 800;
+		font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+		letter-spacing: -0.02em;
+	}
+	.bcount i {
+		font-style: normal;
+		font-weight: 600;
+		font-size: 0.8125rem;
+		letter-spacing: 0.1em;
+		color: rgba(var(--ink), 0.8);
+	}
+
+	/* ---------- fita ---------- */
+	.view {
+		position: relative;
+		flex: 1;
+		margin-top: clamp(1.4rem, 4.5vh, 3rem);
+		min-height: 0;
+		display: flex;
+		align-items: flex-start;
+		overflow: hidden;
+	}
+	/* marcas de cota no centro: é onde a ficha "acende" */
+	.view::before,
+	.view::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		width: 1px;
+		height: 14px;
+		background: rgba(var(--ink), 0.6);
+	}
+	.view::before {
+		top: 0;
+	}
+	.view::after {
+		display: none;
+	}
+	.track {
+		position: relative;
+		list-style: none;
+		margin: 0;
+		display: flex;
+		align-items: center;
+		width: max-content;
+		padding: 1.1rem 50vw 0; /* permite centralizar a primeira e a última ficha */
+		will-change: transform;
+		transform: translate3d(var(--tx, 0px), 0, 0);
+	}
+
+	/* ---------- ficha (base comum) ---------- */
+	.it {
+		--a: 0; /* "acesa": 0 apagada → 1 no centro */
+		--card-h: clamp(130px, 23svh, 215px);
+		flex: none;
+		padding-right: clamp(0.85rem, 1.6vw, 1.4rem);
+		opacity: calc(0.9 + var(--a) * 0.1);
+		/* fita em arco: --s é a distância ao centro (-1…1); as pontas descem e abrem em leque */
+		transform: translateY(calc(var(--s, 0) * var(--s, 0) * var(--arc-drop))) rotate(calc(var(--s, 0) * var(--arc-tilt)));
+		transform-origin: 50% 160%;
+	}
+	.hs {
+		--arc-drop: clamp(24px, 5.5svh, 55px);
+		--arc-tilt: 4deg;
+	}
+	.cd {
+		position: relative;
+		width: clamp(240px, 23vw, 330px);
+		height: var(--card-h);
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		overflow: hidden;
+		transform: translateY(calc(var(--a) * -10px)) scale(calc(0.955 + var(--a) * 0.045));
+	}
+	.cd::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		opacity: var(--a);
+		pointer-events: none;
+	}
+	.cd > * {
+		position: relative;
+	}
+	.no {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 0.8125rem;
+		letter-spacing: 0.14em;
+		font-variant-numeric: tabular-nums;
+	}
+	.nm {
+		margin: 0;
+		color: inherit;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(1.125rem, 1.7vw, 1.5rem);
+		line-height: 1.22;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+		overflow-wrap: break-word;
+	}
+
+	/* ----- expositor: célula de estande da planta (papel claro) ----- */
+	.band-expoe .cd {
+		padding: 1.1rem 1.3rem 1.3rem;
+		border: 1.5px solid rgba(156, 12, 12, calc(0.55 + var(--a) * 0.45));
+		background: #fff;
+		color: color-mix(in srgb, #fff calc(var(--a) * 100%), var(--color-ink));
+		box-shadow: 0 24px 40px -28px rgba(73, 3, 6, calc(var(--a) * 0.85));
+	}
+	.band-expoe .cd::before {
+		background: linear-gradient(150deg, #b01c1c, #6f090c);
+	}
+	/* giro da porta do estande */
+	.band-expoe .cd::after {
+		content: '';
+		position: absolute;
+		right: 12px;
+		top: 12px;
+		width: 26px;
+		height: 26px;
+		border-top: 1.5px solid color-mix(in srgb, var(--color-blush) calc(var(--a) * 100%), var(--color-rose-400));
+		border-right: 1.5px solid color-mix(in srgb, var(--color-blush) calc(var(--a) * 100%), var(--color-rose-400));
+		border-top-right-radius: 100%;
+	}
+	.band-expoe .no {
+		color: color-mix(in srgb, var(--color-blush) calc(var(--a) * 100%), var(--color-primary));
+	}
+	.band-expoe .gh {
+		position: absolute;
+		right: 0.7rem;
+		bottom: -0.9rem;
+		font-family: var(--font-display);
+		font-weight: 800;
+		font-size: clamp(5.5rem, 9vw, 8rem);
+		line-height: 1;
+		letter-spacing: -0.05em;
+		color: transparent;
+		-webkit-text-stroke: 1.5px color-mix(in srgb, rgba(255, 206, 197, 0.32) calc(var(--a) * 100%), rgba(156, 12, 12, 0.24));
+		pointer-events: none;
+	}
+	.band-expoe .nm {
+		max-width: 17ch;
+	}
+	.band-expoe .bars {
+		display: none;
+	}
+
+	/* ----- visitante: crachá de credenciamento ----- */
+	.band-visita .cd {
+		--tilt: 1.4deg;
+		justify-content: flex-end;
+		padding: 2rem 1.3rem 1.3rem;
+		border: 1px solid rgba(255, 206, 197, 0.5);
+		border-radius: 14px;
+		background: #fff;
+		color: var(--color-primary);
+		box-shadow: 0 22px 30px -24px rgba(73, 3, 6, calc(0.3 + var(--a) * 0.4));
+		transform: translateY(calc(var(--a) * -10px)) scale(calc(0.955 + var(--a) * 0.045)) rotate(calc((1 - var(--a)) * var(--tilt)));
+	}
+	.it:nth-child(even) .cd {
+		--tilt: -1.1deg;
+	}
+	.band-visita .cd::before {
+		background: linear-gradient(160deg, var(--color-rose-100), rgba(255, 206, 197, 0.5));
+	}
+	/* furo do cordão */
+	.band-visita .cd::after {
+		content: '';
+		position: absolute;
+		z-index: 1;
+		left: 50%;
+		top: 11px;
+		width: 46px;
+		height: 9px;
+		margin-left: -23px;
+		border-radius: 9999px;
+		background: var(--color-rose-50);
+		box-shadow: inset 0 2px 3px rgba(73, 3, 6, 0.4);
+	}
+	.band-visita .no {
+		position: absolute;
+		left: 1.3rem;
+		top: 0.85rem;
+		color: var(--color-rose-600);
+	}
+	.band-visita .gh {
+		display: none;
+	}
+	.band-visita .nm {
+		max-width: 20ch;
+	}
+	.band-visita .bars {
+		flex: none;
+		width: 54%;
+		height: 13px;
+		margin-top: 0.9rem;
+		opacity: 0.28;
+		background: repeating-linear-gradient(
+			90deg,
+			#393534 0 2px,
+			transparent 2px 4px,
+			#393534 4px 5px,
+			transparent 5px 8px,
+			#393534 8px 11px,
+			transparent 11px 13px
+		);
+	}
+
+	/* ---------- telas pequenas ---------- */
+	@media (max-width: 760px) {
+		.cd {
+			width: 72vw;
+		}
+		.bcount i {
+			display: none;
+		}
+	}
+	@media (max-height: 640px) {
+		.brule {
+			display: none;
+		}
+	}
+
+	/* ---------- sem movimento: lista corrida, tudo aceso ---------- */
+	@media (prefers-reduced-motion: reduce) {
+		.hs {
+			height: auto;
+		}
+		.hs-stage {
+			position: static;
+			height: auto;
+			display: block;
+		}
+		.band {
+			padding-block: 4rem;
+		}
+		.view {
+			overflow: visible;
+			margin-top: 2rem;
+		}
+		.view::before,
+		.view::after,
+		.bcount {
+			display: none;
+		}
+		.track {
+			width: auto;
+			flex-wrap: wrap;
+			padding-inline: var(--gutter);
+			transform: none;
+			row-gap: 0.75rem;
+		}
+		.it {
+			--a: 1;
+			transform: none;
+		}
+	}
+</style>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-hs]');
+	const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	if (root && !reduce) {
+		const stage = root.querySelector<HTMLElement>('.hs-stage')!;
+		const bands = Array.from(root.querySelectorAll<HTMLElement>('[data-band]')).map((el) => ({
+			dir: el.dataset.band as 'rtl' | 'ltr',
+			track: el.querySelector<HTMLElement>('[data-track]')!,
+			items: Array.from(el.querySelectorAll<HTMLElement>('.it')),
+			cur: el.querySelector<HTMLElement>('[data-cur]')!,
+			centers: [] as number[],
+			active: -1,
+		}));
+
+		let target = 0;
+		let current = 0;
+		let raf = 0;
+
+		const pad = (n: number) => String(n).padStart(2, '0');
+		const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+		const readScroll = () => {
+			const top = root.getBoundingClientRect().top;
+			const span = root.offsetHeight - stage.offsetHeight;
+			target = span > 0 ? Math.min(1, Math.max(0, -top / span)) : 0;
+		};
+
+		const paint = () => {
+			const half = window.innerWidth / 2;
+			const reach = window.innerWidth * 0.3; // distância até apagar de vez
+
+			bands.forEach((b) => {
+				const first = b.centers[0];
+				const last = b.centers[b.centers.length - 1];
+				// rtl: da primeira à última ficha; ltr: faz o caminho de volta
+				const pos = b.dir === 'rtl' ? lerp(first, last, current) : lerp(last, first, current);
+				b.track.style.setProperty('--tx', `${half - pos}px`);
+
+				let best = 0;
+				let bestD = Infinity;
+				b.items.forEach((li, i) => {
+					const d = Math.abs(b.centers[i] - pos);
+					if (d < bestD) {
+						bestD = d;
+						best = i;
+					}
+					const t = Math.max(0, 1 - d / reach);
+					li.style.setProperty('--a', (t * t * (3 - 2 * t)).toFixed(3));
+					const s = Math.max(-1.4, Math.min(1.4, (b.centers[i] - pos) / half));
+					li.style.setProperty('--s', s.toFixed(3));
+				});
+				if (best !== b.active) {
+					b.active = best;
+					b.cur.textContent = pad(best + 1);
+				}
+			});
+			root.style.setProperty('--p', current.toFixed(4));
+		};
+
+		const measure = () => {
+			bands.forEach((b) => {
+				b.centers = b.items.map((li) => li.offsetLeft + li.offsetWidth / 2);
+			});
+			const run = Math.max(...bands.map((b) => b.centers[b.centers.length - 1] - b.centers[0]), 1);
+			root.style.setProperty('--run', `${run}px`);
+			readScroll();
+			current = target;
+			paint();
+		};
+
+		// desliza suavemente até o ponto de rolagem em vez de colar nele
+		const tick = () => {
+			current += (target - current) * 0.12;
+			if (Math.abs(target - current) < 0.0004) current = target;
+			paint();
+			raf = current === target ? 0 : requestAnimationFrame(tick);
+		};
+
+		const onScroll = () => {
+			readScroll();
+			if (!raf) raf = requestAnimationFrame(tick);
+		};
+
+		measure();
+		window.addEventListener('scroll', onScroll, { passive: true });
+		window.addEventListener('resize', measure);
+		window.addEventListener('load', measure);
+		if ('fonts' in document) document.fonts.ready.then(measure);
+	}
+</script>

@@ -1,4 +1,7 @@
 ---
+import { getLang, pick, route } from '../i18n/utils';
+import { chrome, navTree } from '../i18n/content/chrome';
+
 interface SubLink {
 	label: string;
 	href: string;
@@ -12,77 +15,21 @@ interface NavItem {
 	cta?: boolean;
 }
 
-// Mesma estrutura de links do menu do Header — mantidas em sincronia
-// manualmente (sem import direto porque lá é NavChild/dropdown, aqui é
-// SubLink/sub, mas os hrefs e rótulos são os mesmos).
-const navColumnA: NavItem[] = [
-	{
-		label: 'Fesqua',
-		href: '/fesqua',
-		sub: [
-			{ label: 'Sobre o Evento', href: '/fesqua/sobre-o-evento' },
-			{ label: 'Sobre o Grupo Contramarco', href: '/fesqua/sobre-o-grupo-contramarco' },
-		],
-	},
-	{
-		label: 'Expositor',
-		href: '/expositor',
-		sub: [
-			{ label: 'Planta da Feira', href: '/expositor/planta-da-feira' },
-			{ label: 'Lista de Expositores', href: '/expositor/lista-de-expositores' },
-			{ label: 'Quero Expor', href: '/expositor/quero-expor' },
-			{ label: 'Manual do Expositor', href: '/expositor/manual-do-expositor' },
-			{ label: 'Primeira Participação', href: '/expositor/primeira-participacao' },
-			{ label: 'Viagem e Hospedagem', href: '/expositor/viagem-e-hospedagem' },
-			{ label: 'Dúvidas Frequentes – Expositores', href: '/expositor/duvidas-frequentes' },
-		],
-	},
-	{
-		label: 'Visitante',
-		href: '/visitante',
-		sub: [
-			{ label: 'Planta da Feira', href: '/visitante/planta-da-feira' },
-			{ label: 'Quero Visitar', href: '/visitante/quero-visitar' },
-			{ label: 'Viagem e Hospedagem', href: '/visitante/viagem-e-hospedagem' },
-			{ label: 'Dúvidas Frequentes – Visitantes', href: '/visitante/duvidas-frequentes' },
-		],
-	},
-	{
-		label: 'Programação',
-		href: '/programacao',
-		sub: [
-			{ label: 'ENEPE', href: '/programacao/enepe' },
-			{ label: 'Encontro AFEAL', href: '/programacao/encontro-afeal' },
-			{ label: 'Summit Arq', href: '/programacao/summit-arq' },
-			{ label: 'VIDROSOM', href: '/programacao/vidrosom' },
-			{ label: 'Esquadrias de PVC em Foco', href: '/programacao/esquadrias-de-pvc-em-foco' },
-		],
-	},
-	{ label: 'Embaixadores', href: '/embaixadores' },
-];
+const lang = getLang(Astro.currentLocale);
+const c = pick(chrome, lang);
 
-const navColumnB: NavItem[] = [
-	{
-		label: 'Eventos Simultâneos',
-		href: '/eventos-simultaneos',
-		sub: [
-			{ label: 'Feipat', href: '/eventos-simultaneos/feipat' },
-			{ label: 'Fesqua Vetro', href: '/eventos-simultaneos/fesqua-vetro' },
-		],
-	},
-	{
-		label: 'Imprensa',
-		href: '/imprensa',
-		sub: [
-			{ label: 'Canal Fesqua', href: '/imprensa/canal-fesqua' },
-			{ label: 'Press Releases', href: '/imprensa/press-releases' },
-			{ label: 'Saiu na Mídia', href: '/imprensa/saiu-na-midia' },
-		],
-	},
-	{ label: 'Contato', href: '/contato' },
-	{ label: 'Quero Visitar', href: '/quero-visitar', cta: true },
-	{ label: 'Quero Expor', href: '/quero-expor', cta: true },
-];
+// Mesma estrutura de links do menu do Header (navTree compartilhado).
+const toItem = (n: (typeof navTree)[number]): NavItem => ({
+	label: c.labels[n.id as keyof typeof c.labels],
+	href: route(lang, n.route),
+	cta: n.cta,
+	sub: n.children?.map((ch) => ({
+		label: c.labels[ch.id as keyof typeof c.labels],
+		href: 'href' in ch ? ch.href : route(lang, ch.route),
+	})),
+});
+const navColumnA: NavItem[] = navTree.slice(0, 5).map(toItem);
+const navColumnB: NavItem[] = navTree.slice(5).map(toItem);
 
 const contactInfo = {
 	address2: 'Rod. dos Imigrantes, São Paulo - SP, 04329-900',
@@ -99,6 +46,11 @@ const socialLinks = [
 	},
 	{ label: 'Facebook', href: 'https://www.facebook.com/fesqua' },
 ];
+
+// Marca o link da página atual (aria-current) — também é gancho de CSS.
+const normPath = (p: string) => p.replace(/\/+$/, '') || '/';
+const currentPath = normPath(Astro.url.pathname);
+const isCurrent = (href: string) => (normPath(href) === currentPath ? 'page' : undefined);
 ---
 
 <footer class="site-footer">
@@ -140,7 +92,7 @@ const socialLinks = [
 				</div>
 			</div>
 
-			<nav class="f-nav" aria-label="Mapa do site">
+			<nav class="f-nav" aria-label={c.footerNavLabel}>
 				
 				<ul>
 					{
@@ -160,7 +112,7 @@ const socialLinks = [
 									</button>
 								) : (
 									<div class="nav-row">
-										<a href={item.href}>{item.label}</a>
+										<a href={item.href} aria-current={isCurrent(item.href)}>{item.label}</a>
 									</div>
 								)}
 								{item.pendingSub && <span class="placeholder-tag">submenu pendente</span>}
@@ -168,7 +120,7 @@ const socialLinks = [
 									<ul class="sub" id={`f-drop-a-${i}`}>
 										{item.sub.map((s) => (
 											<li>
-												<a href={s.href}>{s.label}</a>
+												<a href={s.href} aria-current={isCurrent(s.href)}>{s.label}</a>
 											</li>
 										))}
 									</ul>
@@ -179,7 +131,7 @@ const socialLinks = [
 				</ul>
 			</nav>
 
-			<nav class="f-nav" aria-label="Mapa do site, continuação">
+			<nav class="f-nav" aria-label={c.footerNavLabel2}>
 				<span class="f-nav-label spacer">&nbsp;</span>
 				<ul>
 					{
@@ -209,7 +161,7 @@ const socialLinks = [
 									<ul class="sub" id={`f-drop-b-${i}`}>
 										{item.sub.map((s) => (
 											<li>
-												<a href={s.href}>{s.label}</a>
+												<a href={s.href} aria-current={isCurrent(s.href)}>{s.label}</a>
 											</li>
 										))}
 									</ul>
@@ -221,7 +173,7 @@ const socialLinks = [
 			</nav>
 
 			<div class="f-contact">
-				<span class="f-nav-label">Fale Conosco</span>
+				<span class="f-nav-label">{c.contactTitle}</span>
 				<ul class="contact-list">
 					<li>
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -258,12 +210,12 @@ const socialLinks = [
 		</div>
 
 		<div class="footer-bottom">
-			<span class="copy">© 2026 Grupo Contramarco. Todos os direitos reservados.</span>
+			<span class="copy">{c.copyright}</span>
 			<div class="legal">
-				<a href="#">Termos de Uso</a>
-				<a href="#">Política de Privacidade</a>
+				<a href="#">{c.terms}</a>
+				<a href={route(lang, 'privacidade')}>{c.privacy}</a>
 			</div>
-			<button class="to-top" aria-label="Voltar ao topo" id="toTop">
+			<button class="to-top" aria-label={c.toTop} id="toTop">
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
 					<path d="M12 19V5M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round" />
 				</svg>
@@ -488,6 +440,12 @@ const socialLinks = [
 		display: block;
 		font-size: 0.875rem;
 		color: var(--color-ink);
+	}
+
+	.sub a[aria-current='page'],
+	.nav-row a[aria-current='page'] {
+		color: var(--color-primary);
+		font-weight: 600;
 	}
 
 	/* ---------- contato ---------- */
