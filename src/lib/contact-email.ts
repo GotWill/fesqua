@@ -1,6 +1,5 @@
 /** Monta o e-mail do contato. Função pura (sem rede): fácil de testar. Só roda no servidor. */
 import { DEPARTMENTS, type ContactInput } from './contact-schema';
-import { LANG_NAME } from '../i18n/utils';
 
 // Todo texto digitado pela pessoa é escapado antes de entrar no HTML (evita injeção de HTML/script no e-mail).
 export const escapeHtml = (s: string) =>
@@ -20,8 +19,6 @@ export function buildContactEmail(input: ContactInput) {
 		['E-mail', input.email],
 		['Departamento', dept],
 	];
-	// idioma da página em que o formulário foi enviado (o e-mail em si segue em português)
-	if (input.lang) rows.push(['Idioma do formulário', `${LANG_NAME[input.lang]} (${input.lang})`]);
 	const html =
 		`<h2>FESQUA | Contato</h2>` +
 		rows.map(([k, v]) => `<p><strong>${k}:</strong> ${escapeHtml(v)}</p>`).join('') +
